@@ -17,3 +17,5 @@ fs = Figshare(token=api_token, private=True)
 
 def curation_retrieve(article_id):
 
+    # Retrieve article information
+    article_details = fs.get_article_details(article_id)
