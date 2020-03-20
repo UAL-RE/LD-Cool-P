@@ -16,7 +16,9 @@ fs = Figshare(token=api_token, private=True)
 
 
 class FigshareAdmin:
-    """ A Python interface to Figshare administration
+    """
+    Purpose:
+      A Python interface to Figshare administration
 
     Attributes
     ----------
@@ -37,6 +39,14 @@ class FigshareAdmin:
     get_headers()
         Return the HTTP header string
 
+    institute_articles()
+        Return private institution articles
+
+    institute_groups()
+        Return private account institution groups
+
+    institute_accounts()
+        Return private account institution accounts
     """
     def __init__(self, token=None, private=False):
         self.baseurl = "https://api.figshare.com/v2/account/institution/"
