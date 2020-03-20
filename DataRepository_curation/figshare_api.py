@@ -55,6 +55,13 @@ class FigshareAdmin:
 
         return headers
 
+    def institute_articles(self):
+        headers = self.get_headers(token=self.token)
+
+        url = self.endpoint("/account/institution/articles")
+        articles = issue_request('GET', url, headers)
+        return articles
+
 
 def curation_retrieve(article_id):
 
