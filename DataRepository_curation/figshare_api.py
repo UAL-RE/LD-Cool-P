@@ -90,19 +90,19 @@ class FigshareInstituteAdmin:
     endpoint(link)
       Concatenate the endpoint to the baseurl
 
-    institute_articles()
+    get_articles()
       Return private institution articles
 
-    institute_groups()
+    get_groups()
       Return pandas DataFrame private account institution groups
 
-    institute_accounts()
+    get_accounts()
       Return pandas DataFrame private account institution accounts
 
-    account_group_roles(account_id)
+    get_account_group_roles(account_id)
       Return dict containing group roles for a given account
 
-    account_details()
+    get_account_details()
       Return dict containing group roles for all accounts
     """
 
@@ -118,19 +118,19 @@ class FigshareInstituteAdmin:
         """Concatenate the endpoint to the baseurl"""
         return self.baseurl + link
 
-    def institute_articles(self):
+    def get_articles(self):
         url = self.endpoint("articles")
         articles = issue_request('GET', url, self.headers)
         return articles
 
-    def institute_groups(self):
+    def get_groups(self):
         url = self.endpoint("groups")
         groups = issue_request('GET', url, self.headers)
 
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def institute_accounts(self):
+    def get_accounts(self):
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -141,19 +141,19 @@ class FigshareInstituteAdmin:
         accounts_df = accounts_df.drop(columns='institution_id')
         return accounts_df
 
-    def account_group_roles(self, account_id):
+    def get_account_group_roles(self, account_id):
         url = self.endpoint("roles/{}".format(account_id))
 
         roles = issue_request('GET', url, self.headers)
         return roles
 
-    def account_details(self):
+    def get_account_details(self):
         # Retrieve accounts
-        accounts_df = self.institute_accounts()
+        accounts_df = self.get_accounts()
 
         # Determine group roles for each account
         for account_id in accounts_df['id']:
-            roles = self.account_group_roles(account_id)
+            roles = self.get_account_group_roles(account_id)
             print(roles)
 
 
