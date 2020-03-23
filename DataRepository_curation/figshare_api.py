@@ -77,34 +77,35 @@ class FigshareInstituteAdmin:
     Attributes
     ----------
     baseurl : str
-        Base URL of the Figshare v2 API
+      Base URL of the Figshare v2 API
 
     token : str
-        The Figshare OAuth2 authentication token
+      The Figshare OAuth2 authentication token
 
     headers : dict
-        HTTP header information
+      HTTP header information
 
     Methods
     -------
     endpoint(link)
-        Concatenate the endpoint to the baseurl
+      Concatenate the endpoint to the baseurl
 
     institute_articles()
-        Return private institution articles
+      Return private institution articles
 
     institute_groups()
-        Return pandas DataFrame private account institution groups
+      Return pandas DataFrame private account institution groups
 
     institute_accounts()
-        Return pandas DataFrame private account institution accounts
+      Return pandas DataFrame private account institution accounts
 
     account_group_roles(account_id)
-        Return dict containing group roles for a given account
+      Return dict containing group roles for a given account
 
     account_details()
-        Return dict containing group roles for all accounts
+      Return dict containing group roles for all accounts
     """
+
     def __init__(self, token=None):
         self.baseurl = "https://api.figshare.com/v2/account/institution/"
         self.token = token
