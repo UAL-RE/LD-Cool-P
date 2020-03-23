@@ -35,6 +35,9 @@ def issue_request(method, url, headers, params=None, data=None, binary=False):
     headers: dict
         HTTP header information
 
+    params: dict
+        Additional information for URL GET request
+
     data: dict
         Figshare article data
 
