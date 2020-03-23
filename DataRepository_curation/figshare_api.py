@@ -97,10 +97,13 @@ class FigshareAdmin:
         Return private institution articles
 
     institute_groups()
-        Return private account institution groups
+        Return pandas DataFrame private account institution groups
 
     institute_accounts()
-        Return private account institution accounts
+        Return pandas DataFrame private account institution accounts
+
+    account_group_roles()
+        Return dict containing group roles for a given account
     """
     def __init__(self, token=None, private=False):
         self.baseurl = "https://api.figshare.com/v2/account/institution/"
@@ -147,6 +150,12 @@ class FigshareAdmin:
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
         return accounts_df
+
+    def account_group_roles(self, account_id, headers):
+        url = self.endpoint("roles/{}".format(account_id))
+
+        roles = issue_request('GET', url, headers)
+        return roles
 
 
 def curation_retrieve(article_id):
