@@ -108,10 +108,9 @@ class FigshareAdmin:
     account_details()
         Return dict containing group roles for all accounts
     """
-    def __init__(self, token=None, private=False):
+    def __init__(self, token=None):
         self.baseurl = "https://api.figshare.com/v2/account/institution/"
         self.token = token
-        self.private = private
 
         self.headers = {'Content-Type': 'application/json'}
         if token:
