@@ -113,62 +113,50 @@ class FigshareAdmin:
         self.token = token
         self.private = private
 
+        self.headers = {'Content-Type': 'application/json'}
+        if token:
+            self.headers['Authorization'] = 'token {0}'.format(token)
+
     def endpoint(self, link):
         """Concatenate the endpoint to the baseurl"""
         return self.baseurl + link
 
-    def get_headers(self, token=None):
-        """ HTTP header information"""
-        headers = {'Content-Type': 'application/json'}
-        if token:
-            headers['Authorization'] = 'token {0}'.format(token)
-
-        return headers
-
     def institute_articles(self):
-        headers = self.get_headers(token=self.token)
-
         url = self.endpoint("articles")
-        articles = issue_request('GET', url, headers)
+        articles = issue_request('GET', url, self.headers)
         return articles
 
     def institute_groups(self):
-        headers = self.get_headers(token=self.token)
-
         url = self.endpoint("groups")
-        groups = issue_request('GET', url, headers)
+        groups = issue_request('GET', url, self.headers)
 
         groups_df = pd.DataFrame(groups)
         return groups_df
 
     def institute_accounts(self):
-        headers = self.get_headers(token=self.token)
-
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000}
-        accounts = issue_request('GET', url, headers, params=params)
+        accounts = issue_request('GET', url, self.headers, params=params)
 
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
         return accounts_df
 
-    def account_group_roles(self, account_id, headers):
+    def account_group_roles(self, account_id):
         url = self.endpoint("roles/{}".format(account_id))
 
-        roles = issue_request('GET', url, headers)
+        roles = issue_request('GET', url, self.headers)
         return roles
 
     def account_details(self):
-        headers = self.get_headers(token=self.token)
-
         # Retrieve accounts
         accounts_df = self.institute_accounts()
 
         # Determine group roles for each account
         for account_id in accounts_df['id']:
-            roles = self.account_group_roles(account_id, headers)
+            roles = self.account_group_roles(account_id)
             print(roles)
 
 
