@@ -2,6 +2,8 @@ import configparser
 
 from figshare.figshare import Figshare, issue_request
 
+import pandas as pd
+
 # Read in default configuration file
 config = configparser.ConfigParser()
 config.read('config/default.ini')
@@ -83,8 +85,11 @@ class FigshareAdmin:
         headers = self.get_headers(token=self.token)
 
         url = self.endpoint("accounts")
-        groups = issue_request('GET', url, headers)
-        return groups
+        accounts = issue_request('GET', url, headers)
+
+        accounts_df = pd.DataFrame(accounts)
+        accounts_df = accounts_df.drop(columns='institution_id')
+        return accounts_df
 
 
 def curation_retrieve(article_id):
