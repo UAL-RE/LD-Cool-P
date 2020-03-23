@@ -1,6 +1,7 @@
 import configparser
 
 import requests
+import json
 from requests.exceptions import HTTPError
 
 from figshare.figshare import Figshare # , issue_request
