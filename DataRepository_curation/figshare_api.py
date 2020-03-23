@@ -104,6 +104,9 @@ class FigshareAdmin:
 
     account_group_roles()
         Return dict containing group roles for a given account
+
+    account_details()
+        Return dict containing group roles for all accounts
     """
     def __init__(self, token=None, private=False):
         self.baseurl = "https://api.figshare.com/v2/account/institution/"
@@ -156,6 +159,17 @@ class FigshareAdmin:
 
         roles = issue_request('GET', url, headers)
         return roles
+
+    def account_details(self):
+        headers = self.get_headers(token=self.token)
+
+        # Retrieve accounts
+        accounts_df = self.institute_accounts()
+
+        # Determine group roles for each account
+        for account_id in accounts_df['id']:
+            roles = self.account_group_roles(account_id, headers)
+            print(roles)
 
 
 def curation_retrieve(article_id):
