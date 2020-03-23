@@ -69,10 +69,10 @@ def issue_request(method, url, headers, params=None, data=None, binary=False):
     return response_data
 
 
-class FigshareAdmin:
+class FigshareInstituteAdmin:
     """
     Purpose:
-      A Python interface to Figshare administration
+      A Python interface for administration of institutional Figshare accounts
 
     Attributes
     ----------
@@ -82,16 +82,13 @@ class FigshareAdmin:
     token : str
         The Figshare OAuth2 authentication token
 
-    private : bool
-        Boolean to check whether connection is to a private or public article
+    headers : dict
+        HTTP header information
 
     Methods
     -------
     endpoint(link)
         Concatenate the endpoint to the baseurl
-
-    get_headers()
-        Return the HTTP header string
 
     institute_articles()
         Return private institution articles
@@ -102,7 +99,7 @@ class FigshareAdmin:
     institute_accounts()
         Return pandas DataFrame private account institution accounts
 
-    account_group_roles()
+    account_group_roles(account_id)
         Return dict containing group roles for a given account
 
     account_details()
