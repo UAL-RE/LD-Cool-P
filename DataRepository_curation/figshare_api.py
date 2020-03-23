@@ -4,7 +4,7 @@ import requests
 import json
 from requests.exceptions import HTTPError
 
-from figshare.figshare import Figshare # , issue_request
+from figshare.figshare import Figshare  # , issue_request
 
 import pandas as pd
 
@@ -131,7 +131,9 @@ class FigshareAdmin:
 
         url = self.endpoint("groups")
         groups = issue_request('GET', url, headers)
-        return groups
+
+        groups_df = pd.DataFrame(groups)
+        return groups_df
 
     def institute_accounts(self):
         headers = self.get_headers(token=self.token)
