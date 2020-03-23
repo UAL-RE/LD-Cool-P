@@ -133,7 +133,10 @@ class FigshareAdmin:
         headers = self.get_headers(token=self.token)
 
         url = self.endpoint("accounts")
-        accounts = issue_request('GET', url, headers)
+
+        # Figshare API is limited to a maximum of 1000 per page
+        params = {'page': 1, 'page_size': 1000}
+        accounts = issue_request('GET', url, headers, params=params)
 
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
