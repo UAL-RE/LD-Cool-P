@@ -91,15 +91,15 @@ class FigshareInstituteAdmin:
       Concatenate the endpoint to the baseurl
 
     get_articles()
-      Return private institution articles
+      Return pandas DataFrame of institution articles
       See: https://docs.figshare.com/#private_institution_articles
 
     get_groups()
-      Return pandas DataFrame private account institution groups
+      Return pandas DataFrame of account institution groups
       See: https://docs.figshare.com/#private_institution_groups_list
 
     get_accounts()
-      Return pandas DataFrame private account institution accounts
+      Return pandas DataFrame of account institution accounts
       See: https://docs.figshare.com/#private_institution_accounts_list
 
     get_account_group_roles(account_id)
@@ -129,7 +129,9 @@ class FigshareInstituteAdmin:
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000}
         articles = issue_request('GET', url, self.headers, params=params)
-        return articles
+
+        articles_df = pd.DataFrame(articles)
+        return articles_df
 
     def get_groups(self):
         """Retrieve information about groups within institutional instance"""
