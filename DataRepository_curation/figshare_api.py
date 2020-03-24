@@ -92,15 +92,19 @@ class FigshareInstituteAdmin:
 
     get_articles()
       Return private institution articles
+      See: https://docs.figshare.com/#private_institution_articles
 
     get_groups()
       Return pandas DataFrame private account institution groups
+      See: https://docs.figshare.com/#private_institution_groups_list
 
     get_accounts()
       Return pandas DataFrame private account institution accounts
+      See: https://docs.figshare.com/#private_institution_accounts_list
 
     get_account_group_roles(account_id)
       Return dict containing group roles for a given account
+      See: https://docs.figshare.com/#private_institution_account_group_roles
 
     get_account_details()
       Return dict containing group roles for all accounts
