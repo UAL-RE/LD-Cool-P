@@ -123,6 +123,7 @@ class FigshareInstituteAdmin:
         return self.baseurl + link
 
     def get_articles(self):
+        """Retrieve information about articles within institutional instance"""
         url = self.endpoint("articles")
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -131,6 +132,7 @@ class FigshareInstituteAdmin:
         return articles
 
     def get_groups(self):
+        """Retrieve information about groups within institutional instance"""
         url = self.endpoint("groups")
         groups = issue_request('GET', url, self.headers)
 
@@ -138,6 +140,7 @@ class FigshareInstituteAdmin:
         return groups_df
 
     def get_accounts(self):
+        """Retrieve accounts within institutional instance"""
         url = self.endpoint("accounts")
 
         # Figshare API is limited to a maximum of 1000 per page
@@ -149,6 +152,7 @@ class FigshareInstituteAdmin:
         return accounts_df
 
     def get_account_group_roles(self, account_id):
+        """Retrieve group roles for a given account"""
         url = self.endpoint("roles/{}".format(account_id))
 
         roles = issue_request('GET', url, self.headers)
