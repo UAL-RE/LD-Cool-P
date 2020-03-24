@@ -120,7 +120,10 @@ class FigshareInstituteAdmin:
 
     def get_articles(self):
         url = self.endpoint("articles")
-        articles = issue_request('GET', url, self.headers)
+
+        # Figshare API is limited to a maximum of 1000 per page
+        params = {'page': 1, 'page_size': 1000}
+        articles = issue_request('GET', url, self.headers, params=params)
         return articles
 
     def get_groups(self):
