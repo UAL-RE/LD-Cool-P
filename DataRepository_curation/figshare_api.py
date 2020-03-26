@@ -1,56 +1,6 @@
-import requests
-import json
-from requests.exceptions import HTTPError
+from figshare.figshare import issue_request
 
 import pandas as pd
-
-
-def issue_request(method, url, headers, params=None, data=None, binary=False):
-    """Wrapper for HTTP request
-
-    Parameters
-    ----------
-    method : str
-        HTTP method. One of GET, PUT, POST or DELETE
-
-    url : str
-        URL for the request
-
-    headers: dict
-        HTTP header information
-
-    params: dict
-        Additional information for URL GET request
-
-    data: dict
-        Figshare article data
-
-    binary: bool
-        Whether data is binary or not
-
-    Returns
-    -------
-    response_data: dict
-        JSON response for the request returned as python dict
-    """
-    if data is not None and not binary:
-        data = json.dumps(data)
-
-    response = requests.request(method, url, params=params,
-                                headers=headers, data=data)
-
-    try:
-        response.raise_for_status()
-        try:
-            response_data = json.loads(response.text)
-        except ValueError:
-            response_data = response.content
-    except HTTPError as error:
-        print('Caught an HTTPError: {}'.format(error))
-        print('Body:\n', response.text)
-        raise
-
-    return response_data
 
 
 class FigshareInstituteAdmin:
