@@ -32,7 +32,7 @@ class FigshareInstituteAdmin:
       Return pandas DataFrame of account institution groups
       See: https://docs.figshare.com/#private_institution_groups_list
 
-    get_accounts()
+    get_account_list()
       Return pandas DataFrame of account institution accounts
       See: https://docs.figshare.com/#private_institution_accounts_list
 
@@ -75,7 +75,7 @@ class FigshareInstituteAdmin:
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def get_accounts(self):
+    def get_account_list(self):
         """Retrieve accounts within institutional instance"""
         url = self.endpoint("accounts")
 
@@ -96,9 +96,31 @@ class FigshareInstituteAdmin:
 
     def get_account_details(self):
         # Retrieve accounts
-        accounts_df = self.get_accounts()
+        accounts_df = self.get_account_list()
+        n_accounts = accounts_df.shape[0]
+
+        # Retrieve groups
+        groups_df = self.get_groups()
+
+        admin_flag = [''] * n_accounts
+        reviewer_flag = [''] * n_accounts
+        group_assoc = ['N/A'] * n_accounts
 
         # Determine group roles for each account
-        for account_id in accounts_df['id']:
+        for n, account_id in zip(range(n_accounts), accounts_df['id']):
             roles = self.get_account_group_roles(account_id)
-            print(roles)
+
+            for key in roles.keys():
+                for t_dict in roles[key]:
+                    if t_dict['id'] == 2:
+                        admin_flag[n] = 'X'
+                    if t_dict['id'] == 49:
+                        reviewer_flag[n] = 'X'
+                    if t_dict['id'] == 11:
+                        group_assoc[n] = key
+
+        accounts_df['Admin'] = admin_flag
+        accounts_df['Reviewer'] = reviewer_flag
+        accounts_df['Group'] = group_assoc
+
+        return accounts_df
