@@ -28,6 +28,10 @@ class FigshareInstituteAdmin:
       Return pandas DataFrame of institution articles
       See: https://docs.figshare.com/#private_institution_articles
 
+    get_user_articles(account_id)
+      Impersonate a user to retrieve articles associated with the user
+      See: https://docs.figshare.com/#private_articles_list
+
     get_groups()
       Return pandas DataFrame of account institution groups
       See: https://docs.figshare.com/#private_institution_groups_list
@@ -67,11 +71,11 @@ class FigshareInstituteAdmin:
         articles_df = pd.DataFrame(articles)
         return articles_df
 
-    def get_user_articles(self, user_id):
+    def get_user_articles(self, account_id):
         url = self.endpoint("articles").replace('institution/', '')
 
         # Figshare API is limited to a maximum of 1000 per page
-        params = {'page': 1, 'page_size': 1000, 'impersonate': user_id}
+        params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
         user_articles = issue_request('GET', url, self.headers, params=params)
 
         user_articles_df = pd.DataFrame(user_articles)
