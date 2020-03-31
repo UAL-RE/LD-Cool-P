@@ -121,6 +121,12 @@ class FigshareInstituteAdmin:
 
         accounts_df['Admin'] = admin_flag
         accounts_df['Reviewer'] = reviewer_flag
+
+        for group_id, group_name in zip(groups_df['id'], groups_df['name']):
+            print(group_id, group_name)
+            group_assoc = [sub.replace(str(group_id), group_name) for
+                           sub in group_assoc]
+
         accounts_df['Group'] = group_assoc
 
         return accounts_df
