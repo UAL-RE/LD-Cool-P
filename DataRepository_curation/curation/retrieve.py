@@ -35,7 +35,7 @@ def private_file_retrieve(url, filename=None, token=None):
     f.close()
 
 
-def curation_retrieve(article_id, root_directory=None, data_directory=None):
+def download_files(article_id, root_directory=None, data_directory=None):
 
     if root_directory is None:
         root_directory = os.getcwd()
