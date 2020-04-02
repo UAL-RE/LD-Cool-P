@@ -51,6 +51,9 @@ class FigshareInstituteAdmin:
     get_curation_list()
       Return pandas DataFrame of datasets under curatorial review
       See: https://docs.figshare.com/#account_institution_curations
+
+    get_curation_details(curation_id)
+      Return dict containing curatorial details of a dataset
     """
 
     def __init__(self, token=None):
@@ -158,3 +161,10 @@ class FigshareInstituteAdmin:
 
         curation_df = pd.DataFrame(curation_list)
         return curation_df
+
+    def get_curation_details(self, curation_id):
+        url = self.endpoint("review/{}".format(curation_id))
+
+        curation_details = issue_request('GET', url, self.headers)
+
+        return curation_details
