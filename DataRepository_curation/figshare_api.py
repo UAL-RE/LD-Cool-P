@@ -25,7 +25,7 @@ class FigshareInstituteAdmin:
       Concatenate the endpoint to the baseurl
 
     get_articles()
-      Return pandas DataFrame of institution articles
+      Return pandas DataFrame of institutional articles
       See: https://docs.figshare.com/#private_institution_articles
 
     get_user_articles(account_id)
@@ -33,11 +33,11 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_articles_list
 
     get_groups()
-      Return pandas DataFrame of account institution groups
+      Return pandas DataFrame of an institution's groups
       See: https://docs.figshare.com/#private_institution_groups_list
 
     get_account_list()
-      Return pandas DataFrame of account institution accounts
+      Return pandas DataFrame of user accounts
       See: https://docs.figshare.com/#private_institution_accounts_list
 
     get_account_group_roles(account_id)
@@ -45,7 +45,8 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_institution_account_group_roles
 
     get_account_details()
-      Return dict containing group roles for all accounts
+      Return pandas DataFrame that contains user information and their
+      institutional and group roles
     """
 
     def __init__(self, token=None):
