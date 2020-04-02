@@ -47,6 +47,10 @@ class FigshareInstituteAdmin:
     get_account_details()
       Return pandas DataFrame that contains user information and their
       institutional and group roles
+
+    get_curation_list()
+      Return pandas DataFrame of datasets under curatorial review
+      See: https://docs.figshare.com/#account_institution_curations
     """
 
     def __init__(self, token=None):
@@ -145,3 +149,12 @@ class FigshareInstituteAdmin:
         accounts_df['Group'] = group_assoc
 
         return accounts_df
+
+    def get_curation_list(self):
+        url = self.endpoint("reviews")
+
+        params = {'page': 1, 'page_size': 1000}
+        curation_list = issue_request('GET', url, self.headers, params=params)
+
+        curation_df = pd.DataFrame(curation_list)
+        return curation_df
