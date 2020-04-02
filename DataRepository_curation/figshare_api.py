@@ -32,6 +32,10 @@ class FigshareInstituteAdmin:
       Impersonate a user to retrieve articles associated with the user
       See: https://docs.figshare.com/#private_articles_list
 
+    get_user_projects(account_id)
+      Impersonate a user to retrieve projects associated with the user
+      See: https://docs.figshare.com/#private_projects_list
+
     get_user_collections(account_id)
       Impersonate a user to retrieve collections associated with the user
       See: https://docs.figshare.com/#private_collections_list
@@ -92,6 +96,16 @@ class FigshareInstituteAdmin:
 
         user_articles_df = pd.DataFrame(user_articles)
         return user_articles_df
+
+    def get_user_projects(self, account_id):
+        url = self.endpoint("projects").replace('institution/', '')
+
+        # Figshare API is limited to a maximum of 1000 per page
+        params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
+        user_projects = issue_request('GET', url, self.headers, params=params)
+
+        user_projects_df = pd.DataFrame(user_projects)
+        return user_projects_df
 
     def get_user_collections(self, account_id):
         url = self.endpoint("collections").replace('institution/', '')
