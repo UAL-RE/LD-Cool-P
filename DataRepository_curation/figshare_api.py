@@ -65,16 +65,20 @@ class FigshareInstituteAdmin:
     """
 
     def __init__(self, token=None):
-        self.baseurl = "https://api.figshare.com/v2/account/institution/"
+        self.baseurl = "https://api.figshare.com/v2/account/"
+        self.baseurl_institute = self.baseurl + "institution/"
         self.token = token
 
         self.headers = {'Content-Type': 'application/json'}
         if token:
             self.headers['Authorization'] = 'token {0}'.format(token)
 
-    def endpoint(self, link):
+    def endpoint(self, link, institute=True):
         """Concatenate the endpoint to the baseurl"""
-        return self.baseurl + link
+        if institute:
+            return self.baseurl_institute + link
+        else:
+            return self.baseurl + link
 
     def get_articles(self):
         """Retrieve information about articles within institutional instance"""
@@ -88,7 +92,7 @@ class FigshareInstituteAdmin:
         return articles_df
 
     def get_user_articles(self, account_id):
-        url = self.endpoint("articles").replace('institution/', '')
+        url = self.endpoint("articles", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
@@ -98,7 +102,7 @@ class FigshareInstituteAdmin:
         return user_articles_df
 
     def get_user_projects(self, account_id):
-        url = self.endpoint("projects").replace('institution/', '')
+        url = self.endpoint("projects", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
@@ -108,7 +112,7 @@ class FigshareInstituteAdmin:
         return user_projects_df
 
     def get_user_collections(self, account_id):
-        url = self.endpoint("collections").replace('institution/', '')
+        url = self.endpoint("collections", institute=False)
 
         # Figshare API is limited to a maximum of 1000 per page
         params = {'page': 1, 'page_size': 1000, 'impersonate': account_id}
