@@ -1,6 +1,7 @@
 from figshare.figshare import issue_request
 
 import pandas as pd
+import numpy as np
 
 
 class FigshareInstituteAdmin:
@@ -156,6 +157,10 @@ class FigshareInstituteAdmin:
         # Retrieve groups
         groups_df = self.get_groups()
 
+        num_articles = np.zeros(n_accounts, dtype=np.int)
+        num_projects = np.zeros(n_accounts, dtype=np.int)
+        num_collections = np.zeros(n_accounts, dtype=np.int)
+
         admin_flag = [''] * n_accounts
         reviewer_flag = [''] * n_accounts
         group_assoc = ['N/A'] * n_accounts
@@ -163,6 +168,25 @@ class FigshareInstituteAdmin:
         # Determine group roles for each account
         for n, account_id in zip(range(n_accounts), accounts_df['id']):
             roles = self.get_account_group_roles(account_id)
+
+            try:
+                articles_df = self.get_user_articles(account_id)
+                num_articles[n] = articles_df.shape[0]
+            except Exception as e:
+                print("Unable to retrieve articles for : {}".format(account_id))
+
+            try:
+                projects_df = self.get_user_projects(account_id)
+                num_projects[n] = projects_df.shape[0]
+            except Exception as e:
+
+                print("Unable to retrieve projects for : {}".format(account_id))
+
+            try:
+                collections_df = self.get_user_collections(account_id)
+                num_collections[n] = collections_df.shape[0]
+            except Exception as e:
+                print("Unable to retrieve collections for : {}".format(account_id))
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -172,6 +196,10 @@ class FigshareInstituteAdmin:
                         reviewer_flag[n] = 'X'
                     if t_dict['id'] == 11:
                         group_assoc[n] = key
+
+        accounts_df['Articles'] = num_articles
+        accounts_df['Projects'] = num_projects
+        accounts_df['Collections'] = num_collections
 
         accounts_df['Admin'] = admin_flag
         accounts_df['Reviewer'] = reviewer_flag
