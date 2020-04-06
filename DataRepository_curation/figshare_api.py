@@ -63,6 +63,10 @@ class FigshareInstituteAdmin:
 
     get_curation_details(curation_id)
       Return dict containing curatorial details of a dataset
+
+    get_curation_comments(curation_id)
+      Return list containing curatorial comments of a dataset
+      See: https://docs.figshare.com/#account_institution_curation_comments
     """
 
     def __init__(self, token=None):
@@ -228,3 +232,10 @@ class FigshareInstituteAdmin:
         curation_details = issue_request('GET', url, self.headers)
 
         return curation_details
+
+    def get_curation_comments(self, curation_id):
+        url = self.endpoint("review/{}/comments".format(curation_id))
+
+        curation_comments = issue_request('GET', url, self.headers)
+
+        return curation_comments
