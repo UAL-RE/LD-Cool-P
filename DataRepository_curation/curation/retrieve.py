@@ -3,6 +3,8 @@ import configparser
 from urllib.request import Request, urlopen
 
 from figshare.figshare import Figshare  # , issue_request
+from ..admin import permissions
+
 # from ..figshare_api import FigshareInstituteAdmin
 
 # Read in default configuration file
@@ -56,3 +58,6 @@ def download_files(article_id, root_directory=None, data_directory=None):
         filename = os.path.join(dir_path, file_dict['name'])
         private_file_retrieve(file_dict['download_url'], filename=filename,
                               token=api_token)
+
+    # Change permissions on folders and files
+    permissions(dir_path)
