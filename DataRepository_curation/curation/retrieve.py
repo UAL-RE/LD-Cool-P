@@ -1,8 +1,11 @@
 import os
+from os.path import exists
 import configparser
 from urllib.request import Request, urlopen
 
 from figshare.figshare import Figshare  # , issue_request
+from ..admin import permissions
+
 # from ..figshare_api import FigshareInstituteAdmin
 
 # Read in default configuration file
@@ -41,9 +44,10 @@ def download_files(article_id, root_directory=None, data_directory=None):
         root_directory = os.getcwd()
 
     # Retrieve article information
-    article_details = fs.get_article_details(article_id)
+    # article_details = fs.get_article_details(article_id)
 
     file_list = fs.list_files(article_id)
+    n_files = len(file_list)
 
     if not data_directory:
         dir_path = os.path.join(root_directory, "figshare_{0}/".format(article_id))
@@ -52,7 +56,16 @@ def download_files(article_id, root_directory=None, data_directory=None):
 
     os.makedirs(dir_path, exist_ok=True)  # This might require Python >=3.2
 
-    for file_dict in file_list:
+    print("Total number of files: {}".format(n_files))
+
+    for n, file_dict in zip(range(n_files), file_list):
+        print("Retrieving {} of {} : {}".format(n+1, n_files, file_dict['name']))
         filename = os.path.join(dir_path, file_dict['name'])
-        private_file_retrieve(file_dict['download_url'], filename=filename,
-                              token=api_token)
+        if not exists(filename):
+            private_file_retrieve(file_dict['download_url'], filename=filename,
+                                  token=api_token)
+        else:
+            print("File exists! Not overwriting!")
+
+    # Change permissions on folders and files
+    permissions.curation(dir_path)
