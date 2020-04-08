@@ -60,4 +60,4 @@ def download_files(article_id, root_directory=None, data_directory=None):
                               token=api_token)
 
     # Change permissions on folders and files
-    permissions(dir_path)
+    permissions.curation(dir_path)
