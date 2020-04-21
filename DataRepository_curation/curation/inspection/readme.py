@@ -20,7 +20,7 @@ def walkthrough(data_path, ignore=''):
                         print("File exists : {}".format(file_fullname))
 
 
-def check(data_path):
+def check_exists(data_path):
     """
     Purpose:
       Check that a README file exists
