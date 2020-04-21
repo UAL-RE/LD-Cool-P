@@ -15,9 +15,8 @@ def walkthrough(data_path, ignore=''):
         for file in files:
             if 'README' in file.upper():  # case insensitive
                 file_fullname = join(dir_path, file)
-                if ignore:
-                    if file_fullname != ignore:
-                        print("File exists : {}".format(file_fullname))
+                if file_fullname != ignore:
+                    print("File exists : {}".format(file_fullname))
 
 
 def check_exists(data_path):
