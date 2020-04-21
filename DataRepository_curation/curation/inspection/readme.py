@@ -1,6 +1,20 @@
 from os.path import exists, join
 from os import walk
 
+import configparser
+
+config = configparser.ConfigParser()
+config.read('DataRepository_curation/config/default.ini')
+
+folder_data = config.get('curation', 'folder_data')
+
+source = config.get('curation', 'source')
+root_directory = config.get('curation', '{}_path'.format(source))
+
+underreview_folder = config.get('curation', 'folder_underreview')
+
+staging_directory = join(root_directory, underreview_folder)
+
 
 def walkthrough(data_path, ignore=''):
     """
@@ -19,14 +33,16 @@ def walkthrough(data_path, ignore=''):
                     print("File exists : {}".format(file_fullname))
 
 
-def check_exists(data_path):
+def check_exists(depositor_name):
     """
     Purpose:
       Check that a README file exists
 
-    :param data_path: path to data folder
+    :param depositor_name: Exact name of the data curation folder with spaces
     :return: Will raise error
     """
+
+    data_path = join(staging_directory, depositor_name, folder_data)
 
     README_file_default = join(data_path, 'README.txt')
     if exists(README_file_default):
