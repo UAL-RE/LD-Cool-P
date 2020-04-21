@@ -2,18 +2,22 @@ from os.path import exists, join
 from os import walk
 
 
-def readme_walkthrough(data_path):
+def readme_walkthrough(data_path, ignore=''):
     """
     Purpose:
       Perform walkthrough to find other README files
 
-    :param data_path:
+    :param data_path: path to DATA folder
+    :param ignore: full path of default README.txt to ignore
     :return:
     """
     for dir_path, dir_names, files in walk(data_path):
         for file in files:
-            if 'README' in file.upper():
-                print("File exists : {}".format(join(dir_path, file)))
+            if 'README' in file.upper():  # case insensitive
+                file_fullname = join(dir_path, file)
+                if ignore:
+                    if file_fullname != ignore:
+                        print("File exists : {}".format(file_fullname))
 
 
 def readme_check(data_path):
@@ -28,8 +32,11 @@ def readme_check(data_path):
     README_file_default = join(data_path, 'README.txt')
     if exists(README_file_default):
         print("Default README.txt file exists!!!")
+
+        print("Checking for additional README files")
+        readme_walkthrough(data_path, ignore=README_file_default)
     else:
         print("Default README.txt file DOES NOT exist!!!")
-        print("Searching other possible locations")
+        print("Searching other possible locations...")
 
         readme_walkthrough(data_path)
