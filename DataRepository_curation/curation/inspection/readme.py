@@ -2,7 +2,7 @@ from os.path import exists, join
 from os import walk
 
 
-def readme_walkthrough(data_path, ignore=''):
+def walkthrough(data_path, ignore=''):
     """
     Purpose:
       Perform walkthrough to find other README files
@@ -20,7 +20,7 @@ def readme_walkthrough(data_path, ignore=''):
                         print("File exists : {}".format(file_fullname))
 
 
-def readme_check(data_path):
+def check(data_path):
     """
     Purpose:
       Check that a README file exists
@@ -34,9 +34,9 @@ def readme_check(data_path):
         print("Default README.txt file exists!!!")
 
         print("Checking for additional README files")
-        readme_walkthrough(data_path, ignore=README_file_default)
+        walkthrough(data_path, ignore=README_file_default)
     else:
         print("Default README.txt file DOES NOT exist!!!")
         print("Searching other possible locations...")
 
-        readme_walkthrough(data_path)
+        walkthrough(data_path)
