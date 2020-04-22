@@ -1,5 +1,8 @@
 from os.path import exists, join
 from os import walk
+from urllib.request import urlretrieve
+
+from ...admin import permissions
 
 import configparser
 
@@ -14,6 +17,8 @@ root_directory = config.get('curation', '{}_path'.format(source))
 underreview_folder = config.get('curation', 'folder_underreview')
 
 staging_directory = join(root_directory, underreview_folder)
+
+readme_url = config.get('curation', 'readme_url')
 
 
 def walkthrough(data_path, ignore=''):
@@ -55,3 +60,23 @@ def check_exists(depositor_name):
         print("Searching other possible locations...")
 
         walkthrough(data_path)
+
+
+def retrieve(depositor_name):
+    """
+    Purpose:
+      Retrieve template of README.txt file if such file is not present
+
+    :param depositor_name: Exact name of the data curation folder with spaces
+    :return: Download files and place it within the [folder_data] path
+    """
+
+    data_path = join(staging_directory, depositor_name, folder_data)
+
+    README_file_default = join(data_path, 'README.txt')
+    if not exists(README_file_default):
+        print("Retrieving README template...")
+        urlretrieve(readme_url, README_file_default)
+        permissions.curation(README_file_default)
+    else:
+        print("Default README file found! Not overwriting with template!")
