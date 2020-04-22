@@ -2,6 +2,8 @@ from os.path import exists, join
 from os import walk
 from urllib.request import urlretrieve
 
+import numpy as np
+
 from ...admin import permissions
 
 import configparser
@@ -95,3 +97,22 @@ def retrieve(depositor_name):
         permissions.curation(README_file_default)
     else:
         print("Default README file found! Not overwriting with template!")
+
+
+def strip_comments(depositor_name):
+
+    README_file_default, _ = default_readme_path(depositor_name)
+
+    f = open(README_file_default, 'r')
+    lines0 = f.readlines()
+
+    # Strip out HTML comments noted via <!--- to -->
+    html_comment_beg = [xx for xx in range(len(lines0)) if '<!---' in lines0[xx][0:5]]
+    html_comment_end = [xx for xx in range(len(lines0)) if '-->' in lines0[xx][0:3]]
+
+    list_range = [[*range(beg, end+1)] for beg, end in zip(html_comment_beg, html_comment_end)]
+
+    remove_index = [j for i in list_range for j in i]
+
+    lines = np.array(lines0)
+    lines = np.delete(lines, remove_index)
