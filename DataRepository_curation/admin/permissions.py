@@ -3,7 +3,7 @@ A set of functions to change permissions for a given path or file for data
 curation backend support
 """
 
-from os.path import join, isdir
+from os.path import join, isdir, isfile
 
 from os import chmod, walk
 
@@ -17,7 +17,7 @@ def curation(path):
     :param path: Parent location path
     """
 
-    if isdir(path):
+    if isdir(path) or isfile(path):
         chmod(path, 0o777)
 
     for dir_path, dir_names, files in walk(path):
