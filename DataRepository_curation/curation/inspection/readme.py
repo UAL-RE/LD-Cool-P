@@ -21,6 +21,23 @@ staging_directory = join(root_directory, underreview_folder)
 readme_url = config.get('curation', 'readme_url')
 
 
+def default_readme_path(depositor_name):
+    """
+    Purpose:
+      Provide full path for default README.txt file and data_path
+
+    :param depositor_name: Exact name of the data curation folder with spaces
+
+    :return README_file_default: str containing full path
+    :return data_path: full path to DATA folder
+    """
+
+    data_path = join(staging_directory, depositor_name, folder_data)
+
+    README_file_default = join(data_path, 'README.txt')
+    return README_file_default, data_path
+
+
 def walkthrough(data_path, ignore=''):
     """
     Purpose:
@@ -47,9 +64,8 @@ def check_exists(depositor_name):
     :return: Will raise error
     """
 
-    data_path = join(staging_directory, depositor_name, folder_data)
+    README_file_default, data_path = default_readme_path(depositor_name)
 
-    README_file_default = join(data_path, 'README.txt')
     if exists(README_file_default):
         print("Default README.txt file exists!!!")
 
@@ -71,9 +87,8 @@ def retrieve(depositor_name):
     :return: Download files and place it within the [folder_data] path
     """
 
-    data_path = join(staging_directory, depositor_name, folder_data)
+    README_file_default, _ = default_readme_path(depositor_name)
 
-    README_file_default = join(data_path, 'README.txt')
     if not exists(README_file_default):
         print("Retrieving README template...")
         urlretrieve(readme_url, README_file_default)
