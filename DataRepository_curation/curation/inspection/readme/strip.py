@@ -1,3 +1,4 @@
+from os.path import exists
 import shutil
 
 import numpy as np
@@ -85,8 +86,11 @@ def all(depositor_name):
 
     if change:
         orig_file = README_file_default.replace('.txt', '.orig.txt')
-        shutil.copy(README_file_default, orig_file)
-        permissions.curation(orig_file)
+        if not exists(orig_file):
+            shutil.copy(README_file_default, orig_file)
+            permissions.curation(orig_file)
+        else:
+            print("README original copy exists! Not overwriting!")
 
         f2 = open(README_file_default, 'w')
         f2.writelines(lines)
