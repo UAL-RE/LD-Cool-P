@@ -38,6 +38,26 @@ def strip_html_comments(lines0, change):
     return lines, change
 
 
+def strip_beginning(lines, change):
+    """
+    Purpose:
+      Strip extraneous text above first heading
+
+    :param lines: np.array containing text from open()
+    :param change: int that indicates whether changes have been implemented
+
+    :return lines: np.array containing text with extraneous text stripped out
+    :return change: Updated change (+1) if changes are made
+    """
+
+    head_i = [i for i in range(len(lines)) if lines[i][0:4] == '----']
+    if len(head_i) != 0:
+        change += 1
+        lines = np.delete(lines, range(head_i[0]))
+
+    return lines, change
+
+
 def strip_comments(depositor_name):
 
     README_file_default, _ = default_readme_path(depositor_name)
@@ -49,6 +69,8 @@ def strip_comments(depositor_name):
     change = 0
 
     lines, change = strip_html_comments(lines0, change)
+
+    lines, change = strip_beginning(lines, change)
 
     if change:
         orig_file = README_file_default.replace('.txt', '.orig.txt')
