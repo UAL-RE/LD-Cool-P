@@ -1,5 +1,6 @@
 from os.path import exists, join
 from os import walk
+import shutil
 from urllib.request import urlretrieve
 
 import numpy as np
@@ -103,12 +104,18 @@ def strip_comments(depositor_name):
 
     README_file_default, _ = default_readme_path(depositor_name)
 
-    f = open(README_file_default, 'r')
-    lines0 = f.readlines()
+    f1 = open(README_file_default, 'r')
+    lines0 = f1.readlines()
+    f1.close()
+
+    change = 0
 
     # Strip out HTML comments noted via <!--- to -->
     html_comment_beg = [xx for xx in range(len(lines0)) if '<!---' in lines0[xx][0:5]]
     html_comment_end = [xx for xx in range(len(lines0)) if '-->' in lines0[xx][0:3]]
+
+    if len(html_comment_beg) != 0:
+        change += 1
 
     list_range = [[*range(beg, end+1)] for beg, end in zip(html_comment_beg, html_comment_end)]
 
@@ -116,3 +123,11 @@ def strip_comments(depositor_name):
 
     lines = np.array(lines0)
     lines = np.delete(lines, remove_index)
+
+    if change:
+        print(README_file_default)
+        shutil.copy(README_file_default, README_file_default.replace('.txt', '.orig.txt'))
+
+        f2 = open(README_file_default, 'w')
+        f2.writelines(lines)
+        f2.close()
