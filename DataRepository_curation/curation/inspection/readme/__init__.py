@@ -2,7 +2,7 @@ from os.path import exists, join
 from os import walk
 from urllib.request import urlretrieve
 
-from ...admin import permissions
+from ....admin import permissions
 
 import configparser
 
