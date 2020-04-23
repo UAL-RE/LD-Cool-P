@@ -7,7 +7,7 @@ from ....admin import permissions
 from . import default_readme_path
 
 
-def strip_html_comments(lines0, change):
+def html_comments(lines0, change):
     """
     Purpose:
       Remove HTML comments from README.txt file
@@ -43,7 +43,7 @@ def strip_html_comments(lines0, change):
     return lines, change
 
 
-def strip_beginning(lines, change):
+def beginning(lines, change):
     """
     Purpose:
       Strip extraneous text above first heading
@@ -69,7 +69,7 @@ def strip_beginning(lines, change):
     return lines, change
 
 
-def strip_comments(depositor_name):
+def all(depositor_name):
 
     README_file_default, _ = default_readme_path(depositor_name)
 
@@ -79,9 +79,9 @@ def strip_comments(depositor_name):
 
     change = 0
 
-    lines, change = strip_html_comments(lines0, change)
+    lines, change = html_comments(lines0, change)
 
-    lines, change = strip_beginning(lines, change)
+    lines, change = beginning(lines, change)
 
     if change:
         orig_file = README_file_default.replace('.txt', '.orig.txt')
