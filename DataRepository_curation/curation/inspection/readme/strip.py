@@ -70,7 +70,7 @@ def beginning(lines, change):
     return lines, change
 
 
-def all(depositor_name):
+def main(depositor_name):
 
     README_file_default, _ = default_readme_path(depositor_name)
 
