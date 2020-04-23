@@ -37,6 +37,8 @@ def strip_html_comments(lines0, change):
 
         # Easier to use numpy to remove a list of index than using list remove()
         lines = np.delete(lines, remove_index)
+    else:
+        print("No HTML comments found!")
 
     return lines, change
 
