@@ -54,9 +54,15 @@ def strip_beginning(lines, change):
     """
 
     head_i = [i for i in range(len(lines)) if lines[i][0:4] == '----']
-    if len(head_i) != 0:
-        change += 1
-        lines = np.delete(lines, range(head_i[0]))
+    if len(head_i) == 0:
+        print("WARNING: No section heading found!!!...")
+    else:
+        if head_i[0] != 0:
+            print("Excess white space found at top. Stripping...")
+            change += 1
+            lines = np.delete(lines, range(head_i[0]))
+        else:
+            print("No excess white space found at top!")
 
     return lines, change
 
