@@ -3,6 +3,7 @@ from os import walk
 from urllib.request import urlretrieve
 
 from ....admin import permissions
+from . import strip
 
 import configparser
 
@@ -92,6 +93,7 @@ def retrieve(depositor_name):
     if not exists(README_file_default):
         print("Retrieving README template...")
         urlretrieve(readme_url, README_file_default)
+        strip.main(depositor_name)
         permissions.curation(README_file_default)
     else:
         print("Default README file found! Not overwriting with template!")
