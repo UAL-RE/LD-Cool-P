@@ -1,4 +1,5 @@
-from os.path import join, isdir
+from os.path import join, isdir, isfile
+
 from os import chown, walk
 
 
@@ -14,7 +15,7 @@ def curation(path, user):
 
     group = 0  # Placeholder
 
-    if isdir(path):
+    if isdir(path) or isfile(path):
         chown(path, user, group)
 
     for dir_path, dir_names, files in walk(path):
