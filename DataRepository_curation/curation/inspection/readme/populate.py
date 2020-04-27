@@ -14,22 +14,34 @@ fs = Figshare(token=api_token, private=True)
 
 
 def retrieve_article_metadata(article_id):
+    """
+    Purpose:
+      Retrieve metadata from figshare API to strip out information to
+      populate in README.txt file for basic content
+
+    :param article_id: int providing the figshare article ID
+    :return readme_dict: dict containing essential metadata for README.txt
+    """
 
     # Retrieve article details
     article_dict = fs.get_article_details(article_id)
 
+    readme_dict = dict()
+
     # Retrieve title of deposit
-    title = article_dict['title']
+    readme_dict['title'] = article_dict['title']
 
     # Retrieve preferred citation. Default: ReDATA in DataCite format
-    preferred_citation = article_dict['citation']
+    readme_dict['preferred_citation'] = article_dict['citation']
 
     # If DOI available, retrieve:
     if 'doi' in article_dict:
-        doi = article_dict['doi']
+        readme_dict['doi'] = article_dict['doi']
 
     # Retrieve license
-    license = article_dict['license']['name']
+    readme_dict['license'] = article_dict['license']['name']
 
     # Retrieve author
-    first_author = article_dict['authors'][0]['full_name']
+    readme_dict['first_author'] = article_dict['authors'][0]['full_name']
+
+    return readme_dict
