@@ -1,5 +1,6 @@
-from os.path import join
+from os.path import join, dirname
 import shutil
+from glob import glob
 
 import configparser
 
@@ -15,6 +16,20 @@ folder_underreview = config.get('curation', 'folder_underreview')
 folder_reviewed = config.get('curation', 'folder_reviewed')
 folder_published = config.get('curation', 'folder_published')
 folder_rejected = config.get('curation', 'folder_rejected')
+
+
+def get_source_stage(depositor_name):
+    """
+    Purpose:
+      Retrieve source stage folder by searching for dataset on curation server
+
+    :param depositor_name: : Exact name of the data curation folder with spaces
+    :return source_stage: str containing source stage name
+    """
+
+    source_path = glob(join(root_directory, '*', depositor_name))[0]
+    source_stage = dirname(source_path.replace(join(root_directory, ''), ''))
+    return source_stage
 
 
 def main(depositor_name, source_stage, dest_stage):
