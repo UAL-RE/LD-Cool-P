@@ -31,6 +31,7 @@ def get_source_stage(depositor_name):
 
     source_path = glob(join(root_directory, '*', depositor_name))[0]
     source_stage = dirname(source_path.replace(join(root_directory, ''), ''))
+
     return source_stage
 
 
@@ -50,7 +51,9 @@ def main(depositor_name, source_stage, dest_stage):
     source_path = join(root_directory, source_stage, depositor_name)
     dest_path = join(root_directory, dest_stage, depositor_name)
 
-    print("Moving: {} from {} to {}".format(depositor_name, source_path, dest_path))
+    # Move folder
+    print("Moving: {} from {} to ...".format(depositor_name, source_stage))
+    print(" ... {} on {}".format(dest_stage, root_directory))
     shutil.move(source_path, dest_path)
 
 
