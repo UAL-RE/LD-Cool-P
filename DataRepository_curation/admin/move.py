@@ -17,6 +17,8 @@ folder_reviewed = config.get('curation', 'folder_reviewed')
 folder_published = config.get('curation', 'folder_published')
 folder_rejected = config.get('curation', 'folder_rejected')
 
+stage_list = [folder_todo, folder_underreview, folder_reviewed, folder_published]
+
 
 def get_source_stage(depositor_name):
     """
@@ -50,3 +52,23 @@ def main(depositor_name, source_stage, dest_stage):
 
     print("Moving: {} from {} to {}".format(depositor_name, source_path, dest_path))
     shutil.move(source_path, dest_path)
+
+
+def move_to_next(depositor_name):
+    """
+    Purpose:
+      Perform move from one curation stage to the next
+
+    :param depositor_name: Exact name of the data curation folder with spaces
+    """
+
+    # Get current path
+    source_stage = get_source_stage(depositor_name)
+
+    # Get destination path
+    dest_stage_i = [i+1 for i in range(len(stage_list)) if
+                    stage_list[i] == source_stage][0]
+    dest_stage = stage_list[dest_stage_i]
+
+    # Move folder
+    main(depositor_name, source_stage, dest_stage)
