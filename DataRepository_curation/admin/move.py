@@ -78,7 +78,12 @@ def move_to_next(depositor_name):
 
 
 def reject(depositor_name):
+    """
+    Purpose:
+      Perform move from current stage to rejection stage
 
+    :param depositor_name: Exact name of the data curation folder with spaces
+    """
     # Get current path
     source_stage = get_source_stage(depositor_name)
 
