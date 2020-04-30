@@ -75,3 +75,12 @@ def move_to_next(depositor_name):
 
     # Move folder
     main(depositor_name, source_stage, dest_stage)
+
+
+def reject(depositor_name):
+
+    # Get current path
+    source_stage = get_source_stage(depositor_name)
+
+    # Move folder to reject
+    main(depositor_name, source_stage, folder_rejected)
