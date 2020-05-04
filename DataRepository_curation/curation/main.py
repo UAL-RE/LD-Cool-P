@@ -4,6 +4,8 @@ from os.path import join
 from .retrieve import download_files
 from ..admin import move, permissions
 from .reports import review_report
+from figshare.figshare import Figshare
+from ..figshare_api import FigshareInstituteAdmin
 
 # Read in default configuration file
 config = configparser.ConfigParser()
@@ -19,6 +21,9 @@ root_directory = join(root_directory0, folder_todo)
 
 api_token = config.get('global', 'api_token')
 
+fs = Figshare(token=api_token, private=True)
+fs_admin = FigshareInstituteAdmin(token=api_token)
+
 
 def workflow(article_id):
     """
@@ -32,8 +37,22 @@ def workflow(article_id):
     :param article_id:
     :return:
     """
+
+    # Retrieve info about deposit:
+    cur_df = fs_admin.get_curation_list()
+    acct_df = fs_admin.get_account_list()
+
+    cur_loc_dict = cur_df.loc[cur_df['article_id'] == article_id].reset_index().\
+        to_dict(orient='records')[0]
+    curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
+    account_id = curation_dict['account_id']
+    depositor_dict = acct_df.loc[acct_df['id'] == account_id].reset_index().\
+        to_dict(orient='records')[0]
+
     # Retrieve data and place in 1.ToDo curation folder
-    depositor_name = '' # This need to be determined using figshare metadata
+    depositor_surname = depositor_dict['last_name']
+    depositor_first = depositor_dict['first_name'].split(' ')[0]
+    depositor_name = "{} {}".format(depositor_first, depositor_surname)
     data_directory = join(depositor_name, folder_data)
     download_files(article_id, root_directory=root_directory,
                    data_directory=data_directory)
