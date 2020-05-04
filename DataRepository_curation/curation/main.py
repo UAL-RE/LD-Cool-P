@@ -52,7 +52,7 @@ def get_depositor_name(article_id, cur_df):
     depositor_surname = depositor_dict['last_name']
     depositor_first = depositor_dict['first_name'].split(' ')[0]  # Strip out middle name
     depositor_name = "{} {}".format(depositor_first, depositor_surname)
-    print("depository_name : {}".format(depositor_name)
+    print("depository_name : {}".format(depositor_name))
 
     return depositor_name
 
