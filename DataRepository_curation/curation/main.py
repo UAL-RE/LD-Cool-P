@@ -25,6 +25,20 @@ fs = Figshare(token=api_token, private=True)
 fs_admin = FigshareInstituteAdmin(token=api_token)
 
 
+def df_to_dict_single(df):
+    """
+    Purpose:
+      Convert a single entry pandas DataFrame into a dictionary and strip out
+      indexing information
+
+    :param df: pandas DataFrame with single entry (e.g., use df.loc[] to filter)
+
+    :return df_dict: dict that contains single entry pandas DF
+    """
+    df_dict = df.reset_index().to_dict(orient='records')[0]
+    return df_dict
+
+
 def workflow(article_id):
     """
     Purpose:
@@ -42,12 +56,10 @@ def workflow(article_id):
     cur_df = fs_admin.get_curation_list()
     acct_df = fs_admin.get_account_list()
 
-    cur_loc_dict = cur_df.loc[cur_df['article_id'] == article_id].reset_index().\
-        to_dict(orient='records')[0]
+    cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == article_id])
     curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
     account_id = curation_dict['account_id']
-    depositor_dict = acct_df.loc[acct_df['id'] == account_id].reset_index().\
-        to_dict(orient='records')[0]
+    depositor_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
 
     # Retrieve data and place in 1.ToDo curation folder
     depositor_surname = depositor_dict['last_name']
