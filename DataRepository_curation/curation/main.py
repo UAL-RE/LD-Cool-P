@@ -24,6 +24,7 @@ api_token = config.get('global', 'api_token')
 fs = Figshare(token=api_token, private=True)
 fs_admin = FigshareInstituteAdmin(token=api_token)
 
+acct_df = fs_admin.get_account_list()
 
 def df_to_dict_single(df):
     """
@@ -37,6 +38,23 @@ def df_to_dict_single(df):
     """
     df_dict = df.reset_index().to_dict(orient='records')[0]
     return df_dict
+
+
+def get_depositor_name(article_id, cur_df):
+
+    print("Retrieving depositor_name for {} ... ".format(article_id))
+
+    cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == article_id])
+    curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
+    account_id = curation_dict['account_id']
+    depositor_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
+
+    depositor_surname = depositor_dict['last_name']
+    depositor_first = depositor_dict['first_name'].split(' ')[0]  # Strip out middle name
+    depositor_name = "{} {}".format(depositor_first, depositor_surname)
+    print("depository_name : {}".format(depositor_name)
+
+    return depositor_name
 
 
 def workflow(article_id):
@@ -54,17 +72,11 @@ def workflow(article_id):
 
     # Retrieve info about deposit:
     cur_df = fs_admin.get_curation_list()
-    acct_df = fs_admin.get_account_list()
 
-    cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == article_id])
-    curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
-    account_id = curation_dict['account_id']
-    depositor_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
+    # Retrieve depositor name
+    depositor_name = get_depositor_name(article_id, cur_df)
 
     # Retrieve data and place in 1.ToDo curation folder
-    depositor_surname = depositor_dict['last_name']
-    depositor_first = depositor_dict['first_name'].split(' ')[0]
-    depositor_name = "{} {}".format(depositor_first, depositor_surname)
     data_directory = join(depositor_name, folder_data)
     download_files(article_id, root_directory=root_directory,
                    data_directory=data_directory)
