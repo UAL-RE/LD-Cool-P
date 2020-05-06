@@ -26,6 +26,7 @@ fs_admin = FigshareInstituteAdmin(token=api_token)
 
 acct_df = fs_admin.get_account_list()
 
+
 def df_to_dict_single(df):
     """
     Purpose:
@@ -64,7 +65,8 @@ def workflow(article_id):
        1. Retrieve the data for a given deposit
        2. Set permissions and ownership (the latter needs to be tested and performed)
        3. Download curatorial review report
-       4. Check the README file
+       4. Download Qualtrics Deposit Agreement form
+       5. Check the README file
 
     :param article_id:
     :return:
@@ -83,6 +85,8 @@ def workflow(article_id):
 
     # Download curation report
     review_report(depositor_name)
+
+    # Placeholder to download Qualtrics deposit agreement form
 
     # Move to next curation stage
     move.move_to_next(depositor_name)
