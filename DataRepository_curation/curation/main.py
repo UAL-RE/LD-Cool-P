@@ -101,4 +101,5 @@ def workflow(article_id):
     # Move to next curation stage
     move.move_to_next(depositor_name)
 
-    # Check for README file
+    # Placeholder to check for README file and create one if it doesn't exists
+
