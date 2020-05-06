@@ -51,8 +51,18 @@ def get_depositor_name(article_id, cur_df):
     depositor_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
 
     depositor_surname = depositor_dict['last_name']
-    depositor_first = depositor_dict['first_name'].split(' ')[0]  # Strip out middle name
-    depositor_name = "{} {}".format(depositor_first, depositor_surname)
+    depositor_first = depositor_dict['first_name']  # Strip out middle name
+    depositor_fullname = "{} {}".format(depositor_first, depositor_surname)
+    depositor_dispname = "{} {}".format(depositor_first.split(' ')[0], depositor_surname)
+
+    # Check to see if the depositor is in the list of authors
+    authors = [d['full_name'] for d in curation_dict['item']['authors']]
+    if depositor_fullname in authors or depositor_dispname in authors:
+        print("  Depositor == author")
+        depositor_name = depositor_dispname
+    else:
+        print("  Depositor != author")
+        depositor_name = '{} - {}'.format(depositor_dispname, authors[0])
     print("depository_name : {}".format(depositor_name))
 
     return depositor_name
