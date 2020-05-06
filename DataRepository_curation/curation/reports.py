@@ -40,7 +40,7 @@ def review_report(depositor_name=''):
         print("Saving ReDATA Curation Report to: {}".format(out_path))
         print("Saving as : {}".format(filename))
         urlretrieve(report_url, out_file)
-        permissions.curation(out_file)
+        permissions.curation(out_path)
     else:
         print("!!!! ReDATA Curation Report exists in {} !!!!".format(out_path))
         print("!!!! Will not override !!!!")
