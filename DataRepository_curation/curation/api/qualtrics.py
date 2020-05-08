@@ -21,7 +21,37 @@ qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
 class QualtricsAPI:
     """
     Purpose:
-      Retrieve data from Qualtrics survey
+      A Python interface for interaction with Qualtrics API for Deposit Agreement form survey
+
+    Attributes
+    ----------
+    baseurl : str
+      Base URL of the Qualtrics v3 API
+
+    dataCenter : str
+      Qualtrics Data Center prefix
+
+    apiToken : str
+      The Qualtrics API Key authentication token
+
+    survey_id : str
+      Qualtrics survey ID, begins as SV_*
+
+    fileFormat : str
+      Type of format for export response.  Using CSV
+
+    headers : dict
+      HTTP header information
+
+    Methods
+    -------
+    list_surveys()
+      List all surveys for a user:
+      See: https://api.qualtrics.com/docs/managing-surveys#list-surveys
+
+    get_survey_responses()
+      Retrieve pandas DataFrame containing responses from survey
+      See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
     """
 
     def __init__(self, dataCenter, token, survey_id):
