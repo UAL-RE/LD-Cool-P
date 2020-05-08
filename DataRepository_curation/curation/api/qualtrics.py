@@ -25,23 +25,23 @@ class QualtricsAPI:
 
     Attributes
     ----------
+    token : str
+      The Qualtrics API Key authentication token
+
+    data_center : str
+      Qualtrics Data Center prefix
+
     baseurl : str
       Base URL of the Qualtrics v3 API
 
-    dataCenter : str
-      Qualtrics Data Center prefix
-
-    apiToken : str
-      The Qualtrics API Key authentication token
+    headers : dict
+      HTTP header information
 
     survey_id : str
       Qualtrics survey ID, begins as SV_*
 
-    fileFormat : str
+    file_format : str
       Type of format for export response.  Using CSV
-
-    headers : dict
-      HTTP header information
 
     Methods
     -------
@@ -55,13 +55,13 @@ class QualtricsAPI:
     """
 
     def __init__(self, dataCenter, token, survey_id):
-        self.apiToken = token
-        self.dataCenter = dataCenter
-        self.headers = {"X-API-TOKEN": self.apiToken,
+        self.token = token
+        self.data_center = dataCenter
+        self.baseurl = "https://{0}.qualtrics.com/API/v3/".format(self.data_center)
+        self.headers = {"X-API-TOKEN": self.token,
                         "Content-Type": "application/json"}
-        self.baseurl = "https://{0}.qualtrics.com/API/v3/".format(self.dataCenter)
         self.survey_id = survey_id
-        self.fileFormat = 'csv'
+        self.file_format = 'csv'
 
     def list_surveys(self):
         url = join(self.baseurl, 'surveys')
@@ -75,7 +75,7 @@ class QualtricsAPI:
         download_url = join(self.baseurl, "surveys/{0}/export-responses".format(self.survey_id))
 
         # Create Data Export
-        download_payload = {"format": self.fileFormat}
+        download_payload = {"format": self.file_format}
         download_response = issue_request("POST", download_url, data=download_payload,
                                           headers=self.headers)
         progress_id = download_response["result"]["progressId"]
