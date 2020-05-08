@@ -1,6 +1,11 @@
 from os.path import join
-from ..retrieve import private_file_retrieve
 import configparser
+import requests
+import pandas as pd
+
+import zipfile
+import io
+from os import remove
 
 from figshare.figshare import issue_request
 
@@ -39,13 +44,13 @@ class QualtricsAPI:
 
         download_url = join(self.baseurl, "surveys/{0}/export-responses".format(self.survey_id))
 
-        # Step 1: Creating Data Export
+        # Create Data Export
         download_payload = {"format": self.fileFormat}
         download_response = issue_request("POST", download_url, data=download_payload,
                                           headers=self.headers)
         progress_id = download_response["result"]["progressId"]
 
-        # Step 2: Checking on Data Export Progress and waiting until export is ready
+        # Check on Data Export Progress and waiting until export is ready
         while progress_status != "complete" and progress_status != "failed":
             print("progress_status: {}".format(progress_status))
             check_url = join(download_url, progress_id)
@@ -54,14 +59,20 @@ class QualtricsAPI:
             print("Download is " + str(check_progress) + " complete")
             progress_status = check_response["result"]["status"]
 
-        # step 2.1: Check for error
+        # Check for error
         if progress_status is "failed":
             raise Exception("export failed")
 
         file_id = check_response["result"]["fileId"]
 
-        # Step 3: Downloading file
+        # Retrieve zipfile and extract and read in CSV into pandas DataFrame
         download_url = join(download_url, '{0}/file'.format(file_id))
-        print(download_url)
-        # private_file_retrieve(download_url, filename='qualtrics.csv', token=self.apiToken)
-        # print('Complete')
+        requestDownload = requests.request("GET", download_url, headers=self.headers, stream=True)
+        input_zip = zipfile.ZipFile(io.BytesIO(requestDownload.content))
+        csv_filename = input_zip.namelist()[0]
+        input_zip.extract(csv_filename)
+
+        response_df = pd.read_csv(csv_filename)
+        remove(csv_filename)
+
+        return response_df
