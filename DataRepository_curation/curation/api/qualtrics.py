@@ -63,8 +63,12 @@ class QualtricsAPI:
         self.survey_id = survey_id
         self.file_format = 'csv'
 
+    def endpoint(self, link):
+        """Concatenate the endpoint to the baseurl"""
+        return join(self.baseurl, link)
+
     def list_surveys(self):
-        url = join(self.baseurl, 'surveys')
+        url = self.endpoint('surveys')
         survey_list = issue_request('GET', url, headers=self.headers)
 
         return survey_list
@@ -72,7 +76,7 @@ class QualtricsAPI:
     def get_survey_responses(self):
         progress_status = "inProgress"
 
-        download_url = join(self.baseurl, "surveys/{0}/export-responses".format(self.survey_id))
+        download_url = self.endpoint("surveys/{0}/export-responses".format(self.survey_id))
 
         # Create Data Export
         download_payload = {"format": self.file_format}
