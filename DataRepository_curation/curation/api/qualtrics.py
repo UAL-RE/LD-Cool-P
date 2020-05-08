@@ -46,11 +46,11 @@ class QualtricsAPI:
     Methods
     -------
     list_surveys()
-      List all surveys for a user:
+      List all surveys for a user in a dictionary form:
       See: https://api.qualtrics.com/docs/managing-surveys#list-surveys
 
     get_survey_responses()
-      Retrieve pandas DataFrame containing responses from survey
+      Retrieve pandas DataFrame containing responses for a survey
       See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
     """
 
@@ -68,12 +68,14 @@ class QualtricsAPI:
         return join(self.baseurl, link)
 
     def list_surveys(self):
+        """Return dictionary containing all surveys for a user"""
         url = self.endpoint('surveys')
-        survey_list = issue_request('GET', url, headers=self.headers)
+        survey_dict = issue_request('GET', url, headers=self.headers)
 
-        return survey_list
+        return survey_dict
 
     def get_survey_responses(self):
+        """Retrieve pandas DataFrame containing responses for a survey"""
         progress_status = "inProgress"
 
         download_url = self.endpoint("surveys/{0}/export-responses".format(self.survey_id))
