@@ -106,7 +106,7 @@ def workflow(article_id):
 
     # Retrieve data and place in 1.ToDo curation folder
     data_directory = join(depositor_name, folder_data)
-    download_files(article_id, root_directory=root_directory,
+    download_files(article_id, fs=fs, root_directory=root_directory,
                    data_directory=data_directory)
 
     # Download curation report
