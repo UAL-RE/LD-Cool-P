@@ -6,15 +6,11 @@ from urllib.request import Request, urlopen
 from figshare.figshare import Figshare  # , issue_request
 from ..admin import permissions
 
-# from ..figshare_api import FigshareInstituteAdmin
-
 # Read in default configuration file
 config = configparser.ConfigParser()
 config.read('DataRepository_curation/config/default.ini')
 
 api_token = config.get('global', 'api_token')
-
-# fs_admin = FigshareInstituteAdmin(token=api_token)
 
 
 def private_file_retrieve(url, filename=None, token=None):
