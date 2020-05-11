@@ -6,6 +6,7 @@ from ..admin import move, permissions
 from .reports import review_report
 from figshare.figshare import Figshare
 from ..figshare_api import FigshareInstituteAdmin
+from .api.qualtrics import Qualtrics
 
 # Read in default configuration file
 config = configparser.ConfigParser()
@@ -25,6 +26,10 @@ fs = Figshare(token=api_token, private=True)
 fs_admin = FigshareInstituteAdmin(token=api_token)
 
 acct_df = fs_admin.get_account_list()
+
+qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
+qualtrics_token = config.get('curation', 'qualtrics_token')
+qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
 
 
 def df_to_dict_single(df):
@@ -97,6 +102,18 @@ def workflow(article_id):
     review_report(depositor_name)
 
     # Placeholder to download Qualtrics deposit agreement form
+    q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
+    qualtrics_df = q.get_survey_responses()
+    response_dict = df_to_dict_single(qualtrics_df.loc[qualtrics_df['Q4_1'] == depositor_name])
+    if response_df.empty:
+        print("Empty DataFrame")
+    else:
+        if response_df.shape[0] == 1:
+            print("Only one entry found!")
+            print("Survey completed on {} for {}".format(response_dict['Date Completed'],
+                                                         response_dict['Q7']))
+        else:
+            print("Multiple entries found")
 
     # Move to next curation stage
     move.move_to_next(depositor_name)
