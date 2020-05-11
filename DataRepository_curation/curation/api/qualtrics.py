@@ -13,12 +13,8 @@ from figshare.figshare import issue_request
 config = configparser.ConfigParser()
 config.read('DataRepository_curation/config/default.ini')
 
-qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
-qualtrics_token = config.get('curation', 'qualtrics_token')
-qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
 
-
-class QualtricsAPI:
+class Qualtrics:
     """
     Purpose:
       A Python interface for interaction with Qualtrics API for Deposit Agreement form survey
