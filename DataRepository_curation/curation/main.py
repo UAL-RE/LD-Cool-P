@@ -21,6 +21,9 @@ folder_data = config.get('curation', 'folder_data')
 root_directory = join(root_directory0, folder_todo)
 
 api_token = config.get('global', 'api_token')
+if api_token is None or api_token == "***override***":
+    print("ERROR: figshare api_token not available from config file")
+    api_token = input("Provide figshare token through prompt : ")
 
 fs = Figshare(token=api_token, private=True)
 fs_admin = FigshareInstituteAdmin(token=api_token)
@@ -28,8 +31,16 @@ fs_admin = FigshareInstituteAdmin(token=api_token)
 acct_df = fs_admin.get_account_list()
 
 qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
+if qualtrics_survey_id is None or qualtrics_survey_id == "***override***":
+    qualtrics_survey_id = input("Provide Qualtrics Survey ID through prompt : ")
+
 qualtrics_token = config.get('curation', 'qualtrics_token')
+if qualtrics_token is None or qualtrics_token == "***override***":
+    qualtrics_token = input("Provide Qualtrics API token through prompt : ")
+
 qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
+if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
+    qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
 
 
 def df_to_dict_single(df):
