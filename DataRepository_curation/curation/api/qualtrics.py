@@ -50,6 +50,11 @@ class Qualtrics:
     get_survey_responses()
       Retrieve pandas DataFrame containing responses for a survey
       See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
+
+    find_deposit_agreement(depositor_name)
+      Call get_survey_responses() and identify response that matches based on
+      depositor name (implemented) and deposit title (to be implemented).
+      Returns ResponseID if a unique match is available
     """
 
     def __init__(self, dataCenter, token, survey_id):
@@ -112,16 +117,20 @@ class Qualtrics:
         return response_df
 
     def find_deposit_agreement(self, depositor_name):
+        """Get Response ID based on a match search for depositor_name"""
         qualtrics_df = self.get_survey_responses()
         response_df = qualtrics_df.loc[qualtrics_df['Q4_1'] == depositor_name]
 
         if response_df.empty:
             print("Empty DataFrame")
+            raise ValueError
         else:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
                 print("Only one entry found!")
                 print("Survey completed on {} for {}".format(response_dict['Date Completed'],
                                                              response_dict['Q7']))
+                return response_dict['ResponseId']
             else:
                 print("Multiple entries found")
+                raise ValueError
