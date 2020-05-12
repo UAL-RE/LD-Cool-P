@@ -76,6 +76,36 @@ def get_depositor_name(article_id, cur_df):
     return depositor_name
 
 
+class PrerequisiteWorkflow:
+    """
+    Purpose:
+      Workflow class that follows our initial set-up to:
+       1. Retrieve the data for a given deposit
+       2. Set permissions and ownership (the latter needs to be tested and performed)
+       3. Download curatorial review report
+       4. Download Qualtrics Deposit Agreement form
+       5. Check the README file
+
+    """
+    def __init__(self, article_id, cur_df):
+        self.root_directory = root_directory
+        self.article_id = article_id
+        self.cur_df = cur_df
+        self.depositor_name = get_depositor_name(self.article_id, self.cur_df)
+        self.data_directory = join(self.depositor_name, folder_data)
+
+    def download_data(self):
+        download_files(self.article_id, fs=fs,
+                       root_directory=self.root_directory,
+                       data_directory=self.data_directory)
+
+    def download_report(self):
+        review_report(self.depositor_name)
+
+    def move_to_next(self):
+        move.move_to_next(self.depositor_name)
+
+
 def workflow(article_id):
     """
     Purpose:
@@ -93,27 +123,24 @@ def workflow(article_id):
     # Retrieve info about deposit:
     cur_df = fs_admin.get_curation_list()
 
-    # Retrieve depositor name
-    depositor_name = get_depositor_name(article_id, cur_df)
+    pw = PrerequisiteWorkflow(article_id, cur_df)
 
     # Retrieve data and place in 1.ToDo curation folder
-    data_directory = join(depositor_name, folder_data)
-    download_files(article_id, fs=fs, root_directory=root_directory,
-                   data_directory=data_directory)
+    pw.download_data()
 
     # Download curation report
-    review_report(depositor_name)
+    pw.download_report()
 
     # Placeholder to download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
     try:
-        ResponseID = q.find_deposit_agreement(depositor_name)
+        ResponseID = q.find_deposit_agreement(pw.depositor_name)
         print("Qualtrics ResponseID : {}".format(ResponseID))
     except ValueError:
         print("Unable to obtain a unique match")
 
     # Move to next curation stage
-    move.move_to_next(depositor_name)
+    pw.move_to_next()
 
     # Placeholder to check for README file and create one if it doesn't exists
 
