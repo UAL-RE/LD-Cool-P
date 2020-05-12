@@ -7,6 +7,8 @@ import zipfile
 import io
 from os import remove
 
+from .. import df_to_dict_single
+
 from figshare.figshare import issue_request
 
 # Read in default configuration file

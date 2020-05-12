@@ -1,9 +1,15 @@
 import configparser
 from os.path import join
 
-from .retrieve import download_files
+# Admin
 from ..admin import move, permissions
+
+# Curation
+from . import df_to_dict_single
+from .retrieve import download_files
 from .reports import review_report
+
+# API
 from figshare.figshare import Figshare
 from ..figshare_api import FigshareInstituteAdmin
 from .api.qualtrics import Qualtrics
@@ -41,20 +47,6 @@ if qualtrics_token is None or qualtrics_token == "***override***":
 qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
 if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
     qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
-
-
-def df_to_dict_single(df):
-    """
-    Purpose:
-      Convert a single entry pandas DataFrame into a dictionary and strip out
-      indexing information
-
-    :param df: pandas DataFrame with single entry (e.g., use df.loc[] to filter)
-
-    :return df_dict: dict that contains single entry pandas DF
-    """
-    df_dict = df.reset_index().to_dict(orient='records')[0]
-    return df_dict
 
 
 def get_depositor_name(article_id, cur_df):
