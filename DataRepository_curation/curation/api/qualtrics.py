@@ -108,3 +108,18 @@ class Qualtrics:
         remove(csv_filename)
 
         return response_df
+
+    def find_deposit_agreement(self, depositor_name):
+        qualtrics_df = self.get_survey_responses()
+        response_df = qualtrics_df.loc[qualtrics_df['Q4_1'] == depositor_name]
+
+        if response_df.empty:
+            print("Empty DataFrame")
+        else:
+            if response_df.shape[0] == 1:
+                response_dict = df_to_dict_single(response_df)
+                print("Only one entry found!")
+                print("Survey completed on {} for {}".format(response_dict['Date Completed'],
+                                                             response_dict['Q7']))
+            else:
+                print("Multiple entries found")

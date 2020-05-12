@@ -114,17 +114,7 @@ def workflow(article_id):
 
     # Placeholder to download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
-    qualtrics_df = q.get_survey_responses()
-    response_dict = df_to_dict_single(qualtrics_df.loc[qualtrics_df['Q4_1'] == depositor_name])
-    if response_df.empty:
-        print("Empty DataFrame")
-    else:
-        if response_df.shape[0] == 1:
-            print("Only one entry found!")
-            print("Survey completed on {} for {}".format(response_dict['Date Completed'],
-                                                         response_dict['Q7']))
-        else:
-            print("Multiple entries found")
+    q.find_deposit_agreement(depositor_name)
 
     # Move to next curation stage
     move.move_to_next(depositor_name)
