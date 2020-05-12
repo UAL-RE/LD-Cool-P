@@ -60,7 +60,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
-                                  token=api_token)
+                                  token=fs.token)
         else:
             print("File exists! Not overwriting!")
 
