@@ -104,7 +104,7 @@ def workflow(article_id):
     # Placeholder to download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
     try:
-        ResponseID = q.find_deposit_agreement(pw.dn.depositor_folderName)
+        ResponseID = q.find_deposit_agreement(pw.dn.depositor_dict)
         print("Qualtrics ResponseID : {}".format(ResponseID))
     except ValueError:
         print("Unable to obtain a unique match")

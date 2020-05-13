@@ -116,10 +116,11 @@ class Qualtrics:
 
         return response_df
 
-    def find_deposit_agreement(self, depositor_name):
-        """Get Response ID based on a match search for depositor_name"""
+    def find_deposit_agreement(self, depositor_dict):
+        """Get Response ID based on a match search for depositor name"""
         qualtrics_df = self.get_survey_responses()
-        response_df = qualtrics_df.loc[qualtrics_df['Q4_1'] == depositor_name]
+        response_df = qualtrics_df[(qualtrics_df['Q4_1'] == depositor_dict['depositor_fullName']) |
+                                   (qualtrics_df['Q4_1'] == depositor_dict['depositor_simplifyName'])]
 
         if response_df.empty:
             print("Empty DataFrame")
