@@ -58,7 +58,7 @@ class DepositorName:
         depositor_simplifySur   = depositor_surName.split(' ')[0]
         depositor_fullName      = "{} {}".format(depositor_firstName,
                                                  depositor_surName)
-        depositor_displayName   = "{} {}".format(depositor_simplifyFirst,
+        depositor_simplifyName  = "{} {}".format(depositor_simplifyFirst,
                                                  depositor_simplifySur)
 
         depositor_dict = dict()
@@ -67,7 +67,7 @@ class DepositorName:
         depositor_dict['depositor_simplifyFirst'] = depositor_simplifyFirst
         depositor_dict['depositor_simplifySur']   = depositor_simplifySur
         depositor_dict['depositor_fullName']      = depositor_fullName
-        depositor_dict['depositor_displayName']   = depositor_displayName
+        depositor_dict['depositor_simplifyName']  = depositor_simplifyName
 
         return depositor_dict
 
@@ -75,12 +75,13 @@ class DepositorName:
         # Check to see if the depositor is in the list of authors
         authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
         if self.depositor_dict['depositor_fullName'] in authors or \
-                self.depositor_dict['depositor_displayName'] in authors:
+                self.depositor_dict['depositor_simplifyName'] in authors:
             print("  Depositor == author")
-            depositor_folderName = self.depositor_dict['depositor_displayName']
+            depositor_folderName = self.depositor_dict['depositor_simplifyName']
         else:
             print("  Depositor != author")
-            depositor_folderName = '{} - {}'.format(self.depositor_dict['depositor_displayName'],
-                                                    authors[0])
+            depositor_folderName = \
+                '{} - {}'.format(self.depositor_dict['depositor_simplifyName'],
+                                 authors[0])
         print("depository_name : {}".format(depositor_folderName))
         return depositor_folderName
