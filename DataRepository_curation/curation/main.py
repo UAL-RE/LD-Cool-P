@@ -1,11 +1,18 @@
 import configparser
 from os.path import join
 
-from .retrieve import download_files
+# Admin
 from ..admin import move, permissions
+
+# Curation
+from . import df_to_dict_single
+from .retrieve import download_files
 from .reports import review_report
+
+# API
 from figshare.figshare import Figshare
 from ..figshare_api import FigshareInstituteAdmin
+from .api.qualtrics import Qualtrics
 
 # Read in default configuration file
 config = configparser.ConfigParser()
@@ -20,25 +27,26 @@ folder_data = config.get('curation', 'folder_data')
 root_directory = join(root_directory0, folder_todo)
 
 api_token = config.get('global', 'api_token')
+if api_token is None or api_token == "***override***":
+    print("ERROR: figshare api_token not available from config file")
+    api_token = input("Provide figshare token through prompt : ")
 
 fs = Figshare(token=api_token, private=True)
 fs_admin = FigshareInstituteAdmin(token=api_token)
 
 acct_df = fs_admin.get_account_list()
 
+qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
+if qualtrics_survey_id is None or qualtrics_survey_id == "***override***":
+    qualtrics_survey_id = input("Provide Qualtrics Survey ID through prompt : ")
 
-def df_to_dict_single(df):
-    """
-    Purpose:
-      Convert a single entry pandas DataFrame into a dictionary and strip out
-      indexing information
+qualtrics_token = config.get('curation', 'qualtrics_token')
+if qualtrics_token is None or qualtrics_token == "***override***":
+    qualtrics_token = input("Provide Qualtrics API token through prompt : ")
 
-    :param df: pandas DataFrame with single entry (e.g., use df.loc[] to filter)
-
-    :return df_dict: dict that contains single entry pandas DF
-    """
-    df_dict = df.reset_index().to_dict(orient='records')[0]
-    return df_dict
+qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
+if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
+    qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
 
 
 def get_depositor_name(article_id, cur_df):
@@ -68,6 +76,36 @@ def get_depositor_name(article_id, cur_df):
     return depositor_name
 
 
+class PrerequisiteWorkflow:
+    """
+    Purpose:
+      Workflow class that follows our initial set-up to:
+       1. Retrieve the data for a given deposit
+       2. Set permissions and ownership (the latter needs to be tested and performed)
+       3. Download curatorial review report
+       4. Download Qualtrics Deposit Agreement form
+       5. Check the README file
+
+    """
+    def __init__(self, article_id, cur_df):
+        self.root_directory = root_directory
+        self.article_id = article_id
+        self.cur_df = cur_df
+        self.depositor_name = get_depositor_name(self.article_id, self.cur_df)
+        self.data_directory = join(self.depositor_name, folder_data)
+
+    def download_data(self):
+        download_files(self.article_id, fs=fs,
+                       root_directory=self.root_directory,
+                       data_directory=self.data_directory)
+
+    def download_report(self):
+        review_report(self.depositor_name)
+
+    def move_to_next(self):
+        move.move_to_next(self.depositor_name)
+
+
 def workflow(article_id):
     """
     Purpose:
@@ -85,21 +123,24 @@ def workflow(article_id):
     # Retrieve info about deposit:
     cur_df = fs_admin.get_curation_list()
 
-    # Retrieve depositor name
-    depositor_name = get_depositor_name(article_id, cur_df)
+    pw = PrerequisiteWorkflow(article_id, cur_df)
 
     # Retrieve data and place in 1.ToDo curation folder
-    data_directory = join(depositor_name, folder_data)
-    download_files(article_id, root_directory=root_directory,
-                   data_directory=data_directory)
+    pw.download_data()
 
     # Download curation report
-    review_report(depositor_name)
+    pw.download_report()
 
     # Placeholder to download Qualtrics deposit agreement form
+    q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
+    try:
+        ResponseID = q.find_deposit_agreement(pw.depositor_name)
+        print("Qualtrics ResponseID : {}".format(ResponseID))
+    except ValueError:
+        print("Unable to obtain a unique match")
 
     # Move to next curation stage
-    move.move_to_next(depositor_name)
+    pw.move_to_next()
 
     # Placeholder to check for README file and create one if it doesn't exists
 
