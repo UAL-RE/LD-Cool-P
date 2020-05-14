@@ -14,15 +14,6 @@ class DepositorName:
     fs_admin :
       Figshare Admin object
 
-    cur_df : pandas DataFrame
-      pandas DataFrame containing full list of curation items
-
-    acct_df : pandas DataFrame
-      pandas DataFrame containing Figshare Institution accounts
-
-    cur_loc_dict : dictionary
-      dictionary containing general curation information
-
     curation_dict : dictionary
       dictionary containing detailed curation information
 
@@ -43,11 +34,14 @@ class DepositorName:
 
     def __init__(self, article_id, fs_admin):
         self.article_id = article_id
-        self.cur_df = fs_admin.get_curation_list()
-        self.acct_df = fs_admin.get_account_list()
+        self.fs_admin = fs_admin
 
-        self.cur_loc_dict = df_to_dict_single(self.cur_df.loc[self.cur_df['article_id'] == self.article_id])
-        self.curation_dict = fs_admin.get_curation_details(self.cur_loc_dict['id'])
+        # This retrieves basic curation information for article
+        cur_df = fs_admin.get_curation_list()
+        cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == self.article_id])
+
+        # This retrieves specific information for article (includes authors)
+        self.curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
 
         self.name_dict  = self.get()
         self.folderName = self.folder_name()
@@ -56,7 +50,9 @@ class DepositorName:
         print("Retrieving depositor_name for {} ... ".format(self.article_id))
 
         account_id = self.curation_dict['account_id']
-        temp_dict = df_to_dict_single(self.acct_df.loc[self.acct_df['id'] == account_id])
+        acct_df = self.fs_admin.get_account_list()
+
+        temp_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
 
         surName            = temp_dict['last_name']   # full last name
         firstName          = temp_dict['first_name']  # full first name
