@@ -36,15 +36,23 @@ class DepositorName:
         self.article_id = article_id
         self.fs_admin = fs_admin
 
-        # This retrieves basic curation information for article
-        cur_df = fs_admin.get_curation_list()
-        cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == self.article_id])
-
-        # This retrieves specific information for article (includes authors)
-        self.curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
+        # Retrieves specific information for article (includes authors)
+        self.curation_id   = self.get_curation_id()
+        self.curation_dict = self.curation_dict()
 
         self.name_dict  = self.get()
         self.folderName = self.folder_name()
+
+    def get_curation_id(self):
+        # This retrieves basic curation information for article
+        cur_df = self.fs_admin.get_curation_list()
+        cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == self.article_id])
+
+        return cur_loc_dict['id']
+
+    def curation_dict(self):
+        # This retrieves specific information for article (includes authors)
+        return self.fs_admin.get_curation_details(self.curation_id)
 
     def get(self):
         print("Retrieving depositor_name for {} ... ".format(self.article_id))
