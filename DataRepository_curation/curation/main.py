@@ -65,7 +65,7 @@ class PrerequisiteWorkflow:
         self.root_directory = root_directory
         self.article_id = article_id
         self.dn = DepositorName(self.article_id, fs_admin)
-        self.data_directory = join(self.dn.depositor_folderName, folder_data)
+        self.data_directory = join(self.dn.folderName, folder_data)
 
     def download_data(self):
         download_files(self.article_id, fs=fs,
@@ -73,10 +73,10 @@ class PrerequisiteWorkflow:
                        data_directory=self.data_directory)
 
     def download_report(self):
-        review_report(self.dn.depositor_folderName)
+        review_report(self.dn.folderName)
 
     def move_to_next(self):
-        move.move_to_next(self.dn.depositor_folderName)
+        move.move_to_next(self.dn.folderName)
 
 
 def workflow(article_id):
@@ -104,7 +104,7 @@ def workflow(article_id):
     # Placeholder to download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
     try:
-        ResponseID = q.find_deposit_agreement(pw.dn.depositor_dict)
+        ResponseID = q.find_deposit_agreement(pw.dn.name_dict)
         print("Qualtrics ResponseID : {}".format(ResponseID))
     except ValueError:
         print("Unable to obtain a unique match")
@@ -113,4 +113,3 @@ def workflow(article_id):
     pw.move_to_next()
 
     # Placeholder to check for README file and create one if it doesn't exists
-
