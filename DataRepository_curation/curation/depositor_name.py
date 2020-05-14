@@ -14,6 +14,9 @@ class DepositorName:
     fs_admin :
       Figshare Admin object
 
+    curation_id : int
+      Curation ID number associated with article_id
+
     curation_dict : dictionary
       dictionary containing detailed curation information
 
@@ -25,6 +28,12 @@ class DepositorName:
 
     Methods
     -------
+    get_curation_id()
+       Retrieve curation ID associated with article_id from Figshare API
+
+    get_curation_dict()
+       Retrieve curation dictionary containing curation details
+
     get()
       Retrieve dictionary of depositor name information
 
@@ -38,7 +47,7 @@ class DepositorName:
 
         # Retrieves specific information for article (includes authors)
         self.curation_id   = self.get_curation_id()
-        self.curation_dict = self.curation_dict()
+        self.curation_dict = self.get_curation_dict()
 
         self.name_dict  = self.get()
         self.folderName = self.folder_name()
@@ -50,7 +59,7 @@ class DepositorName:
 
         return cur_loc_dict['id']
 
-    def curation_dict(self):
+    def get_curation_dict(self):
         # This retrieves specific information for article (includes authors)
         return self.fs_admin.get_curation_details(self.curation_id)
 
