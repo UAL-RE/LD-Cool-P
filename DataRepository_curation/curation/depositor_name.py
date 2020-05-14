@@ -37,7 +37,7 @@ class DepositorName:
     get()
       Retrieve dictionary of depositor name information
 
-    depositor_folder_name()
+    folder_name()
       Retrieve string containing preferred curation folder name for deposit
     """
 
