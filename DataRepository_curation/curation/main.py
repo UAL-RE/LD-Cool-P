@@ -8,6 +8,7 @@ from ..admin import move, permissions
 from . import df_to_dict_single
 from .retrieve import download_files
 from .reports import review_report
+from .depositor_name import DepositorName
 
 # API
 from figshare.figshare import Figshare
@@ -49,33 +50,6 @@ if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
     qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
 
 
-def get_depositor_name(article_id, cur_df):
-
-    print("Retrieving depositor_name for {} ... ".format(article_id))
-
-    cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == article_id])
-    curation_dict = fs_admin.get_curation_details(cur_loc_dict['id'])
-    account_id = curation_dict['account_id']
-    depositor_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
-
-    depositor_surname = depositor_dict['last_name']  # full last name
-    depositor_first = depositor_dict['first_name']  # full first name
-    depositor_fullname = "{} {}".format(depositor_first, depositor_surname)
-    depositor_dispname = "{} {}".format(depositor_first.split(' ')[0], depositor_surname)
-
-    # Check to see if the depositor is in the list of authors
-    authors = [d['full_name'] for d in curation_dict['item']['authors']]
-    if depositor_fullname in authors or depositor_dispname in authors:
-        print("  Depositor == author")
-        depositor_name = depositor_dispname
-    else:
-        print("  Depositor != author")
-        depositor_name = '{} - {}'.format(depositor_dispname, authors[0])
-    print("depository_name : {}".format(depositor_name))
-
-    return depositor_name
-
-
 class PrerequisiteWorkflow:
     """
     Purpose:
@@ -87,12 +61,11 @@ class PrerequisiteWorkflow:
        5. Check the README file
 
     """
-    def __init__(self, article_id, cur_df):
+    def __init__(self, article_id):
         self.root_directory = root_directory
         self.article_id = article_id
-        self.cur_df = cur_df
-        self.depositor_name = get_depositor_name(self.article_id, self.cur_df)
-        self.data_directory = join(self.depositor_name, folder_data)
+        self.dn = DepositorName(self.article_id, fs_admin)
+        self.data_directory = join(self.dn.folderName, folder_data)
 
     def download_data(self):
         download_files(self.article_id, fs=fs,
@@ -100,10 +73,10 @@ class PrerequisiteWorkflow:
                        data_directory=self.data_directory)
 
     def download_report(self):
-        review_report(self.depositor_name)
+        review_report(self.dn.folderName)
 
     def move_to_next(self):
-        move.move_to_next(self.depositor_name)
+        move.move_to_next(self.dn.folderName)
 
 
 def workflow(article_id):
@@ -120,10 +93,7 @@ def workflow(article_id):
     :return:
     """
 
-    # Retrieve info about deposit:
-    cur_df = fs_admin.get_curation_list()
-
-    pw = PrerequisiteWorkflow(article_id, cur_df)
+    pw = PrerequisiteWorkflow(article_id)
 
     # Retrieve data and place in 1.ToDo curation folder
     pw.download_data()
@@ -134,7 +104,7 @@ def workflow(article_id):
     # Placeholder to download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
     try:
-        ResponseID = q.find_deposit_agreement(pw.depositor_name)
+        ResponseID = q.find_deposit_agreement(pw.dn.name_dict)
         print("Qualtrics ResponseID : {}".format(ResponseID))
     except ValueError:
         print("Unable to obtain a unique match")
@@ -143,4 +113,3 @@ def workflow(article_id):
     pw.move_to_next()
 
     # Placeholder to check for README file and create one if it doesn't exists
-
