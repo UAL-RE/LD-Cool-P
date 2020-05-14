@@ -34,10 +34,10 @@ class DepositorName:
     get_curation_dict()
        Retrieve curation dictionary containing curation details
 
-    get()
+    get_name_dict()
       Retrieve dictionary of depositor name information
 
-    folder_name()
+    get_folder_name()
       Retrieve string containing preferred curation folder name for deposit
     """
 
@@ -49,8 +49,8 @@ class DepositorName:
         self.curation_id   = self.get_curation_id()
         self.curation_dict = self.get_curation_dict()
 
-        self.name_dict  = self.get()
-        self.folderName = self.folder_name()
+        self.name_dict  = self.get_name_dict()
+        self.folderName = self.get_folder_name()
 
     def get_curation_id(self):
         # This retrieves basic curation information for article
@@ -63,7 +63,7 @@ class DepositorName:
         # This retrieves specific information for article (includes authors)
         return self.fs_admin.get_curation_details(self.curation_id)
 
-    def get(self):
+    def get_name_dict(self):
         print("Retrieving depositor_name for {} ... ".format(self.article_id))
 
         account_id = self.curation_dict['account_id']
@@ -88,7 +88,7 @@ class DepositorName:
 
         return name_dict
 
-    def folder_name(self):
+    def get_folder_name(self):
         # Check to see if the depositor is in the list of authors
         authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
         if self.name_dict['fullName'] in authors or \
