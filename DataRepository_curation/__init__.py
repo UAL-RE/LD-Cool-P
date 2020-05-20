@@ -1,5 +1,7 @@
 from os import path
 
+__version__ = "0.7.0"
+
 co_path = path.dirname(__file__)
 
 ##############################################
