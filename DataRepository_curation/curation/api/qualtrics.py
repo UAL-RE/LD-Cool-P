@@ -8,12 +8,13 @@ import io
 from os import remove
 
 from .. import df_to_dict_single
+from DataRepository_curation import config_file
 
 from figshare.figshare import issue_request
 
 # Read in default configuration file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 
 class Qualtrics:

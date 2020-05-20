@@ -16,8 +16,9 @@ from ..figshare_api import FigshareInstituteAdmin
 from .api.qualtrics import Qualtrics
 
 # Read in default configuration file
+from DataRepository_curation import config_file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 source = config.get('curation', 'source')
 root_directory0 = config.get('curation', '{}_path'.format(source))

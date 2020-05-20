@@ -5,10 +5,11 @@ from urllib.request import Request, urlopen
 
 from figshare.figshare import Figshare  # , issue_request
 from ..admin import permissions
+from DataRepository_curation import config_file
 
 # Read in default configuration file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 api_token = config.get('global', 'api_token')
 
