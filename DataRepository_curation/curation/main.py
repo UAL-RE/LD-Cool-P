@@ -11,7 +11,7 @@ from DataRepository_curation.curation.depositor_name import DepositorName
 
 # API
 from figshare.figshare import Figshare
-from ..figshare_api import FigshareInstituteAdmin
+from DataRepository_curation.curation.api.figshare import FigshareInstituteAdmin
 from DataRepository_curation.curation.api.qualtrics import Qualtrics
 
 # Read in default configuration file
