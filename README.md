@@ -14,6 +14,32 @@
 
 ## Overview
 
+This software tool is designed to enable the curatorial review of datasets
+that are deposited into the [University of Arizona Research Data Repository (ReDATA)](https://arizona.figshare.com).
+It follows a workflow that was developed by members of the
+[Research Data Services Team](https://data.library.arizona.edu/) at the
+[University of Arizona Libraries](https://new.library.arizona.edu/).
+The software has a number of backend features, such as:
+ 1. Retrieving private datasets from the [Figshare API](https://docs.figshare.com)
+    that are undergoing curatorial review and placing the datasets on a
+    curatorial "staging" storage
+ 2. Identifying whether a README.txt file is present in the ReDATA deposit.
+    If such a file does not exists, it will provide the ReDATA curator a
+    README.txt template. Ultimately, it will perform an inspection to
+    ensure that the README adheres to a defined format and populates
+    metadata information based on information submitted to ReDATA
+ 3. Retrieving a [Deposit Agreement Form](https://bit.ly/ReDATA_DepositAgreement)
+    from Qualtrics, which is a requirement for all ReDATA deposits
+ 4. Retrieving a copy of curatorial review report [template (MS-Word)](https://bit.ly/ReDATA_CurationTemplate)
+    for the ReDATA curator to complete.
+ 5. Supporting ReDATA curator with access and workflow management through
+    standard UNIX commands
+
+Although not available yet, a web application will serve as the front-end
+framework to allow for easy navigation through the curatorial review. Also,
+integration with the Trello API is another feature to further assist with
+the curatorial review process.
+
 
 ## Getting Started
 
