@@ -4,7 +4,7 @@ import configparser
 from urllib.request import Request, urlopen
 
 from figshare.figshare import Figshare  # , issue_request
-from ..admin import permissions
+from DataRepository_curation.admin import permissions
 from DataRepository_curation import config_file
 
 # Read in default configuration file

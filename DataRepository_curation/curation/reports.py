@@ -4,7 +4,7 @@ from os import makedirs
 import configparser
 from urllib.request import urlretrieve
 
-from ..admin import permissions
+from DataRepository_curation.admin import permissions
 from DataRepository_curation import config_file
 
 # Read in default configuration file

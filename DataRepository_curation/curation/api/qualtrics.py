@@ -7,7 +7,7 @@ import zipfile
 import io
 from os import remove
 
-from .. import df_to_dict_single
+from DataRepository_curation.curation import df_to_dict_single
 from DataRepository_curation import config_file
 
 from figshare.figshare import issue_request
