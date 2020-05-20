@@ -21,8 +21,7 @@ It follows a workflow that was developed by members of the
 [University of Arizona Libraries](https://new.library.arizona.edu/).
 The software has a number of backend features, such as:
  1. Retrieving private datasets from the [Figshare API](https://docs.figshare.com)
-    that are undergoing curatorial review and placing the datasets on a
-    curatorial "staging" storage
+    that are undergoing curatorial review
  2. Identifying whether a README.txt file is present in the ReDATA deposit.
     If such a file does not exists, it will provide ReDATA curators a
     copy of the [README.txt template](https://osf.io/sj8xv/download).
@@ -35,6 +34,10 @@ The software has a number of backend features, such as:
     for ReDATA curators to complete.
  5. Supporting ReDATA curators with access and workflow management through
     standard UNIX commands
+
+These backend services ingest the datasets and accompanying files (described above)
+onto a curatorial "staging" server with attached storage to enable the full
+curatorial review procedure.
 
 Although not available yet, a web application will serve as the front-end
 framework to allow for easy navigation through the curatorial review. Also,
