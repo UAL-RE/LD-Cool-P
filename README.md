@@ -52,6 +52,14 @@ These instructions will have the code running on your local or virtual machine.
 
 ### Requirements
 
+You will need the following to have a working copy of this software. See
+[installation](#installation-instructions) steps:
+1. Python (3.7.5)
+2. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
+3. [`requests`](https://requests.readthedocs.io/en/master/) (2.22.0)
+4. [`numpy`](https://numpy.org/devdocs/release/1.17.4-notes.html) (1.17.4)
+
+
 ### Installation Instructions
 
 #### Python and setting up a `conda` environment
@@ -62,11 +70,43 @@ First, install a working version of Python (v3.7.5).  We recommend using the
 After you have Anaconda installed, you will want to create a separate `conda` environment
 and activate it:
 
+```
+$ (sudo) conda create -n curation python=3.7.5
+$ conda activate curation
+```
+
+Next, clone this repository into a parent folder:
+
+```
+(curation) $ cd /path/to/parent/folder
+(curation) $ git clone https://github.com/ualibraries/DataRepository_curation.git
+```
+
+With the activated `conda` environment, you can install with the `setup.py` script:
+
+```
+(curation) $ cd /path/to/parent/folder/DataRepository_curation
+(curation) $ (sudo) python setup.py develop
+```
+
+This will automatically installed the required `pandas`, `requests`, and `numpy` packages.
+
+You can confirm installation via `conda list`
+
+```
+(curation) $ conda list datarepository-curation
+```
+
+You should see that the version is `0.7.0`.
+
+
 ### Testing Installation
 
+This section is under construction
 
 ## Execution
 
+This section is under construction
 
 ## Versioning
 
