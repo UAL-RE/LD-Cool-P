@@ -56,8 +56,8 @@ You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (3.7.5)
 2. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
-3. [`requests`](https://requests.readthedocs.io/en/master/) (2.22.0)
-4. [`numpy`](https://numpy.org/devdocs/release/1.17.4-notes.html) (1.17.4)
+3. [`requests`](https://requests.readthedocs.io/en/master/2.22.0)
+4. [`numpy`](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4)
 
 
 ### Installation Instructions
