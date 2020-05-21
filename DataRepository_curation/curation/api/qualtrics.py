@@ -10,10 +10,13 @@ from os import remove
 from .. import df_to_dict_single
 
 from figshare.figshare import issue_request
+import webbrowser
 
 # Read in default configuration file
 config = configparser.ConfigParser()
 config.read('DataRepository_curation/config/default.ini')
+
+qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
 
 
 class Qualtrics:
@@ -135,3 +138,11 @@ class Qualtrics:
             else:
                 print("Multiple entries found")
                 raise ValueError
+
+    def retrieve_deposit_agreement(self, dn_dict):
+        try:
+            ResponseId = self.find_deposit_agreement(dn_dict)
+
+            webbrowser.open('{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId, self.survey_id), new=2)
+        except ValueError:
+            print("Error with retrieving ResponseId")
