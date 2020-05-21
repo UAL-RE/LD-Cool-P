@@ -143,6 +143,9 @@ class Qualtrics:
         try:
             ResponseId = self.find_deposit_agreement(dn_dict)
 
+            print("Bringing up a window to login to Qualtrics with SSO ....")
+            webbrowser.open('https://qualtrics.arizona.edu', new=2)
+            input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
             webbrowser.open('{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId, self.survey_id), new=2)
         except ValueError:
             print("Error with retrieving ResponseId")
