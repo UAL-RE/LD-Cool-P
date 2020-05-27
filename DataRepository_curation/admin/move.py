@@ -2,11 +2,13 @@ from os.path import join, dirname
 import shutil
 from glob import glob
 
+from DataRepository_curation import config_file
+
 import configparser
 
 # Read in default configuration file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 source = config.get('curation', 'source')
 root_directory = config.get('curation', '{}_path'.format(source))
