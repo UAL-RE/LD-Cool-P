@@ -7,7 +7,7 @@ co_path = path.dirname(__file__)
 ##############################################
 # Instructions                               #
 # Modify [config_dir] and [main_config_file] #
-# to specify correct configurtion file       #
+# to specify correct configuration file      #
 ##############################################
 config_dir       = path.join(co_path, 'config/')
 main_config_file = 'default.ini'
