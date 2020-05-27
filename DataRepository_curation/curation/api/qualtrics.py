@@ -58,6 +58,12 @@ class Qualtrics:
       Call get_survey_responses() and identify response that matches based on
       depositor name (implemented) and deposit title (to be implemented).
       Returns ResponseID if a unique match is available
+
+    retrieve_deposit_agreement(dn_dict=, ResponseId=)
+      Opens up web browser to an HTML page containing the deposit agreement.
+      It will call find_deposit_agreement() with DepositorName dict if
+      ResponseId is not provided. Otherwise, it will use the provided
+      ResponseId. Note that either dn_dict or ResponseId must be provided
     """
 
     def __init__(self, dataCenter, token, survey_id):
@@ -150,4 +156,6 @@ class Qualtrics:
             print("Bringing up a window to login to Qualtrics with SSO ....")
             webbrowser.open('https://qualtrics.arizona.edu', new=2)
             input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
-            webbrowser.open('{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId, self.survey_id), new=2)
+            full_url = '{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId,
+                                                 self.survey_id)
+            webbrowser.open(full_url, new=2)
