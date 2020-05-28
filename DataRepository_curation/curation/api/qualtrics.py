@@ -86,7 +86,7 @@ class Qualtrics:
 
         return survey_dict
 
-    def get_survey_responses(self):
+    def get_survey_responses(self, verbose=False):
         """Retrieve pandas DataFrame containing responses for a survey"""
         progress_status = "inProgress"
 
@@ -100,11 +100,13 @@ class Qualtrics:
 
         # Check on Data Export Progress and waiting until export is ready
         while progress_status != "complete" and progress_status != "failed":
-            print("progress_status: {}".format(progress_status))
+            if verbose:
+                print("progress_status: {}".format(progress_status))
             check_url = join(download_url, progress_id)
             check_response = issue_request("GET", check_url, headers=self.headers)
             check_progress = check_response["result"]["percentComplete"]
-            print("Download is " + str(check_progress) + " complete")
+            if verbose:
+                print("Download is " + str(check_progress) + " complete")
             progress_status = check_response["result"]["status"]
 
         # Check for error
