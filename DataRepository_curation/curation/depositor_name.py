@@ -77,13 +77,17 @@ class DepositorName:
         authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
         name_dict['authors'] = authors
 
+        if fullName in authors or simplify_fullName in authors:
+            name_dict['self_deposit'] = True
+        else:
+            name_dict['self_deposit'] = False
+
         return name_dict
 
     def folder_name(self):
         # Check to see if the depositor is in the list of authors
 
-        if self.name_dict['fullName'] in self.name_dict['authors'] or \
-                self.name_dict['simplify_fullName'] in self.name_dict['authors']:
+        if self.name_dict['self_deposit']:
             print("  Depositor == author")
             folderName = self.name_dict['simplify_fullName']
         else:
