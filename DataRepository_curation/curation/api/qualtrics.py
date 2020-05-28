@@ -77,10 +77,12 @@ class Qualtrics:
 
     def endpoint(self, link):
         """Concatenate the endpoint to the baseurl"""
+
         return join(self.baseurl, link)
 
     def list_surveys(self):
         """Return dictionary containing all surveys for a user"""
+
         url = self.endpoint('surveys')
         survey_dict = issue_request('GET', url, headers=self.headers)
 
@@ -88,6 +90,7 @@ class Qualtrics:
 
     def get_survey_responses(self, verbose=False):
         """Retrieve pandas DataFrame containing responses for a survey"""
+
         progress_status = "inProgress"
 
         download_url = self.endpoint("surveys/{0}/export-responses".format(self.survey_id))
@@ -129,6 +132,7 @@ class Qualtrics:
 
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
+
         qualtrics_df = self.get_survey_responses()
         response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
                                    (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName'])]
@@ -148,6 +152,8 @@ class Qualtrics:
                 raise ValueError
 
     def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None):
+        """Opens web browser to navigate to a page with Deposit Agreement Form"""
+
         if isinstance(ResponseId, type(None)):
             try:
                 ResponseId = self.find_deposit_agreement(dn_dict)
