@@ -137,6 +137,11 @@ class Qualtrics:
         response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
                                    (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName'])]
 
+        # Identify corresponding author cases if different from depositor name
+        if not dn_dict['self_deposit']:
+            print("Not self-deposit.  Identifying based on corresponding author as well")
+            response_df = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
+
         if response_df.empty:
             print("Empty DataFrame")
             raise ValueError
