@@ -5,19 +5,19 @@ from os.path import join
 from ..admin import move, permissions
 
 # Curation
-from . import df_to_dict_single
-from .retrieve import download_files
-from .reports import review_report
-from .depositor_name import DepositorName
+from DataRepository_curation.curation.retrieve import download_files
+from DataRepository_curation.curation.reports import review_report
+from DataRepository_curation.curation.depositor_name import DepositorName
 
 # API
 from figshare.figshare import Figshare
-from ..figshare_api import FigshareInstituteAdmin
-from .api.qualtrics import Qualtrics
+from DataRepository_curation.curation.api.figshare import FigshareInstituteAdmin
+from DataRepository_curation.curation.api.qualtrics import Qualtrics
 
 # Read in default configuration file
+from DataRepository_curation import config_file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 source = config.get('curation', 'source')
 root_directory0 = config.get('curation', '{}_path'.format(source))
