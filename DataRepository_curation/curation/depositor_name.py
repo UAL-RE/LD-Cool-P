@@ -27,7 +27,8 @@ class DepositorName:
       dictionary containing detailed curation information
 
     name_dict : dictionary
-      Dictionary containing all possible permutation of depositor name
+      Dictionary containing all possible permutation of depositor name and
+      list of authors
 
     folderName: str
       Preferred folder name for data curation process given article information
@@ -73,17 +74,21 @@ class DepositorName:
         name_dict['fullName']           = fullName
         name_dict['simplify_fullName']  = simplify_fullName
 
+        authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
+        name_dict['authors'] = authors
+
         return name_dict
 
     def folder_name(self):
         # Check to see if the depositor is in the list of authors
-        authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
-        if self.name_dict['fullName'] in authors or \
-                self.name_dict['simplify_fullName'] in authors:
+
+        if self.name_dict['fullName'] in self.name_dict['authors'] or \
+                self.name_dict['simplify_fullName'] in self.name_dict['authors']:
             print("  Depositor == author")
             folderName = self.name_dict['simplify_fullName']
         else:
             print("  Depositor != author")
-            folderName = '{} - {}'.format(self.name_dict['simplify_fullName'], authors[0])
+            folderName = '{} - {}'.format(self.name_dict['simplify_fullName'],
+                                          self.name_dict['authors'][0])
         print("depository_name : {}".format(folderName))
         return folderName
