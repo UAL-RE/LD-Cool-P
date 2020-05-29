@@ -154,6 +154,8 @@ class Qualtrics:
                 return response_dict['ResponseId']
             else:
                 print("Multiple entries found")
+                cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
+                print(response_df[cols_order].to_markdown())
                 raise ValueError
 
     def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None):
@@ -164,6 +166,7 @@ class Qualtrics:
                 ResponseId = self.find_deposit_agreement(dn_dict)
             except ValueError:
                 print("Error with retrieving ResponseId")
+                ResponseId = input("If you wish, you can manually enter ResponseId to retrieve")
 
         if not isinstance(ResponseId, type(None)):
             print("Bringing up a window to login to Qualtrics with SSO ....")
