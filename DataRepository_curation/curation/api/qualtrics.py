@@ -138,9 +138,13 @@ class Qualtrics:
                                    (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName'])]
 
         # Identify corresponding author cases if different from depositor name
-        if not dn_dict['self_deposit']:
+        if not dn_dict['self_deposit'] and not response_df.empty:
             print("Not self-deposit.  Identifying based on corresponding author as well")
-            response_df = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
+            df_select = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
+            if df_select.empty:
+                print("Unable to identify based on corresponding author")
+            else:
+                response_df = df_select
 
         if response_df.empty:
             print("Empty DataFrame")
@@ -166,7 +170,7 @@ class Qualtrics:
                 ResponseId = self.find_deposit_agreement(dn_dict)
             except ValueError:
                 print("Error with retrieving ResponseId")
-                ResponseId = input("If you wish, you can manually enter ResponseId to retrieve")
+                ResponseId = input("If you wish, you can manually enter ResponseId to retrieve ... ")
 
         if not isinstance(ResponseId, type(None)):
             print("Bringing up a window to login to Qualtrics with SSO ....")
