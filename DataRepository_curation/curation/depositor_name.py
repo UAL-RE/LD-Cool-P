@@ -82,6 +82,13 @@ class DepositorName:
         else:
             name_dict['self_deposit'] = False
 
+        # Add additional information about deposit, such as article and
+        # curation IDs, email, and title
+        name_dict['article_id'] = self.article_id
+        name_dict['curation_id'] = self.cur_loc_dict['id']
+        name_dict['depositor email'] = temp_dict['email']
+        name_dict['title'] = self.curation_dict['item']['title']
+
         return name_dict
 
     def folder_name(self):
