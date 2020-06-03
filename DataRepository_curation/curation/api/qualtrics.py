@@ -2,6 +2,7 @@ from os.path import join
 import configparser
 import requests
 import pandas as pd
+import json
 
 import zipfile
 import io
@@ -192,4 +193,8 @@ class Qualtrics:
                                           "2": dn_dict['depositor_email']}
         populate_response_dict['QID7'] = dn_dict['title']
 
-        full_url = f'{qualtrics_generate_url}{self.survey_id}?Q_PopulateResponse={populate_response_dict}'
+        json_txt = json.dumps(populate_response_dict).replace("&", "%26")
+
+        full_url = f'{qualtrics_generate_url}{self.survey_id}?Q_PopulateResponse={json_txt}'
+
+        return full_url
