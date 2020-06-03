@@ -18,6 +18,7 @@ config.read('DataRepository_curation/config/default.ini')
 
 qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
 
+qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
 
 class Qualtrics:
     """
@@ -182,3 +183,12 @@ class Qualtrics:
             full_url = '{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId,
                                                  self.survey_id)
             webbrowser.open(full_url, new=2)
+
+    def generate_url(self, dn_dict):
+        """Generate URL with Q_PopulateResponse inputs based Figshare metadata"""
+
+        populate_response_dict = dict()
+        populate_response_dict['QID4'] = {"1": dn_dict['simplify_fullName']}
+        # populate_response_dict['QID7'] = dn_dict['title']
+
+        full_url = f'{qualtrics_generate_url}{self.survey_id}?Q_PopulateResponse={populate_response_dict}'
