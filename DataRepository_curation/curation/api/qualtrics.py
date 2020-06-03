@@ -188,7 +188,8 @@ class Qualtrics:
         """Generate URL with Q_PopulateResponse inputs based Figshare metadata"""
 
         populate_response_dict = dict()
-        populate_response_dict['QID4'] = {"1": dn_dict['simplify_fullName']}
-        # populate_response_dict['QID7'] = dn_dict['title']
+        populate_response_dict['QID4'] = {"1": dn_dict['fullName'],
+                                          "2": dn_dict['depositor_email']}
+        populate_response_dict['QID7'] = dn_dict['title']
 
         full_url = f'{qualtrics_generate_url}{self.survey_id}?Q_PopulateResponse={populate_response_dict}'

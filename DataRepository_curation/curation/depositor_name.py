@@ -86,7 +86,7 @@ class DepositorName:
         # curation IDs, email, and title
         name_dict['article_id'] = self.article_id
         name_dict['curation_id'] = self.cur_loc_dict['id']
-        name_dict['depositor email'] = temp_dict['email']
+        name_dict['depositor_email'] = temp_dict['email']
         name_dict['title'] = self.curation_dict['item']['title']
 
         return name_dict
