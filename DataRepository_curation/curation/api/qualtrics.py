@@ -143,6 +143,9 @@ class Qualtrics:
             df_select = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
             if df_select.empty:
                 print("Unable to identify based on corresponding author")
+                print("Listing all deposit agreements based on Depositor")
+                cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
+                print(response_df[cols_order].to_markdown())
             else:
                 response_df = df_select
 
