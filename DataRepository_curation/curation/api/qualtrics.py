@@ -30,6 +30,8 @@ qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
 # for quote and urlencode
 url_safe = '/ {},:"?=@%'
 
+# Column order for markdown print-out of Qualtrics table
+cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
 
 class Qualtrics:
     """
@@ -149,20 +151,41 @@ class Qualtrics:
         """Get Response ID based on a match search for depositor name"""
 
         qualtrics_df = self.get_survey_responses()
-        response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
-                                   (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName'])]
 
-        # Identify corresponding author cases if different from depositor name
-        if not dn_dict['self_deposit'] and not response_df.empty:
-            print("Not self-deposit.  Identifying based on corresponding author as well")
-            df_select = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
-            if df_select.empty:
-                print("Unable to identify based on corresponding author")
-                print("Listing all deposit agreements based on Depositor")
-                cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
-                print(response_df[cols_order].to_markdown())
-            else:
-                response_df = df_select
+        # First perform search via article_id or curation_id
+        print("Attempting to identify using article_id or curation_id")
+        article_id = str(dn_dict['article_id'])
+        curation_id = str(dn_dict['curation_id'])
+
+        try:
+            response_df = qualtrics_df[(qualtrics_df['article_id'] == article_id) |
+                                       (qualtrics_df['curation_id'] == curation_id)]
+        except KeyError:
+            print("article_id and curation_id not in qualtrics survey")
+            response_df = pd.DataFrame()
+
+        if not response_df.empty:
+            print("Unique match based on article_id or curation_id !")
+            if response_df.shape[0] != 1:
+                print("More than one entries found !!!")
+            print(response_df[cols_order].to_markdown())
+        else:
+            print("Unable to identify based article_id or curation_id.")
+            print("Attempting to identify with name")
+
+            response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
+                                       (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName'])]
+
+            # Identify corresponding author cases if different from depositor name
+            if not dn_dict['self_deposit'] and not response_df.empty:
+                print("Not self-deposit.  Identifying based on corresponding author as well")
+                df_select = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
+                if df_select.empty:
+                    print("Unable to identify based on corresponding author")
+                    print("Listing all deposit agreements based on Depositor")
+                    print(response_df[cols_order].to_markdown())
+                else:
+                    response_df = df_select
 
         if response_df.empty:
             print("Empty DataFrame")
@@ -176,7 +199,6 @@ class Qualtrics:
                 return response_dict['ResponseId']
             else:
                 print("Multiple entries found")
-                cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
                 print(response_df[cols_order].to_markdown())
                 raise ValueError
 
