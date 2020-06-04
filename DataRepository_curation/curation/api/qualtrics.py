@@ -1,27 +1,32 @@
 from os.path import join
-import configparser
-import requests
-import pandas as pd
-
-import json
-from urllib.parse import quote
-
-import zipfile
 import io
 from os import remove
 
+import configparser
+
+# CSV handling
+import zipfile
+import pandas as pd
+
+# URL handling
+import requests
+import json
+from urllib.parse import quote
+import webbrowser
+
+# Convert single-entry DataFrame to dictionary
 from .. import df_to_dict_single
 
+# API
 from figshare.figshare import issue_request
-import webbrowser
 
 # Read in default configuration file
 config = configparser.ConfigParser()
 config.read('DataRepository_curation/config/default.ini')
 
 qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
-
 qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
+
 
 class Qualtrics:
     """
