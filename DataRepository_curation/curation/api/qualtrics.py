@@ -76,6 +76,9 @@ class Qualtrics:
       It will call find_deposit_agreement() with DepositorName dict if
       ResponseId is not provided. Otherwise, it will use the provided
       ResponseId. Note that either dn_dict or ResponseId must be provided
+
+    generate_url(dn_dict)
+      Generate URL with customized query strings based on Figshare metadata
     """
 
     def __init__(self, dataCenter, token, survey_id):
@@ -196,7 +199,11 @@ class Qualtrics:
             webbrowser.open(full_url, new=2)
 
     def generate_url(self, dn_dict):
-        """Generate URL with Q_PopulateResponse inputs based Figshare metadata"""
+        """
+        Purpose:
+          Generate URL with Q_PopulateResponse, and article and curation ID
+          query strings based on Figshare metadata
+        """
 
         populate_response_dict = dict()
         populate_response_dict['QID4'] = {"1": dn_dict['fullName'],
