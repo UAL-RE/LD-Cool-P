@@ -2,7 +2,9 @@ from os.path import join
 import configparser
 import requests
 import pandas as pd
+
 import json
+from urllib.parse import quote
 
 import zipfile
 import io
@@ -193,7 +195,7 @@ class Qualtrics:
                                           "2": dn_dict['depositor_email']}
         populate_response_dict['QID7'] = dn_dict['title']
 
-        json_txt = json.dumps(populate_response_dict).replace("&", "%26")
+        json_txt = quote(json.dumps(populate_response_dict), safe='/ {},:"?=@')
 
         full_url = f'{qualtrics_generate_url}{self.survey_id}?Q_PopulateResponse={json_txt}'
 
