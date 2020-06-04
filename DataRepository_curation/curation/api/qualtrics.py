@@ -11,7 +11,7 @@ import pandas as pd
 # URL handling
 import requests
 import json
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
@@ -26,6 +26,9 @@ config.read('DataRepository_curation/config/default.ini')
 
 qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
 qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
+
+# for quote and urlencode
+url_safe = '/ {},:"?=@%'
 
 
 class Qualtrics:
@@ -200,8 +203,13 @@ class Qualtrics:
                                           "2": dn_dict['depositor_email']}
         populate_response_dict['QID7'] = dn_dict['title']
 
-        json_txt = quote(json.dumps(populate_response_dict), safe='/ {},:"?=@')
+        json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
 
-        full_url = f'{qualtrics_generate_url}{self.survey_id}?Q_PopulateResponse={json_txt}'
+        query_str_dict = {'article_id': dn_dict['article_id'],
+                          'curation_id': dn_dict['curation_id'],
+                          'Q_PopulateResponse': json_txt}
+
+        full_url = f'{qualtrics_generate_url}{self.survey_id}?' + \
+                   urlencode(query_str_dict, safe=url_safe, quote_via=quote)
 
         return full_url
