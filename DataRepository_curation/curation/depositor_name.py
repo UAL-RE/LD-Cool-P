@@ -27,7 +27,8 @@ class DepositorName:
       dictionary containing detailed curation information
 
     name_dict : dictionary
-      Dictionary containing all possible permutation of depositor name
+      Dictionary containing all possible permutation of depositor name and
+      list of authors
 
     folderName: str
       Preferred folder name for data curation process given article information
@@ -73,17 +74,32 @@ class DepositorName:
         name_dict['fullName']           = fullName
         name_dict['simplify_fullName']  = simplify_fullName
 
+        authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
+        name_dict['authors'] = authors
+
+        if fullName in authors or simplify_fullName in authors:
+            name_dict['self_deposit'] = True
+        else:
+            name_dict['self_deposit'] = False
+
+        # Add additional information about deposit, such as article and
+        # curation IDs, email, and title
+        name_dict['article_id'] = self.article_id
+        name_dict['curation_id'] = self.cur_loc_dict['id']
+        name_dict['depositor_email'] = temp_dict['email']
+        name_dict['title'] = self.curation_dict['item']['title']
+
         return name_dict
 
     def folder_name(self):
         # Check to see if the depositor is in the list of authors
-        authors = [d['full_name'] for d in self.curation_dict['item']['authors']]
-        if self.name_dict['fullName'] in authors or \
-                self.name_dict['simplify_fullName'] in authors:
+
+        if self.name_dict['self_deposit']:
             print("  Depositor == author")
             folderName = self.name_dict['simplify_fullName']
         else:
             print("  Depositor != author")
-            folderName = '{} - {}'.format(self.name_dict['simplify_fullName'], authors[0])
+            folderName = '{} - {}'.format(self.name_dict['simplify_fullName'],
+                                          self.name_dict['authors'][0])
         print("depository_name : {}".format(folderName))
         return folderName
