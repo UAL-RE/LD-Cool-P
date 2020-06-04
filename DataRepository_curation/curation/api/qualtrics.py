@@ -177,7 +177,8 @@ class Qualtrics:
             print("Attempting to identify with name")
 
             response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
-                                       (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName'])]
+                                       (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName']) |
+                                       (qualtrics_df['Q4_2'] == dn_dict['depositor_email'])]
 
             # Identify corresponding author cases if different from depositor name
             if not dn_dict['self_deposit'] and not response_df.empty:
