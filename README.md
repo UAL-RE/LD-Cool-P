@@ -97,7 +97,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list datarepository-curation
 ```
 
-You should see that the version is `0.7.0`.
+You should see that the version is `0.8.0`.
 
 
 ### Testing Installation

@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as fr:
 
 setup(
     name='DataRepository_curation',
-    version='v0.7.0',
+    version='v0.8.0',
     packages=['DataRepository_curation'],
     url='https://github.com/ualibraries/DataRepository_curation',
     license='MIT License',
