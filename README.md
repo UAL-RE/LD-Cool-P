@@ -1,4 +1,4 @@
-# DataRepository_curation
+# ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
