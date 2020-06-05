@@ -214,7 +214,14 @@ class Qualtrics:
                 ResponseId = self.find_deposit_agreement(dn_dict)
             except ValueError:
                 print("Error with retrieving ResponseId")
-                ResponseId = input("If you wish, you can manually enter ResponseId to retrieve ... ")
+                print("If you wish, you can manually enter ResponseId to retrieve.")
+                ResponseId = input("An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+
+                if ResponseId == '':
+                    custom_url = self.generate_url(dn_dict)
+                    print("CUSTOM URL BELOW : ")
+                    print(custom_url)
+                    ResponseId = None
 
         if not isinstance(ResponseId, type(None)):
             print("Bringing up a window to login to Qualtrics with SSO ....")
