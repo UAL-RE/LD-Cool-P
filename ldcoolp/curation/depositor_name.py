@@ -1,4 +1,4 @@
-from DataRepository_curation.curation import df_to_dict_single
+from ldcoolp.curation import df_to_dict_single
 
 
 class DepositorName:

@@ -15,9 +15,9 @@ from urllib.parse import quote, urlencode
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
-from DataRepository_curation.curation import df_to_dict_single
+from ldcoolp.curation import df_to_dict_single
 
-from DataRepository_curation import config_file
+from ldcoolp import config_file
 
 # API
 from figshare.figshare import issue_request
