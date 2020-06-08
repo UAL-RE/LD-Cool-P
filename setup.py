@@ -7,10 +7,10 @@ with open("requirements.txt", "r") as fr:
     requirements = fr.read().splitlines()
 
 setup(
-    name='DataRepository_curation',
+    name='ldcoolp',
     version='v0.8.1',
-    packages=['DataRepository_curation'],
-    url='https://github.com/ualibraries/DataRepository_curation',
+    packages=['ldcoolp'],
+    url='https://github.com/ualibraries/LD_Cool_P',
     license='MIT License',
     author='Chun Ly',
     author_email='astro.chun@gmail.com',

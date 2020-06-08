@@ -4,8 +4,8 @@ from os import makedirs
 import configparser
 from urllib.request import urlretrieve
 
-from DataRepository_curation.admin import permissions
-from DataRepository_curation import config_file
+from ldcoolp.admin import permissions
+from ldcoolp import config_file
 
 # Read in default configuration file
 config = configparser.ConfigParser()

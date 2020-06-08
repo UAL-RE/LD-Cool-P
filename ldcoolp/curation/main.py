@@ -5,17 +5,17 @@ from os.path import join
 from ..admin import move, permissions
 
 # Curation
-from DataRepository_curation.curation.retrieve import download_files
-from DataRepository_curation.curation.reports import review_report
-from DataRepository_curation.curation.depositor_name import DepositorName
+from ldcoolp.curation.retrieve import download_files
+from ldcoolp.curation.reports import review_report
+from ldcoolp.curation.depositor_name import DepositorName
 
 # API
 from figshare.figshare import Figshare
-from DataRepository_curation.curation.api.figshare import FigshareInstituteAdmin
-from DataRepository_curation.curation.api.qualtrics import Qualtrics
+from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
+from ldcoolp.curation.api.qualtrics import Qualtrics
 
 # Read in default configuration file
-from DataRepository_curation import config_file
+from ldcoolp import config_file
 config = configparser.ConfigParser()
 config.read(config_file)
 
