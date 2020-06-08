@@ -94,7 +94,7 @@ This will automatically installed the required `pandas`, `requests`, and `numpy`
 You can confirm installation via `conda list`
 
 ```
-(curation) $ conda list datarepository-curation
+(curation) $ conda list ldcoolp
 ```
 
 You should see that the version is `0.8.0`.
