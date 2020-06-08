@@ -2,7 +2,7 @@ from os.path import join, dirname
 import shutil
 from glob import glob
 
-from DataRepository_curation import config_file
+from ldcoolp import config_file
 
 import configparser
 
