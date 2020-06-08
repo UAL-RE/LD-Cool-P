@@ -1,5 +1,8 @@
+import shutil
 import os
 from os.path import exists
+import glob
+
 import configparser
 from urllib.request import Request, urlopen
 
@@ -29,7 +32,8 @@ def private_file_retrieve(url, filename=None, token=None):
     f.close()
 
 
-def download_files(article_id, fs=None, root_directory=None, data_directory=None):
+def download_files(article_id, fs=None, root_directory=None, data_directory=None,
+                   copy_directory=None, readme_copy=False):
 
     if root_directory is None:
         root_directory = os.getcwd()
@@ -53,6 +57,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         dir_path = os.path.join(root_directory, data_directory)
 
     os.makedirs(dir_path, exist_ok=True)  # This might require Python >=3.2
+    permissions.curation(dir_path)
 
     print("Total number of files: {}".format(n_files))
 
@@ -66,4 +71,25 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
             print("File exists! Not overwriting!")
 
     # Change permissions on folders and files
-    permissions.curation(dir_path)
+    if not readme_copy:
+        permissions.curation(dir_path)
+    else:
+        permissions.curation(dir_path, mode=0o555)
+
+        # Save a copy of README
+        if copy_directory:
+            print("Saving a copy in {}".format(copy_directory))
+
+            copy_path = os.path.join(root_directory, copy_directory)
+
+            os.makedirs(copy_path, exist_ok=True)
+
+            README_files = glob.glob(os.path.join(dir_path, 'README*.txt'))
+            if len(README_files) != 0:
+                for r_file in README_files:
+                    print("Saving a copy of : {}".format(r_file))
+                    shutil.copy(r_file, copy_path)
+
+            permissions.curation(copy_path)
+        else:
+            print("Not saving a copy in {}".format(copy_directory))
