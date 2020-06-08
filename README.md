@@ -79,13 +79,13 @@ Next, clone this repository into a parent folder:
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/ualibraries/DataRepository_curation.git
+(curation) $ https://github.com/ualibraries/LD_Cool_P.git
 ```
 
 With the activated `conda` environment, you can install with the `setup.py` script:
 
 ```
-(curation) $ cd /path/to/parent/folder/DataRepository_curation
+(curation) $ cd /path/to/parent/folder/LD_Cool_P
 (curation) $ (sudo) python setup.py develop
 ```
 
@@ -97,7 +97,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.8.1`.
+You should see that the version is `0.9.0`.
 
 
 ### Testing Installation
@@ -111,7 +111,7 @@ This section is under construction
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
-[tags on this repository](https://github.com/ualibraries/DataRepository_curation/tags).
+[tags on this repository](https://github.com/ualibraries/LD_Cool_P/tags).
 
 
 ## Authors
@@ -119,7 +119,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 * Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) - [University of Arizona Libraries](https://github.com/ualibraries), [Office of Digital Innovation and Stewardship](https://github.com/UAL-ODIS)
 
 See also the list of
-[contributors](https://github.com/ualibraries/DataRepository_curation/contributors) who participated in this project.
+[contributors](https://github.com/ualibraries/LD_Cool_P/contributors) who participated in this project.
 
 
 ## License
