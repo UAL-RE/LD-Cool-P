@@ -18,6 +18,16 @@ api_token = config.get('global', 'api_token')
 
 
 def private_file_retrieve(url, filename=None, token=None):
+    """
+    Purpose:
+      Custom Request to privately retrieve a file with a token.
+      This was built off of the figshare Python code, but a urlretrieve
+      did not handle providing a token in the header.
+
+    :param url: Full URL (str)
+    :param filename: Full filename for file to be written (str)
+    :param token: API token (str)
+    """
 
     req = Request(url)
     if token:
