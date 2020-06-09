@@ -34,7 +34,17 @@ def private_file_retrieve(url, filename=None, token=None):
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
                    copy_directory=None, readme_copy=False):
+    """
+    Purpose:
+      Retrieve data for a Figshare deposit following data curation workflow
 
+    :param article_id: Figshare article ID (int)
+    :param fs: Figshare object
+    :param root_directory: Root path for curation workflow (str)
+    :param data_directory: Relative folder path for primary location of data (str)
+    :param copy_directory: Relative folder path for secondary location of data (str)
+    :param readme_copy: Bool to indicate whether to copy README files into [copy_directory]
+    """
     if root_directory is None:
         root_directory = os.getcwd()
 
