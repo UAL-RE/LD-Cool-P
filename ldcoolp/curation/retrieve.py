@@ -94,14 +94,14 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     if not readme_copy:
         permissions.curation(dir_path)
     else:
-        permissions.curation(dir_path, mode=0o555)
+        permissions.curation(dir_path, mode=0o555)  # read and execute only
 
-        # Save a copy of README
+        # Save a copy of README files
         if copy_directory:
             print("Saving a copy in {}".format(copy_directory))
 
+            # Create [copy_path] location
             copy_path = os.path.join(root_directory, copy_directory)
-
             os.makedirs(copy_path, exist_ok=True)
 
             README_files = glob.glob(os.path.join(dir_path, 'README*.txt'))
@@ -110,6 +110,6 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
                     print("Saving a copy of : {}".format(r_file))
                     shutil.copy(r_file, copy_path)
 
-            permissions.curation(copy_path)
+            permissions.curation(copy_path)  # rwx permissions
         else:
             print("Not saving a copy in {}".format(copy_directory))
