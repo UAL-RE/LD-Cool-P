@@ -1,5 +1,8 @@
+import shutil
 import os
 from os.path import exists
+import glob
+
 import configparser
 from urllib.request import Request, urlopen
 
@@ -15,6 +18,16 @@ api_token = config.get('global', 'api_token')
 
 
 def private_file_retrieve(url, filename=None, token=None):
+    """
+    Purpose:
+      Custom Request to privately retrieve a file with a token.
+      This was built off of the figshare Python code, but a urlretrieve
+      did not handle providing a token in the header.
+
+    :param url: Full URL (str)
+    :param filename: Full filename for file to be written (str)
+    :param token: API token (str)
+    """
 
     req = Request(url)
     if token:
@@ -29,8 +42,19 @@ def private_file_retrieve(url, filename=None, token=None):
     f.close()
 
 
-def download_files(article_id, fs=None, root_directory=None, data_directory=None):
+def download_files(article_id, fs=None, root_directory=None, data_directory=None,
+                   copy_directory=None, readme_copy=False):
+    """
+    Purpose:
+      Retrieve data for a Figshare deposit following data curation workflow
 
+    :param article_id: Figshare article ID (int)
+    :param fs: Figshare object
+    :param root_directory: Root path for curation workflow (str)
+    :param data_directory: Relative folder path for primary location of data (str)
+    :param copy_directory: Relative folder path for secondary location of data (str)
+    :param readme_copy: Bool to indicate whether to copy README files into [copy_directory]
+    """
     if root_directory is None:
         root_directory = os.getcwd()
 
@@ -53,6 +77,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         dir_path = os.path.join(root_directory, data_directory)
 
     os.makedirs(dir_path, exist_ok=True)  # This might require Python >=3.2
+    permissions.curation(dir_path)
 
     print("Total number of files: {}".format(n_files))
 
@@ -66,4 +91,25 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
             print("File exists! Not overwriting!")
 
     # Change permissions on folders and files
-    permissions.curation(dir_path)
+    if not readme_copy:
+        permissions.curation(dir_path)
+    else:
+        permissions.curation(dir_path, mode=0o555)  # read and execute only
+
+        # Save a copy of README files
+        if copy_directory:
+            print("Saving a copy in {}".format(copy_directory))
+
+            # Create [copy_path] location
+            copy_path = os.path.join(root_directory, copy_directory)
+            os.makedirs(copy_path, exist_ok=True)
+
+            README_files = glob.glob(os.path.join(dir_path, 'README*.txt'))
+            if len(README_files) != 0:
+                for r_file in README_files:
+                    print("Saving a copy of : {}".format(r_file))
+                    shutil.copy(r_file, copy_path)
+
+            permissions.curation(copy_path)  # rwx permissions
+        else:
+            print("Not saving a copy in {}".format(copy_directory))

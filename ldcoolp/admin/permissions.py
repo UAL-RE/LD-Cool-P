@@ -8,21 +8,22 @@ from os.path import join, isdir
 from os import chmod, walk
 
 
-def curation(path):
+def curation(path, mode=0o777):
     """
     Purpose:
-      Set permissions to rwx for all folders and files under the
+      Set permissions for all folders and files under the
       parent location of [path]
 
     :param path: Parent location path
+    :param mode: Mode. Default is rwx with '0o777'
     """
 
     if isdir(path):
-        chmod(path, 0o777)
+        chmod(path, mode)
 
     for dir_path, dir_names, files in walk(path):
         for dir_name in dir_names:
-            chmod(join(dir_path, dir_name), 0o777)
+            chmod(join(dir_path, dir_name), mode)
 
         for file in files:
-            chmod(join(dir_path, file), 0o777)
+            chmod(join(dir_path, file), mode)
