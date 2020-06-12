@@ -1,8 +1,9 @@
 import configparser
-from os.path import join
+from os.path import join, exists
+from os import makedirs, chmod
 
 # Admin
-from ..admin import move, permissions
+from ..admin import move
 
 # Curation
 from ldcoolp.curation.retrieve import download_files
@@ -66,6 +67,11 @@ class PrerequisiteWorkflow:
         self.article_id = article_id
         self.dn = DepositorName(self.article_id, fs_admin)
         self.data_directory = join(self.dn.folderName, folder_data)
+
+        # Create and set permissions to rwx
+        if not exists(self.data_directory):
+            makedirs(self.data_directory)
+            chmod(self.data_directory, 0o777)
 
     def download_data(self):
         download_files(self.article_id, fs=fs,
