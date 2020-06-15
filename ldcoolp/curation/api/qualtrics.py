@@ -212,6 +212,7 @@ class Qualtrics:
         if isinstance(ResponseId, type(None)):
             try:
                 ResponseId = self.find_deposit_agreement(dn_dict)
+                print("Qualtrics ResponseID : {}".format(ResponseId))
             except ValueError:
                 print("Error with retrieving ResponseId")
                 print("If you wish, you can manually enter ResponseId to retrieve.")
