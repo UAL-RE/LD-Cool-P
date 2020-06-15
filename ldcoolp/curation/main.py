@@ -114,14 +114,9 @@ def workflow(article_id):
     # Download curation report
     pw.download_report()
 
-    # Placeholder to download Qualtrics deposit agreement form
+    # Download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
-    try:
-        ResponseId = q.find_deposit_agreement(pw.dn.name_dict)
-        print("Qualtrics ResponseID : {}".format(ResponseId))
-        q.retrieve_deposit_agreement(ResponseId=ResponseId)
-    except ValueError:
-        print("Unable to obtain a unique match")
+    q.retrieve_deposit_agreement(pw.dn.name_dict)
 
     # Move to next curation stage
     pw.move_to_next()
