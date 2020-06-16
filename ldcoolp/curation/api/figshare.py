@@ -220,7 +220,7 @@ class FigshareInstituteAdmin:
     def get_curation_list(self):
         url = self.endpoint("reviews")
 
-        params = {'page': 1, 'page_size': 1000}
+        params = {'offset': 0, 'limit': 1000}
         curation_list = issue_request('GET', url, self.headers, params=params)
 
         curation_df = pd.DataFrame(curation_list)
