@@ -217,10 +217,13 @@ class FigshareInstituteAdmin:
 
         return accounts_df
 
-    def get_curation_list(self):
+    def get_curation_list(self, article_id=None):
         url = self.endpoint("reviews")
 
         params = {'offset': 0, 'limit': 1000}
+        if not isinstance(article_id, type(None)):
+            params['article_id'] = article_id
+
         curation_list = issue_request('GET', url, self.headers, params=params)
 
         curation_df = pd.DataFrame(curation_list)
