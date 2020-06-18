@@ -154,6 +154,11 @@ class FigshareInstituteAdmin:
         return roles
 
     def get_account_details(self):
+        """
+        Retrieve account details. This includes number of articles, projects,
+        collections, group association, and administrative and reviewer flags
+        """
+
         # Retrieve accounts
         accounts_df = self.get_account_list()
         n_accounts = accounts_df.shape[0]
@@ -218,6 +223,8 @@ class FigshareInstituteAdmin:
         return accounts_df
 
     def get_curation_list(self, article_id=None):
+        """Retrieve list of curation"""
+
         url = self.endpoint("reviews")
 
         params = {'offset': 0, 'limit': 1000}
@@ -230,6 +237,8 @@ class FigshareInstituteAdmin:
         return curation_df
 
     def get_curation_details(self, curation_id):
+        """Retrieve details about a specified curation item"""
+
         url = self.endpoint("review/{}".format(curation_id))
 
         curation_details = issue_request('GET', url, self.headers)
@@ -237,6 +246,8 @@ class FigshareInstituteAdmin:
         return curation_details
 
     def get_curation_comments(self, curation_id):
+        """Retrieve comments about specified curation item"""
+
         url = self.endpoint("review/{}/comments".format(curation_id))
 
         curation_comments = issue_request('GET', url, self.headers)
