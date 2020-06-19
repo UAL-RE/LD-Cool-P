@@ -4,23 +4,14 @@ import configparser
 from urllib.request import Request, urlopen
 
 from figshare.figshare import Figshare  # , issue_request
-from ..admin import permissions
-
-# from ..figshare_api import FigshareInstituteAdmin
+from ldcoolp.admin import permissions
+from ldcoolp import config_file
 
 # Read in default configuration file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 api_token = config.get('global', 'api_token')
-
-if api_token is None or api_token == "***override***":
-    print("ERROR: api_token not available from config file")
-    api_token = input("Provide token through prompt : ")
-
-fs = Figshare(token=api_token, private=True)
-
-# fs_admin = FigshareInstituteAdmin(token=api_token)
 
 
 def private_file_retrieve(url, filename=None, token=None):
@@ -38,10 +29,17 @@ def private_file_retrieve(url, filename=None, token=None):
     f.close()
 
 
-def download_files(article_id, root_directory=None, data_directory=None):
+def download_files(article_id, fs=None, root_directory=None, data_directory=None):
 
     if root_directory is None:
         root_directory = os.getcwd()
+
+    if not fs:
+        if api_token is None or api_token == "***override***":
+            print("ERROR: api_token not available from config file")
+            api_token = input("Provide token through prompt : ")
+
+        fs = Figshare(token=api_token, private=True)
 
     # Retrieve article information
     # article_details = fs.get_article_details(article_id)
@@ -63,7 +61,7 @@ def download_files(article_id, root_directory=None, data_directory=None):
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
-                                  token=api_token)
+                                  token=fs.token)
         else:
             print("File exists! Not overwriting!")
 

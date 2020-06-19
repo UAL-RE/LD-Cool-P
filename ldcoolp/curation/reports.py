@@ -4,11 +4,12 @@ from os import makedirs
 import configparser
 from urllib.request import urlretrieve
 
-from ..admin import permissions
+from ldcoolp.admin import permissions
+from ldcoolp import config_file
 
 # Read in default configuration file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 source = config.get('curation', 'source')
 root_directory = config.get('curation', '{}_path'.format(source))
@@ -40,7 +41,7 @@ def review_report(depositor_name=''):
         print("Saving ReDATA Curation Report to: {}".format(out_path))
         print("Saving as : {}".format(filename))
         urlretrieve(report_url, out_file)
-        permissions.curation(out_file)
+        permissions.curation(out_path)
     else:
         print("!!!! ReDATA Curation Report exists in {} !!!!".format(out_path))
         print("!!!! Will not override !!!!")
