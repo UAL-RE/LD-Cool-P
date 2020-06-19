@@ -24,7 +24,10 @@ source = config.get('curation', 'source')
 root_directory0 = config.get('curation', '{}_path'.format(source))
 
 folder_todo = config.get('curation', 'folder_todo')
+folder_copy_data = config.get('curation', 'folder_copy_data')
 folder_data = config.get('curation', 'folder_data')
+
+readme_copy = config.getboolean('curation', 'readme_copy')
 
 root_directory = join(root_directory0, folder_todo)
 
@@ -67,6 +70,8 @@ class PrerequisiteWorkflow:
         self.article_id = article_id
         self.dn = DepositorName(self.article_id, fs_admin)
         self.data_directory = join(self.dn.folderName, folder_data)
+        self.copy_directory = join(self.dn.folderName, folder_copy_data)
+        self.readme_copy = readme_copy
 
         # Create and set permissions to rwx
         if not exists(self.data_directory):
@@ -76,7 +81,9 @@ class PrerequisiteWorkflow:
     def download_data(self):
         download_files(self.article_id, fs=fs,
                        root_directory=self.root_directory,
-                       data_directory=self.data_directory)
+                       data_directory=self.data_directory,
+                       copy_directory=self.copy_directory,
+                       readme_copy=self.readme_copy)
 
     def download_report(self):
         review_report(self.dn.folderName)
