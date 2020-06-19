@@ -55,8 +55,8 @@ class DepositorName:
 
     def get_curation_id(self):
         # This retrieves basic curation information for article
-        cur_df = self.fs_admin.get_curation_list()
-        cur_loc_dict = df_to_dict_single(cur_df.loc[cur_df['article_id'] == self.article_id])
+        cur_df = self.fs_admin.get_curation_list(article_id=self.article_id)
+        cur_loc_dict = df_to_dict_single(cur_df)
 
         return cur_loc_dict['id']
 
