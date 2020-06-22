@@ -7,9 +7,12 @@ from . import strip
 
 import configparser
 
+# Read in default configuration file
+from ldcoolp import config_file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
+folder_copy_data = config.get('curation', 'folder_copy_data')
 folder_data = config.get('curation', 'folder_data')
 
 source = config.get('curation', 'source')
@@ -33,7 +36,7 @@ def default_readme_path(depositor_name):
     :return data_path: full path to DATA folder
     """
 
-    data_path = join(staging_directory, depositor_name, folder_data)
+    data_path = join(staging_directory, depositor_name, folder_copy_data)
 
     README_file_default = join(data_path, 'README.txt')
     return README_file_default, data_path
