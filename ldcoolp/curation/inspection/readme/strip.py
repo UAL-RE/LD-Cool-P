@@ -5,8 +5,6 @@ import numpy as np
 
 from ....admin import permissions
 
-from . import default_readme_path
-
 
 def html_comments(lines0, change):
     """
@@ -70,9 +68,7 @@ def beginning(lines, change):
     return lines, change
 
 
-def main(depositor_name):
-
-    README_file_default, _ = default_readme_path(depositor_name)
+def main(README_file_default):
 
     f1 = open(README_file_default, 'r')
     lines0 = f1.readlines()
