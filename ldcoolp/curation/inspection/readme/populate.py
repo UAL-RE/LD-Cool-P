@@ -1,8 +1,11 @@
+import configparser
+
 from figshare.figshare import Figshare  # , issue_request
 
 # Read in default configuration file
+from ldcoolp import config_file
 config = configparser.ConfigParser()
-config.read('DataRepository_curation/config/default.ini')
+config.read(config_file)
 
 api_token = config.get('global', 'api_token')
 
