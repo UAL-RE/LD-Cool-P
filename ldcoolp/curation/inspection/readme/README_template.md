@@ -82,4 +82,4 @@ The roles are defined by the CRediT taxonomy https://casrai.org/credit
 
 {% for links in readme_dict.links %}
   {{ links }}
-{% end for %}
+{% endfor %}
