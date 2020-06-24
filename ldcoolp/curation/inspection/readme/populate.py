@@ -35,7 +35,14 @@ def retrieve_article_metadata(article_id):
     readme_dict['title'] = article_dict['title']
 
     # Retrieve preferred citation. Default: ReDATA in DataCite format
-    readme_dict['preferred_citation'] = article_dict['citation']
+    # This forces a period after the year and ensures multiple rows
+    # with the last two row merged for simplicity
+    single_str_citation = article_dict['citation']
+    str_list = [str_row+'.' for str_row in
+                single_str_citation.replace('):', ').').split('. ')]
+    citation_list = [content for content in str_list[0:-2]]
+    citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+    readme_dict['preferred_citation'] = citation_list
 
     # If DOI available, retrieve:
     if 'doi' in article_dict:
