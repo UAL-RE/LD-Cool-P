@@ -3,7 +3,7 @@
 
 
 Preferred citation (DataCite format):  
-  {{ readme_dict.citation }}
+  {{ readme_dict.preferred_citation }}
 
 {#
  Example (for a journal article):
@@ -28,7 +28,7 @@ License:
 
 
 DOI:
-  https://doi.org/10.25422/azu.data.{{ readme_dict.doi }}
+  https://doi.org/{{ readme_dict.doi }}
 
 
 ---------------------------------------------
@@ -80,6 +80,6 @@ The roles are defined by the CRediT taxonomy https://casrai.org/credit
 
 [Add additional notes here]
 
-{% for links in readme_dict.links %}
-  {{ links }}
+{% for reference in readme_dict.references %}
+  {{ reference }}
 {% endfor %}
