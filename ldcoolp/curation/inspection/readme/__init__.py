@@ -1,9 +1,11 @@
-from os.path import exists, join
+from os.path import exists, join, dirname
 from os import walk
-from urllib.request import urlretrieve
+
+# Template engine
+from jinja2 import Environment, FileSystemLoader
 
 from ....admin import permissions
-from . import strip
+from . import populate
 
 import configparser
 
@@ -22,7 +24,30 @@ underreview_folder = config.get('curation', 'folder_underreview')
 
 staging_directory = join(root_directory, underreview_folder)
 
-readme_url = config.get('curation', 'readme_url')
+readme_template = config.get('curation', 'readme_template')
+
+
+def construct(README_file_default, readme_dict):
+    """
+    Purpose:
+      Create README.txt file with jinja2 README template and populate with
+      metadata information
+
+    :return:
+    """
+
+    file_loader = FileSystemLoader(dirname(__file__))
+
+    env = Environment(loader=file_loader)
+
+    template = env.get_template(readme_template)
+
+    # Write file
+    f = open(README_file_default, 'w')
+
+    content_list = template.render(readme_dict=readme_dict)
+    f.writelines(content_list)
+    f.close()
 
 
 def default_readme_path(depositor_name):
@@ -82,7 +107,7 @@ def check_exists(depositor_name):
         walkthrough(data_path)
 
 
-def retrieve(depositor_name):
+def retrieve(depositor_name, article_id):
     """
     Purpose:
       Retrieve template of README.txt file if such file is not present
@@ -94,9 +119,9 @@ def retrieve(depositor_name):
     README_file_default, _ = default_readme_path(depositor_name)
 
     if not exists(README_file_default):
-        print("Retrieving README template...")
-        urlretrieve(readme_url, README_file_default)
-        strip.main(README_file_default)
+        print("Constructing README template...")
+        readme_dict = populate.retrieve_article_metadata(article_id)
+        construct(README_file_default, readme_dict)
         permissions.curation(README_file_default)
     else:
         print("Default README file found! Not overwriting with template!")
