@@ -47,6 +47,8 @@ def retrieve_article_metadata(article_id):
     # If DOI available, retrieve:
     if 'doi' in article_dict:
         readme_dict['doi'] = article_dict['doi']
+    else:
+        readme_dict['doi'] = "10.25422/azu.data.[DOI_NUMBER]"
 
     # Retrieve license
     readme_dict['license'] = article_dict['license']['name']
