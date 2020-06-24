@@ -3,7 +3,10 @@
 
 
 Preferred citation (DataCite format):  
-  {{ readme_dict.preferred_citation }}
+{% for cite_text in readme_dict.preferred_citation %}
+  {{ cite_text }}
+{%- endfor %}
+
 
 {#
  Example (for a journal article):
@@ -82,4 +85,4 @@ The roles are defined by the CRediT taxonomy https://casrai.org/credit
 
 {% for reference in readme_dict.references %}
   {{ reference }}
-{% endfor %}
+{%- endfor %}
