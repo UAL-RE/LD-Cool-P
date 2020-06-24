@@ -47,4 +47,10 @@ def retrieve_article_metadata(article_id):
     # Retrieve author
     readme_dict['first_author'] = article_dict['authors'][0]['full_name']
 
+    # Retrieve description (single string)
+    readme_dict['description'] = article_dict['description']
+
+    # Retrieve references as list
+    readme_dict['references'] = article_dict['references']
+
     return readme_dict
