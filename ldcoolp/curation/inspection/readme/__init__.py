@@ -22,107 +22,141 @@ root_directory = config.get('curation', '{}_path'.format(source))
 
 underreview_folder = config.get('curation', 'folder_underreview')
 
-staging_directory = join(root_directory, underreview_folder)
+root_directory = join(root_directory, underreview_folder)
 
 readme_template = config.get('curation', 'readme_template')
 
 
-def construct(README_file_default, readme_dict):
-    """
-    Purpose:
-      Create README.txt file with jinja2 README template and populate with
-      metadata information
+class ReadmeClass:
 
-    :return:
-    """
+    def __init__(self, dn):
+        self.folderName = dn.folderName
+        self.article_id = dn.article_id
+        self.article_dict = dn.curation_dict
 
-    file_loader = FileSystemLoader(dirname(__file__))
+        self.data_path = join(root_directory, self.folderName,
+                              folder_copy_data)
+        self.readme_file_path = join(self.data_path, 'README.txt')
 
-    env = Environment(loader=file_loader)
+        self.readme_template = self.import_template()
 
-    template = env.get_template(readme_template)
+        self.readme_dict = self.retrieve_article_metadata()
 
-    # Write file
-    f = open(README_file_default, 'w')
+    def import_template(self):
+        file_loader = FileSystemLoader(dirname(__file__))
+        env = Environment(loader=file_loader)
 
-    content_list = template.render(readme_dict=readme_dict)
-    f.writelines(content_list)
-    f.close()
+        template = env.get_template(readme_template)
+        return template
 
+    def retrieve_article_metadata(self):
+        """
+        Purpose:
+          Retrieve metadata from figshare API to strip out information to
+          populate in README.txt file for basic content
 
-def default_readme_path(depositor_name):
-    """
-    Purpose:
-      Provide full path for default README.txt file and data_path
+        :return readme_dict: dict containing essential metadata for README.txt
+        """
 
-    :param depositor_name: Exact name of the data curation folder with spaces
+        readme_dict = dict()
 
-    :return README_file_default: str containing full path
-    :return data_path: full path to DATA folder
-    """
+        # Retrieve title of deposit
+        readme_dict['title'] = self.article_dict['item']['title']
 
-    data_path = join(staging_directory, depositor_name, folder_copy_data)
+        # Retrieve preferred citation. Default: ReDATA in DataCite format
+        # This forces a period after the year and ensures multiple rows
+        # with the last two row merged for simplicity
+        single_str_citation = self.article_dict['item']['citation']
+        str_list = [str_row + '.' for str_row in
+                    single_str_citation.replace('):', ').').split('. ')]
+        citation_list = [content for content in str_list[0:-2]]
+        citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+        readme_dict['preferred_citation'] = citation_list
 
-    README_file_default = join(data_path, 'README.txt')
-    return README_file_default, data_path
+        # If DOI available, retrieve:
+        if 'doi' in self.article_dict['item']:
+            readme_dict['doi'] = self.article_dict['item']['doi']
+        else:
+            readme_dict['doi'] = "10.25422/azu.data.[DOI_NUMBER]"
 
+        # Retrieve license
+        readme_dict['license'] = self.article_dict['item']['license']['name']
 
-def walkthrough(data_path, ignore=''):
-    """
-    Purpose:
-      Perform walkthrough to find other README files
+        # Retrieve author
+        readme_dict['first_author'] = \
+            self.article_dict['item']['authors'][0]['full_name']
 
-    :param data_path: path to DATA folder
-    :param ignore: full path of default README.txt to ignore
-    :return:
-    """
-    for dir_path, dir_names, files in walk(data_path):
-        for file in files:
-            if 'README' in file.upper():  # case insensitive
-                file_fullname = join(dir_path, file)
-                if file_fullname != ignore:
-                    print("File exists : {}".format(file_fullname))
+        # Retrieve description (single string)
+        readme_dict['description'] = self.article_dict['item']['description']
 
+        # Retrieve references as list
+        readme_dict['references'] = self.article_dict['item']['references']
 
-def check_exists(depositor_name):
-    """
-    Purpose:
-      Check that a README file exists
+        return readme_dict
 
-    :param depositor_name: Exact name of the data curation folder with spaces
-    :return: Will raise error
-    """
+    def construct(self):
+        """
+        Purpose:
+          Create README.txt file with jinja2 README template and populate with
+          metadata information
 
-    README_file_default, data_path = default_readme_path(depositor_name)
+        :return:
+        """
 
-    if exists(README_file_default):
-        print("Default README.txt file exists!!!")
+        # Write file
+        f = open(self.readme_file_path, 'w')
 
-        print("Checking for additional README files")
-        walkthrough(data_path, ignore=README_file_default)
-    else:
-        print("Default README.txt file DOES NOT exist!!!")
-        print("Searching other possible locations...")
+        content_list = self.readme_template.render(readme_dict=self.readme_dict)
+        f.writelines(content_list)
+        f.close()
 
-        walkthrough(data_path)
+    def retrieve(self):
+        """
+        Purpose:
+          Retrieve template of README.txt file if such file is not present
 
+        :return: Download files and place it within the [folder_data] path
+        """
 
-def retrieve(depositor_name, article_id):
-    """
-    Purpose:
-      Retrieve template of README.txt file if such file is not present
+        if not exists(self.readme_file_path):
+            print("Constructing README template...")
+            self.construct()
+            permissions.curation(self.readme_file_path)
+        else:
+            print("Default README file found! Not overwriting with template!")
 
-    :param depositor_name: Exact name of the data curation folder with spaces
-    :return: Download files and place it within the [folder_data] path
-    """
+    def walkthrough(self, data_path, ignore=''):
+        """
+        Purpose:
+          Perform walkthrough to find other README files
 
-    README_file_default, _ = default_readme_path(depositor_name)
+        :param data_path: path to DATA folder
+        :param ignore: full path of default README.txt to ignore
+        :return:
+        """
 
-    if not exists(README_file_default):
-        print("Constructing README template...")
-        readme_dict = populate.retrieve_article_metadata(article_id)
-        construct(README_file_default, readme_dict)
-        permissions.curation(README_file_default)
-    else:
-        print("Default README file found! Not overwriting with template!")
+        for dir_path, dir_names, files in walk(data_path):
+            for file in files:
+                if 'README' in file.upper():  # case insensitive
+                    file_fullname = join(dir_path, file)
+                    if file_fullname != ignore:
+                        print("File exists : {}".format(file_fullname))
 
+    def check_exists(self):
+        """
+        Purpose:
+          Check that a README file exists
+
+        :return: Will raise error
+        """
+
+        if exists(self.readme_file_path):
+            print("Default README.txt file exists!!!")
+
+            print("Checking for additional README files")
+            self.walkthrough(self.data_path, ignore=self.readme_file_path)
+        else:
+            print("Default README.txt file DOES NOT exist!!!")
+            print("Searching other possible locations...")
+
+            self.walkthrough(self.data_path)
