@@ -104,6 +104,7 @@ class ReadmeClass:
         """
 
         # Write file
+        print(f"Writing file : {self.readme_file_path}")
         f = open(self.readme_file_path, 'w')
 
         content_list = self.readme_template.render(readme_dict=self.readme_dict)
@@ -163,7 +164,7 @@ class ReadmeClass:
 
             user_response = input("If you wish to create a README file, type 'Yes'. RETURN KEY will exit : ")
             if user_response == "Yes":
-                self.construct()
+                self.retrieve()
             else:
                 print("Exiting script")
                 return
