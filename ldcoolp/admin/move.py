@@ -31,10 +31,16 @@ def get_source_stage(depositor_name):
     :return source_stage: str containing source stage name
     """
 
-    source_path = glob(join(root_directory, '*', depositor_name))[0]
-    source_stage = dirname(source_path.replace(join(root_directory, ''), ''))
+    source_path = glob(join(root_directory, '?.*', depositor_name))
+    if len(source_path) == 0:
+        raise FileNotFoundError(f"Unable to find source_path for {depositor_name}")
+    if len(source_path) > 1:
+        print(source_path)
+        raise ValueError(f"Multiple paths found for {depositor_name}")
+    if len(source_path) == 1:
+        source_stage = dirname(source_path[0].replace(join(root_directory, ''), ''))
 
-    return source_stage
+        return source_stage
 
 
 def main(depositor_name, source_stage, dest_stage):
