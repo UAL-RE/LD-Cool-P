@@ -9,6 +9,7 @@ from ..admin import move
 from ldcoolp.curation.retrieve import download_files
 from ldcoolp.curation.reports import review_report
 from ldcoolp.curation.depositor_name import DepositorName
+from ldcoolp.curation.inspection.readme import ReadmeClass
 
 # API
 from figshare.figshare import Figshare
@@ -25,6 +26,7 @@ root_directory0 = config.get('curation', '{}_path'.format(source))
 
 folder_todo = config.get('curation', 'folder_todo')
 folder_data = config.get('curation', 'folder_data')
+folder_copy_data = config.get('curation', 'folder_copy_data')
 
 root_directory = join(root_directory0, folder_todo)
 
@@ -67,11 +69,21 @@ class PrerequisiteWorkflow:
         self.article_id = article_id
         self.dn = DepositorName(self.article_id, fs_admin)
         self.data_directory = join(self.dn.folderName, folder_data)
+        self.copy_data_directory = join(self.dn.folderName, folder_copy_data)
 
+        self.make_folders()
+
+    def make_folders(self):
         # Create and set permissions to rwx
-        if not exists(self.data_directory):
-            makedirs(self.data_directory)
-            chmod(self.data_directory, 0o777)
+        full_data_path = join(self.root_directory, self.data_directory)
+        if not exists(full_data_path):
+            makedirs(full_data_path)
+            chmod(full_data_path, 0o777)
+
+        full_copy_data_path = join(self.root_directory, self.copy_data_directory)
+        if not exists(full_copy_data_path):
+            makedirs(full_copy_data_path)
+            chmod(full_copy_data_path, 0o777)
 
     def download_data(self):
         download_files(self.article_id, fs=fs,
@@ -114,4 +126,6 @@ def workflow(article_id):
     # Move to next curation stage
     pw.move_to_next()
 
-    # Placeholder to check for README file and create one if it doesn't exists
+    # Check for README file and create one if it does not exist
+    rc = ReadmeClass(pw.dn)
+    rc.check_exists()
