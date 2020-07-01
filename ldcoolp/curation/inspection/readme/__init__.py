@@ -160,3 +160,10 @@ class ReadmeClass:
             print("Searching other possible locations...")
 
             self.walkthrough(self.data_path)
+
+            user_response = input("If you wish to create a README file, type 'Yes'. RETURN KEY will exit : ")
+            if user_response == "Yes":
+                self.construct()
+            else:
+                print("Exiting script")
+                return
