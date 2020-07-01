@@ -30,9 +30,10 @@ readme_template = config.get('curation', 'readme_template')
 class ReadmeClass:
 
     def __init__(self, dn):
-        self.folderName = dn.folderName
-        self.article_id = dn.article_id
-        self.article_dict = dn.curation_dict
+        self.dn = dn
+        self.folderName = self.dn.folderName
+        self.article_id = self.dn.article_id
+        self.article_dict = self.dn.curation_dict
 
         self.data_path = join(root_directory, self.folderName,
                               folder_copy_data)
@@ -78,6 +79,10 @@ class ReadmeClass:
             readme_dict['doi'] = self.article_dict['item']['doi']
         else:
             readme_dict['doi'] = "10.25422/azu.data.[DOI_NUMBER]"
+
+        readme_dict['lastname'] = self.dn.name_dict['surName']
+        readme_dict['firstname'] = self.dn.name_dict['firstName']
+        readme_dict['email'] = self.dn.name_dict['depositor_email']
 
         # Retrieve license
         readme_dict['license'] = self.article_dict['item']['license']['name']
