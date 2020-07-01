@@ -23,7 +23,7 @@ Preferred citation (DataCite format):
 #}
 
 Corresponding Author:   
-  {{ readme_dict.lastname }} {{ readme_dict.firstname }}, University of Arizona, {{ readme_dict.email }}
+  {{ readme_dict.firstname }} {{ readme_dict.lastname }}, University of Arizona, {{ readme_dict.email }}
 
 
 License:
