@@ -179,16 +179,23 @@ class ReadmeClass:
           Create README.txt file with jinja2 README template and populate with
           metadata information
 
-        :return:
         """
 
-        # Write file
-        print(f"Writing file : {self.readme_file_path}")
-        f = open(self.readme_file_path, 'w')
+        if not exists(self.readme_file_path):
+            print(f"Constructing README file based on {self.template_source} template...")
 
-        content_list = self.readme_template.render(readme_dict=self.readme_dict)
-        f.writelines(content_list)
-        f.close()
+            # Write file
+            print(f"Writing file : {self.readme_file_path}")
+            f = open(self.readme_file_path, 'w')
+
+            content_list = self.readme_template.render(readme_dict=self.readme_dict)
+            f.writelines(content_list)
+            f.close()
+        else:
+            print("Default README file found! Not overwriting with template!")
+
+        # Set permission for rwx
+        permissions.curation(self.readme_file_path)
 
     def retrieve(self):
         """
@@ -243,7 +250,7 @@ class ReadmeClass:
 
             user_response = input("If you wish to create a README file, type 'Yes'. RETURN KEY will exit : ")
             if user_response == "Yes":
-                self.retrieve()
+                self.construct()
             else:
                 print("Exiting script")
                 return
