@@ -1,4 +1,4 @@
-from os.path import exists, join, dirname
+from os.path import exists, join, dirname, basename
 from os import walk
 
 # Template engine
@@ -43,12 +43,21 @@ class ReadmeClass:
 
         self.readme_dict = self.retrieve_article_metadata()
 
-    def import_template(self):
-        file_loader = FileSystemLoader(dirname(__file__))
+    def import_template(self, template='default'):
+        if template not in ['default', 'user']:
+            print("Incorrect [template] input")
+            raise ValueError
+
+        if template == 'default':
+            template_location = dirname(__file__)
+        if template == 'user':
+            template_location = self.data_path
+
+        file_loader = FileSystemLoader(template_location)
         env = Environment(loader=file_loader)
 
-        template = env.get_template(readme_template)
-        return template
+        jinja_template = env.get_template(readme_template)
+        return jinja_template
 
     def retrieve_article_metadata(self):
         """
