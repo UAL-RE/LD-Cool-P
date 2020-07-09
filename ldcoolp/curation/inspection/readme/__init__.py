@@ -1,4 +1,4 @@
-from os.path import exists, join, dirname, basename
+from os.path import exists, join, dirname
 from os import walk
 
 # Template engine
