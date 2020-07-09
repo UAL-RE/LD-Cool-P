@@ -28,6 +28,57 @@ readme_template = config.get('curation', 'readme_template')
 
 
 class ReadmeClass:
+    """
+    Purpose:
+      A ReadmeClass object for retrieval and population of README.txt
+      files.  It uses existing metadata information from Figshare to
+      populate common information that are provided
+
+    Attributes
+    ----------
+    dn : DepositorName object
+      Contains information about the depositor and author(s)
+
+    folderName : str
+      Folder name identifying depositor and corresponding author
+
+    article_id : int
+      Figshare article ID
+
+    article_dict : dict
+      dictionary containing curation details
+
+    data_path : str
+      Path DATA folder (this is the working copy and not the ORIGINAL_DATA)
+
+    readme_file_path : str
+      Full filename for exported README.txt
+
+    readme_template: jinja template
+
+    readme_dict : dict
+      Dictionary containing metadata information to provide to jinja template
+
+    Methods
+    -------
+    import_template(template)
+      Returns a jinja2 template by importing markdown README file (README_template.txt) into jinja template
+
+    retrieve article_metadata()
+      Returns a dictionary containing metadata for jinja2 template
+
+    construct()
+      Write README.txt by using jinja2 rendering
+
+    retrieve()
+      Checks to see if file exists and execute construct()
+
+    walkthrough(data_path, ignore)
+      Identify other possible locations for README.txt
+
+    check_exists()
+      Construct README.txt by calling retrieve
+    """
 
     def __init__(self, dn):
         self.dn = dn
@@ -37,6 +88,8 @@ class ReadmeClass:
 
         self.data_path = join(root_directory, self.folderName,
                               folder_copy_data)
+
+        # This is the path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
         self.readme_template = self.import_template()
