@@ -94,7 +94,16 @@ class ReadmeClass:
 
         # Use README template in DATA folder if exists. Otherwise, use default
         user_readme_template = join(self.data_path, readme_template)
-        self.template_source = 'user' if exists(user_readme_template) else 'default'
+        if exists(user_readme_template):
+            print("README_template.txt found in DATA folder!")
+            src_input = input("Type 'Yes' if you wish to use.  Anything else will use 'default'")
+            if src_input == 'Yes':
+                self.template_source = 'user'
+            else:
+                self.template_source = 'default'
+        else:
+            print("Unable to find README_template.txt in DATA folder. Using 'default'")
+            self.template_source = 'default'
 
         self.readme_template = self.import_template(temp_src=self.template_source)
 
