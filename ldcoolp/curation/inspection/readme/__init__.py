@@ -101,8 +101,7 @@ class ReadmeClass:
             print("Incorrect [template] input")
             raise ValueError
 
-        if template == 'default':
-            template_location = dirname(__file__)
+        template_location = dirname(__file__)
         if template == 'user':
             template_location = self.data_path
 
