@@ -128,4 +128,4 @@ def workflow(article_id):
 
     # Check for README file and create one if it does not exist
     rc = ReadmeClass(pw.dn)
-    rc.check_exists()
+    rc.main()

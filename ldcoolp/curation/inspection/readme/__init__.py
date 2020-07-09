@@ -76,7 +76,7 @@ class ReadmeClass:
     walkthrough(data_path, ignore)
       Identify other possible locations for README.txt
 
-    check_exists()
+    main()
       Construct README.txt by calling retrieve
     """
 
@@ -92,17 +92,21 @@ class ReadmeClass:
         # This is the path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
-        self.readme_template = self.import_template()
+        # Use README template in DATA folder if exists. Otherwise, use default
+        user_readme_template = join(self.data_path, readme_template)
+        self.template_source = 'user' if exists(user_readme_template) else 'default'
+
+        self.readme_template = self.import_template(temp_src=self.template_source)
 
         self.readme_dict = self.retrieve_article_metadata()
 
-    def import_template(self, template='default'):
-        if template not in ['default', 'user']:
+    def import_template(self, temp_src='default'):
+        if temp_src not in ['default', 'user']:
             print("Incorrect [template] input")
             raise ValueError
 
         template_location = dirname(__file__)
-        if template == 'user':
+        if temp_src == 'user':
             template_location = self.data_path
 
         file_loader = FileSystemLoader(template_location)
@@ -209,7 +213,7 @@ class ReadmeClass:
                     if file_fullname != ignore:
                         print("File exists : {}".format(file_fullname))
 
-    def check_exists(self):
+    def main(self):
         """
         Purpose:
           Check that a README file exists
