@@ -197,21 +197,6 @@ class ReadmeClass:
         # Set permission for rwx
         permissions.curation(self.readme_file_path)
 
-    def retrieve(self):
-        """
-        Purpose:
-          Retrieve template of README.txt file if such file is not present
-
-        :return: Download files and place it within the [folder_data] path
-        """
-
-        if not exists(self.readme_file_path):
-            print("Constructing README template...")
-            self.construct()
-            permissions.curation(self.readme_file_path)
-        else:
-            print("Default README file found! Not overwriting with template!")
-
     def walkthrough(self, data_path, ignore=''):
         """
         Purpose:
