@@ -197,7 +197,8 @@ class ReadmeClass:
         # Set permission for rwx
         permissions.curation(self.readme_file_path)
 
-    def walkthrough(self, data_path, ignore=''):
+    @staticmethod
+    def walkthrough(data_path, ignore=''):
         """
         Purpose:
           Perform walkthrough to find other README files
