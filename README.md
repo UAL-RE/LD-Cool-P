@@ -58,7 +58,7 @@ You will need the following to have a working copy of this software. See
 2. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
 3. [`requests`](https://requests.readthedocs.io/en/master/2.22.0)
 4. [`numpy`](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4)
-
+5. [`html2text`](https://pypi.org/project/html2text/)
 
 ### Installation Instructions
 
@@ -89,7 +89,7 @@ With the activated `conda` environment, you can install with the `setup.py` scri
 (curation) $ (sudo) python setup.py develop
 ```
 
-This will automatically installed the required `pandas`, `requests`, and `numpy` packages.
+This will automatically installed the required `pandas`, `requests`, `numpy`, and `html2text` packages.
 
 You can confirm installation via `conda list`
 

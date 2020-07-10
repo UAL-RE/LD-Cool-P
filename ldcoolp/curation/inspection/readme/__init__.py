@@ -3,6 +3,7 @@ from os import walk
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
+from html2text import html2text
 
 from ....admin import permissions
 from . import populate
@@ -166,7 +167,7 @@ class ReadmeClass:
             self.article_dict['item']['authors'][0]['full_name']
 
         # Retrieve description (single string)
-        readme_dict['description'] = self.article_dict['item']['description']
+        readme_dict['description'] = html2text(self.article_dict['item']['description'])
 
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
