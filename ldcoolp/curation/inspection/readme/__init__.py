@@ -54,7 +54,7 @@ class ReadmeClass:
     readme_file_path : str
       Full filename for exported README.txt
 
-    readme_template: jinja template
+    readme_template: jinja2.environment.Template
 
     readme_dict : dict
       Dictionary containing metadata information to provide to jinja template
@@ -96,7 +96,7 @@ class ReadmeClass:
         user_readme_template = join(self.data_path, readme_template)
         if exists(user_readme_template):
             print("README_template.txt found in DATA folder!")
-            src_input = input("Type 'Yes' if you wish to use.  Anything else will use 'default'")
+            src_input = input("Type 'Yes' if you wish to use.  Anything else will use 'default' : ")
             if src_input == 'Yes':
                 self.template_source = 'user'
             else:
