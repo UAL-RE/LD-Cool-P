@@ -153,7 +153,7 @@ class ReadmeClass:
         if 'doi' in self.article_dict['item']:
             readme_dict['doi'] = self.article_dict['item']['doi']
         else:
-            readme_dict['doi'] = "10.25422/azu.data.[DOI_NUMBER]"
+            readme_dict['doi'] = f"10.25422/azu.data.{self.article_id}"
 
         readme_dict['lastname'] = self.dn.name_dict['surName']
         readme_dict['firstname'] = self.dn.name_dict['firstName']
