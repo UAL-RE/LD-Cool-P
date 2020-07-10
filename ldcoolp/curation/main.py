@@ -94,7 +94,7 @@ class PrerequisiteWorkflow:
                        root_directory=self.root_directory,
                        data_directory=self.data_directory,
                        copy_directory=self.copy_data_directory,
-                       readme_copy=self.readme_copy)
+                       readme_copy=True)
 
     def download_report(self):
         review_report(self.dn.folderName)
