@@ -16,6 +16,8 @@ config.read(config_file)
 
 api_token = config.get('global', 'api_token')
 
+readme_template = config.get('curation', 'readme_template')
+
 
 def private_file_retrieve(url, filename=None, token=None):
     """
@@ -109,6 +111,19 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
                 for r_file in README_files:
                     print("Saving a copy of : {}".format(r_file))
                     shutil.copy(r_file, copy_path)
+
+                if len(README_files) == 1:
+                    print("Only one README file found!")
+                    print("Renaming to README_template.md")
+
+                    src_rename = os.path.join(copy_path,
+                                              os.path.basename(README_files[0]))
+                    dst_rename = os.path.join(copy_path, readme_template)
+                    os.rename(src_rename, dst_rename)
+                else:
+                    print("More than one README file found. Manual intervention needed here.")
+            else:
+                print("No README files found")
 
             permissions.curation(copy_path)  # rwx permissions
         else:
