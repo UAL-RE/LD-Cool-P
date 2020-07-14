@@ -17,6 +17,10 @@ class FigshareInstituteAdmin:
     token : str
       The Figshare OAuth2 authentication token
 
+    stage : bool
+      Set to use API endpoint of stage instead of production
+      Default: False (i.e., use production)
+
     headers : dict
       HTTP header information
 
@@ -69,8 +73,12 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#account_institution_curation_comments
     """
 
-    def __init__(self, token=None):
-        self.baseurl = "https://api.figshare.com/v2/account/"
+    def __init__(self, token=None, stage=False):
+        if not stage:
+            self.baseurl = "https://api.figshare.com/v2/account/"
+        else:
+            self.baseurl = "https://api.figsh.com/v2/account/"
+
         self.baseurl_institute = self.baseurl + "institution/"
         self.token = token
 
