@@ -14,6 +14,9 @@ class FigshareInstituteAdmin:
     baseurl : str
       Base URL of the Figshare v2 API
 
+    baseurl_institute : str
+      Base URL of the Figshare v2 API for private institutions
+
     token : str
       The Figshare OAuth2 authentication token
 
