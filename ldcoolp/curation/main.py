@@ -38,8 +38,10 @@ if api_token is None or api_token == "***override***":
     print("ERROR: figshare api_token not available from config file")
     api_token = input("Provide figshare token through prompt : ")
 
+stage = config.getboolean('global', 'stage')
+
 fs = Figshare(token=api_token, private=True)
-fs_admin = FigshareInstituteAdmin(token=api_token)
+fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage)
 
 acct_df = fs_admin.get_account_list()
 
