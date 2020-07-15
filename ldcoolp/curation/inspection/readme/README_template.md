@@ -7,7 +7,6 @@ Preferred citation (DataCite format):
   {{ cite_text }}
 {%- endfor %}
 
-
 {#
  Example (for a journal article):
   LastName1, FirstName1; LastName2, FirstName2; LastName3, FirstName3; etc. (YYYY).
@@ -83,6 +82,7 @@ The roles are defined by the CRediT taxonomy https://casrai.org/credit
 
 [Add additional notes here]
 
+Links:
 {% for reference in readme_dict.references %}
   {{ reference }}
 {%- endfor %}
