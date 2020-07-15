@@ -19,7 +19,7 @@ def curation(path, mode=0o777):
     """
 
     if isdir(path) or isfile(path):
-        chmod(path, 0o777)
+        chmod(path, mode)
 
     for dir_path, dir_names, files in walk(path):
         for dir_name in dir_names:
