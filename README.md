@@ -58,7 +58,9 @@ You will need the following to have a working copy of this software. See
 2. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
 3. [`requests`](https://requests.readthedocs.io/en/master/2.22.0)
 4. [`numpy`](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4)
-
+5. [`jinja2`](https://jinja.palletsprojects.com/en/2.11.x/)
+6. [`tabulate`](https://github.com/astanin/python-tabulate)
+7. [`html2text`](https://pypi.org/project/html2text/)
 
 ### Installation Instructions
 
@@ -89,7 +91,8 @@ With the activated `conda` environment, you can install with the `setup.py` scri
 (curation) $ (sudo) python setup.py develop
 ```
 
-This will automatically installed the required `pandas`, `requests`, and `numpy` packages.
+This will automatically installed the required `pandas`, `requests`, `numpy`,
+`jinja2`, `tabulate`, and `html2text` packages.
 
 You can confirm installation via `conda list`
 
@@ -97,7 +100,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.10.1`.
+You should see that the version is `0.11.0`.
 
 
 ### Testing Installation
