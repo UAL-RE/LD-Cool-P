@@ -121,9 +121,13 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
                     dst_rename = os.path.join(copy_path, readme_template)
                     os.rename(src_rename, dst_rename)
                 else:
-                    print("More than one README file found. Manual intervention needed here.")
+                    print("More than one README file found!")
+                    print("Manual intervention needed ...")
+                    print(f"Select and save a README file in {copy_path} as {readme_template}")
+                    input("Hit ENTER when ready to proceed ...")
             else:
-                print("No README files found")
+                print("No README files found.")
+                print(f"Note: default {readme_template} will be used")
 
             permissions.curation(copy_path)  # rwx permissions
         else:
