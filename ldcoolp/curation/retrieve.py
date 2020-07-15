@@ -106,7 +106,8 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
             copy_path = os.path.join(root_directory, copy_directory)
             os.makedirs(copy_path, exist_ok=True)
 
-            README_files = glob.glob(os.path.join(dir_path, 'README*.txt'))
+            README_files = glob.glob(os.path.join(dir_path, 'README*.txt')) + \
+                           glob.glob(os.path.join(dir_path, 'README*.md'))
             if len(README_files) != 0:
                 for r_file in README_files:
                     print("Saving a copy of : {}".format(r_file))
