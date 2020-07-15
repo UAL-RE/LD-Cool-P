@@ -40,7 +40,7 @@ if api_token is None or api_token == "***override***":
 
 stage = config.getboolean('global', 'stage')
 
-fs = Figshare(token=api_token, private=True)
+fs = Figshare(token=api_token, private=True, stage=stage)
 fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage)
 
 acct_df = fs_admin.get_account_list()
