@@ -6,26 +6,12 @@ from jinja2 import Environment, FileSystemLoader
 from html2text import html2text
 
 from ....admin import permissions
-from . import populate
 
-import configparser
+# Read in default configuration settings
+from ....config import folder_copy_data, root_directory_main
+from ....config import underreview_folder, readme_template
 
-# Read in default configuration file
-from ldcoolp import config_file
-config = configparser.ConfigParser()
-config.read(config_file)
-
-folder_copy_data = config.get('curation', 'folder_copy_data')
-folder_data = config.get('curation', 'folder_data')
-
-source = config.get('curation', 'source')
-root_directory = config.get('curation', '{}_path'.format(source))
-
-underreview_folder = config.get('curation', 'folder_underreview')
-
-root_directory = join(root_directory, underreview_folder)
-
-readme_template = config.get('curation', 'readme_template')
+root_directory = join(root_directory_main, underreview_folder)
 
 
 class ReadmeClass:
