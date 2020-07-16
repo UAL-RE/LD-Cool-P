@@ -1,25 +1,13 @@
 from os.path import exists, join
 from os import makedirs
 
-import configparser
 from urllib.request import urlretrieve
 
 from ldcoolp.admin import permissions
-from ldcoolp import config_file
 
-# Read in default configuration file
-config = configparser.ConfigParser()
-config.read(config_file)
+from ..config import root_directory_main, todo_folder, folder_ual_rdm, report_url
 
-source = config.get('curation', 'source')
-root_directory = config.get('curation', '{}_path'.format(source))
-
-todo_folder = config.get('curation', 'folder_todo')
-folder_ual_rdm = config.get('curation', 'folder_ual_rdm')
-
-report_url = config.get('curation', 'report_url')
-
-staging_directory = join(root_directory, todo_folder)
+staging_directory = join(root_directory_main, todo_folder)
 
 
 def review_report(depositor_name=''):
