@@ -19,6 +19,9 @@ folder_copy_data = config.get('curation', 'folder_copy_data')
 # Folders for high-level curation workflow
 todo_folder = config.get('curation', 'folder_todo')
 underreview_folder = config.get('curation', 'folder_underreview')
+reviewed_folder = config.get('curation', 'folder_reviewed')
+published_folder = config.get('curation', 'folder_published')
+rejected_folder = config.get('curation', 'folder_rejected')
 
 # Curation Review Report URL
 report_url = config.get('curation', 'report_url')
