@@ -24,7 +24,7 @@ underreview_folder = config.get('curation', 'folder_underreview')
 report_url = config.get('curation', 'report_url')
 
 # Flag to copy README in folder_copy_data
-readme_copy = config.getboolean('curation', 'readme_copy')
+readme_copy_flag = config.getboolean('curation', 'readme_copy')
 
 # Filename for README markdown template
 readme_template = config.get('curation', 'readme_template')
