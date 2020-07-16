@@ -3,20 +3,13 @@ import os
 from os.path import exists
 import glob
 
-import configparser
 from urllib.request import Request, urlopen
 
 from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
-from ldcoolp import config_file
 
-# Read in default configuration file
-config = configparser.ConfigParser()
-config.read(config_file)
-
-api_token = config.get('global', 'api_token')
-
-readme_template = config.get('curation', 'readme_template')
+from ..config import api_token
+from ..config import readme_template
 
 
 def private_file_retrieve(url, filename=None, token=None):
