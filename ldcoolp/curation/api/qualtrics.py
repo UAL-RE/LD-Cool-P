@@ -2,8 +2,6 @@ from os.path import join
 import io
 from os import remove
 
-import configparser
-
 # CSV handling
 import zipfile
 import pandas as pd
@@ -17,17 +15,11 @@ import webbrowser
 # Convert single-entry DataFrame to dictionary
 from ldcoolp.curation import df_to_dict_single
 
-from ldcoolp import config_file
-
 # API
 from figshare.figshare import issue_request
 
-# Read in default configuration file
-config = configparser.ConfigParser()
-config.read(config_file)
-
-qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
-qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
+# Read in default configuration settings
+from ...config import qualtrics_download_url, qualtrics_generate_url
 
 # for quote and urlencode
 url_safe = '/ {},:"?=@%'

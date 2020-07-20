@@ -1,4 +1,3 @@
-import configparser
 from os.path import join, exists
 from os import makedirs, chmod
 
@@ -16,46 +15,32 @@ from figshare.figshare import Figshare
 from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
 from ldcoolp.curation.api.qualtrics import Qualtrics
 
-# Read in default configuration file
-from ldcoolp import config_file
-config = configparser.ConfigParser()
-config.read(config_file)
+# Read in default configuration settings
+from ..config import root_directory_main
+from ..config import todo_folder, folder_copy_data, folder_data
+from ..config import readme_copy_flag, stage_flag
+from ..config import api_token
+from ..config import qualtrics_survey_id, qualtrics_token, qualtrics_dataCenter
 
-source = config.get('curation', 'source')
-root_directory0 = config.get('curation', '{}_path'.format(source))
-
-folder_todo = config.get('curation', 'folder_todo')
-folder_copy_data = config.get('curation', 'folder_copy_data')
-folder_data = config.get('curation', 'folder_data')
-folder_copy_data = config.get('curation', 'folder_copy_data')
-
-readme_copy = config.getboolean('curation', 'readme_copy')
-
-root_directory = join(root_directory0, folder_todo)
-
-api_token = config.get('global', 'api_token')
 if api_token is None or api_token == "***override***":
     print("ERROR: figshare api_token not available from config file")
     api_token = input("Provide figshare token through prompt : ")
 
-stage = config.getboolean('global', 'stage')
-
-fs = Figshare(token=api_token, private=True, stage=stage)
-fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage)
+fs = Figshare(token=api_token, private=True, stage=stage_flag)
+fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
 acct_df = fs_admin.get_account_list()
 
-qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
 if qualtrics_survey_id is None or qualtrics_survey_id == "***override***":
     qualtrics_survey_id = input("Provide Qualtrics Survey ID through prompt : ")
 
-qualtrics_token = config.get('curation', 'qualtrics_token')
 if qualtrics_token is None or qualtrics_token == "***override***":
     qualtrics_token = input("Provide Qualtrics API token through prompt : ")
 
-qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
 if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
     qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
+
+root_directory = join(root_directory_main, todo_folder)
 
 
 class PrerequisiteWorkflow:
@@ -96,7 +81,7 @@ class PrerequisiteWorkflow:
                        root_directory=self.root_directory,
                        data_directory=self.data_directory,
                        copy_directory=self.copy_data_directory,
-                       readme_copy=True)
+                       readme_copy=readme_copy_flag)
 
     def download_report(self):
         review_report(self.dn.folderName)

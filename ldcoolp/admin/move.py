@@ -2,24 +2,12 @@ from os.path import join, dirname
 import shutil
 from glob import glob
 
-from ldcoolp import config_file
+# Read in default configuration settings
+from ..config import root_directory_main
+from ..config import todo_folder, underreview_folder, reviewed_folder, \
+    published_folder, rejected_folder
 
-import configparser
-
-# Read in default configuration file
-config = configparser.ConfigParser()
-config.read(config_file)
-
-source = config.get('curation', 'source')
-root_directory = config.get('curation', '{}_path'.format(source))
-
-folder_todo = config.get('curation', 'folder_todo')
-folder_underreview = config.get('curation', 'folder_underreview')
-folder_reviewed = config.get('curation', 'folder_reviewed')
-folder_published = config.get('curation', 'folder_published')
-folder_rejected = config.get('curation', 'folder_rejected')
-
-stage_list = [folder_todo, folder_underreview, folder_reviewed, folder_published]
+stage_list = [todo_folder, underreview_folder, reviewed_folder, published_folder]
 
 
 def get_source_stage(depositor_name):
@@ -31,14 +19,14 @@ def get_source_stage(depositor_name):
     :return source_stage: str containing source stage name
     """
 
-    source_path = glob(join(root_directory, '?.*', depositor_name))
+    source_path = glob(join(root_directory_main, '?.*', depositor_name))
     if len(source_path) == 0:
         raise FileNotFoundError(f"Unable to find source_path for {depositor_name}")
     if len(source_path) > 1:
         print(source_path)
         raise ValueError(f"Multiple paths found for {depositor_name}")
     if len(source_path) == 1:
-        source_stage = dirname(source_path[0].replace(join(root_directory, ''), ''))
+        source_stage = dirname(source_path[0].replace(join(root_directory_main, ''), ''))
 
         return source_stage
 
@@ -56,12 +44,12 @@ def main(depositor_name, source_stage, dest_stage):
     """
 
     # Define path:
-    source_path = join(root_directory, source_stage, depositor_name)
-    dest_path = join(root_directory, dest_stage, depositor_name)
+    source_path = join(root_directory_main, source_stage, depositor_name)
+    dest_path = join(root_directory_main, dest_stage, depositor_name)
 
     # Move folder
     print("Moving: {} from {} to ...".format(depositor_name, source_stage))
-    print(" ... {} on {}".format(dest_stage, root_directory))
+    print(" ... {} on {}".format(dest_stage, root_directory_main))
     shutil.move(source_path, dest_path)
 
 
@@ -96,4 +84,4 @@ def reject(depositor_name):
     source_stage = get_source_stage(depositor_name)
 
     # Move folder to reject
-    main(depositor_name, source_stage, folder_rejected)
+    main(depositor_name, source_stage, rejected_folder)
