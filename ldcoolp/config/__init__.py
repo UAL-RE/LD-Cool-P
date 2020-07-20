@@ -5,7 +5,7 @@ from .. import config_file
 config = configparser.ConfigParser()
 config.read(config_file)
 
-# Local or remote servrer
+# Local or remote server
 source = config.get('curation', 'source')
 
 # Curation root folder
@@ -33,16 +33,16 @@ readme_copy_flag = config.getboolean('curation', 'readme_copy')
 readme_template = config.get('curation', 'readme_template')
 
 # Figshare API
-api_token = config.get('global', 'api_token')
+api_token = config.get('figshare', 'api_token')
 
 # Flag for using different Figshare API endpoint (stage vs production)
-stage_flag = config.getboolean('global', 'stage')
+stage_flag = config.getboolean('figshare', 'stage')
 
 # Qualtrics API settings
-qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
-qualtrics_token = config.get('curation', 'qualtrics_token')
-qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
+qualtrics_survey_id = config.get('qualtrics', 'survey_id')
+qualtrics_token = config.get('qualtrics', 'token')
+qualtrics_dataCenter = config.get('qualtrics', 'dataCenter')
 
 # Qualtrics URLs
-qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
-qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
+qualtrics_download_url = config.get('qualtrics', 'download_url')
+qualtrics_generate_url = config.get('qualtrics', 'generate_url')
