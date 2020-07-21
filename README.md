@@ -4,6 +4,7 @@
 - [Getting Started](#getting-started)
     - [Requirements](#requirements)
     - [Installation Instructions](#installation-instructions)
+    - [Configuration Settings](#configuration-settings)
     - [Testing Installation](#testing-installation)
 - [Execution](#execution)
 - [Versioning](#versioning)
@@ -110,6 +111,26 @@ You can confirm installation via `conda list`
 ```
 
 You should see that the version is `0.11.0`.
+
+### Configuration Settings
+
+Configuration settings are specified through the [__init__.py](ldcoolp/__init__.py) settings:
+```
+config_dir       = path.join(co_path, 'config/')
+main_config_file = 'default.ini'
+config_file      = path.join(config_dir, main_config_file)
+```
+
+A [template for this configuration file](ldcoolp/config/default.ini) is provided.
+There are a number of config sections, including `figshare`, `curation`, and `qualtrics`.
+The most important settings to define are those populated with `***override***`.
+Additional settings to change are `figshare` `stage` flag, and `curation` `source`.
+Since the configuration settings will continue to evolve, we refer users to the
+documented information provided.
+
+In the forthcoming v0.12.0 release, these configurations are read in through the `config` sub-package.
+Any LD-Cool-P code that requires pre-configuration will utilize the `config` sub-package.
+
 
 ### Testing Installation
 
