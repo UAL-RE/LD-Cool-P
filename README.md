@@ -4,6 +4,7 @@
 - [Getting Started](#getting-started)
     - [Requirements](#requirements)
     - [Installation Instructions](#installation-instructions)
+    - [Configuration Settings](#configuration-settings)
     - [Testing Installation](#testing-installation)
 - [Execution](#execution)
 - [Versioning](#versioning)
@@ -55,12 +56,13 @@ These instructions will have the code running on your local or virtual machine.
 You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (3.7.5)
-2. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
-3. [`requests`](https://requests.readthedocs.io/en/master/2.22.0)
-4. [`numpy`](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4)
-5. [`jinja2`](https://jinja.palletsprojects.com/en/2.11.x/)
-6. [`tabulate`](https://github.com/astanin/python-tabulate)
-7. [`html2text`](https://pypi.org/project/html2text/)
+2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
+3. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
+4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
+5. [`numpy`](https://numpy.org/) ([1.17.4](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4))
+6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([2.11.2](https://jinja.palletsprojects.com/en/2.11.x/))
+7. [`tabulate`](https://github.com/astanin/python-tabulate) (0.8.3)
+8. [`html2text`](https://pypi.org/project/html2text/) ([2020.1.16](https://pypi.org/project/html2text/2020.1.16/))
 
 ### Installation Instructions
 
@@ -77,16 +79,24 @@ $ (sudo) conda create -n curation python=3.7.5
 $ conda activate curation
 ```
 
-Next, clone this repository into a parent folder:
+With the activated `conda` environment, next clone the
+[UA Libraries' forked copy of figshare](https://github.com/ualibraries/figshare)
+and install with the `setup.py` script:
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ https://github.com/ualibraries/LD_Cool_P.git
+(curation) $ git clone https://github.com/ualibraries/figshare.git
+
+(curation) $ cd /path/to/parent/folder/figshare
+(curation) $ (sudo) python setup.py develop
 ```
 
-With the activated `conda` environment, you can install with the `setup.py` script:
+Then, clone this repository (`LD-Cool-P`) into the parent folder and install with the `setup.py` script:
 
 ```
+(curation) $ cd /path/to/parent/folder
+(curation) $ git clone https://github.com/ualibraries/LD_Cool_P.git
+
 (curation) $ cd /path/to/parent/folder/LD_Cool_P
 (curation) $ (sudo) python setup.py develop
 ```
@@ -100,7 +110,26 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.11.0`.
+You should see that the version is `0.11.1`.
+
+### Configuration Settings
+
+Configuration settings are specified through the [__init__.py](ldcoolp/__init__.py) settings:
+```
+config_dir       = path.join(co_path, 'config/')
+main_config_file = 'default.ini'
+config_file      = path.join(config_dir, main_config_file)
+```
+
+A [template for this configuration file](ldcoolp/config/default.ini) is provided.
+There are a number of config sections, including `figshare`, `curation`, and `qualtrics`.
+The most important settings to define are those populated with `***override***`.
+Additional settings to change are `figshare` `stage` flag, and `curation` `source`.
+Since the configuration settings will continue to evolve, we refer users to the
+documented information provided.
+
+In the forthcoming v0.12.0 release, these configurations are read in through the `config` sub-package.
+Any LD-Cool-P code that requires pre-configuration will utilize the `config` sub-package.
 
 
 ### Testing Installation
@@ -109,7 +138,35 @@ This section is under construction
 
 ## Execution
 
-This section is under construction
+There are or will be a number of ways to execute the software.
+
+### Command-line
+There are two ways to execute the software using the command-line.
+The first is to use ipython/python:
+```python
+article_id = 13456789
+from ldcoolp.curation import main
+main.workflow(article_id)
+```
+
+Here the `article_id` is the unique ID that Figshare provides for any article.
+The above script will perform the prerequisite steps of:
+1. Retrieving the data using the Figshare API
+2. Retrieve a copy of the curatorial review report
+3. Attempt to retrieve the deposit agreement form through the Qualtrics API
+   or provide a custom link to provide to the depositor
+4. Generate a README.txt file
+5. Follow our curation workflow by relocating the content from `1.ToDo` to the
+   `2.UnderReview`
+
+Another command-line approach is using the python script called `prereq_script`
+that will be available in the v0.12.0 release:
+
+```
+(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/prereq_script --article_id 12345678
+```
+
+Other options, specifically using a user interface, are on the roadmap.
 
 ## Versioning
 
