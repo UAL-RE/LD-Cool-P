@@ -4,7 +4,7 @@ from os.path import exists
 import glob
 
 import configparser
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
 
 from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
@@ -19,7 +19,7 @@ api_token = config.get('global', 'api_token')
 readme_template = config.get('curation', 'readme_template')
 
 
-def private_file_retrieve(url, filename=None, token=None):
+def private_file_retrieve(url, filename=None, token=None, url_retrieve=False):
     """
     Purpose:
       Custom Request to privately retrieve a file with a token.
@@ -31,21 +31,30 @@ def private_file_retrieve(url, filename=None, token=None):
     :param token: API token (str)
     """
 
-    req = Request(url)
-    if token:
-        req.add_header('Authorization', 'token {}'.format(token))
+    if not url_retrieve:
+        req = Request(url)
+        if token:
+            req.add_header('Authorization', 'token {}'.format(token))
 
-    response = urlopen(req)
-    content = response.read()
-    print(url)
+        response = urlopen(req)
+        content = response.read()
+        print(url)
 
-    f = open(filename, 'wb')
-    f.write(content)
-    f.close()
+        f = open(filename, 'wb')
+        f.write(content)
+        f.close()
+    else:
+        print("Using urlretrieve")
+        opener = build_opener()
+
+        if token:
+            opener.addheaders = [('Authorization', 'token {}'.format(token))]
+        install_opener(opener)
+        urlretrieve(url, filename)
 
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   copy_directory=None, readme_copy=False):
+                   copy_directory=None, readme_copy=False, url_retrieve=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -88,7 +97,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
-                                  token=fs.token)
+                                  token=fs.token, url_retrieve=url_retrieve)
         else:
             print("File exists! Not overwriting!")
 
