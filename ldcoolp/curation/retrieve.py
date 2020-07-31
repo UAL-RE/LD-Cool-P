@@ -63,6 +63,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     :param data_directory: Relative folder path for primary location of data (str)
     :param copy_directory: Relative folder path for secondary location of data (str)
     :param readme_copy: Bool to indicate whether to copy README files into [copy_directory]
+    :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
     if root_directory is None:
         root_directory = os.getcwd()

@@ -117,7 +117,8 @@ def workflow(article_id, url_open=False):
        4. Download Qualtrics Deposit Agreement form
        5. Check the README file
 
-    :param article_id:
+    :param article_id: str or int, Figshare article id
+    :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     :return:
     """
 

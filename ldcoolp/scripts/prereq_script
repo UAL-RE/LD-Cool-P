@@ -17,5 +17,5 @@ if __name__ == '__main__':
     cred_err = 0
 
     # Run pre-req steps
-    main.workflow(args.article_id, url_retrieve=url_open)
+    main.workflow(args.article_id, url_open=args.url_open)
 
