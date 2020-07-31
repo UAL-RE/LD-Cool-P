@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+import argparse
+
+import configparser
+
+from ldcoolp.curation.api import figshare
+from ldcoolp.curation import depositor_name
+
+# Read in default configuration file
+config = configparser.ConfigParser()
+
+cols_order = ['article_id', 'id', 'depositor_name', 'title', 'account_id',
+              'modified_date', 'created_date']
+
+
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P curation list retrieval.')
+    parser.add_argument('--config', required=True, help='path to configuration file')
+    args = parser.parse_args()
+
+    config.read(args.config)
+
+    api_token = config.get('global', 'api_token')
+    fs_admin = figshare.FigshareInstituteAdmin(token=api_token)
+
+    curation_df = fs_admin.get_curation_list()
+
+    pending_curation_df = curation_df.loc[curation_df['status'] == 'pending']
+
+    depositor_names = ['N/A'] * len(pending_curation_df)
+    titles = ['N/A'] * len(pending_curation_df)
+
+    for ii in range(len(pending_curation_df)):
+        dn = depositor_name.DepositorName(pending_curation_df.loc[ii, 'article_id'],
+                                          fs_admin)
+
+        depositor_names[ii] = dn.name_dict['simplify_fullName']
+        titles[ii] = dn.name_dict['title'][:30] + "..."
+
+    # Make shorter title name
+    pending_curation_df['title'] = titles
+    pending_curation_df['depositor_name'] = depositor_names
+
+    print("**************************************")
+    print("Providing list of pending curation ...")
+    print(pending_curation_df[cols_order].to_markdown())
+    # print(pending_curation_df[cols_order].to_markdown(index=False))  # This require v1.1.0
