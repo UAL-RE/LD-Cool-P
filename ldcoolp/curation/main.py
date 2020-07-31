@@ -69,14 +69,14 @@ class PrerequisiteWorkflow:
        5. Check the README file
 
     """
-    def __init__(self, article_id, url_retrieve=False):
+    def __init__(self, article_id, url_open=False):
         self.root_directory = root_directory
         self.article_id = article_id
         self.dn = DepositorName(self.article_id, fs_admin)
         self.data_directory = join(self.dn.folderName, folder_data)
 
         self.copy_data_directory = join(self.dn.folderName, folder_copy_data)
-        self.url_retrieve = url_retrieve
+        self.url_open = url_open
 
         self.make_folders()
 
@@ -98,7 +98,7 @@ class PrerequisiteWorkflow:
                        data_directory=self.data_directory,
                        copy_directory=self.copy_data_directory,
                        readme_copy=True,
-                       url_retrieve=self.url_retrieve)
+                       url_open=self.url_open)
 
     def download_report(self):
         review_report(self.dn.folderName)
@@ -107,7 +107,7 @@ class PrerequisiteWorkflow:
         move.move_to_next(self.dn.folderName)
 
 
-def workflow(article_id, url_retrieve=False):
+def workflow(article_id, url_open=False):
     """
     Purpose:
       This function follows our initial set-up to:
@@ -121,7 +121,7 @@ def workflow(article_id, url_retrieve=False):
     :return:
     """
 
-    pw = PrerequisiteWorkflow(article_id, url_retrieve=url_retrieve)
+    pw = PrerequisiteWorkflow(article_id, url_open=url_open)
 
     # Retrieve data and place in 1.ToDo curation folder
     pw.download_data()

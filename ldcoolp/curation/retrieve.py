@@ -19,7 +19,7 @@ api_token = config.get('global', 'api_token')
 readme_template = config.get('curation', 'readme_template')
 
 
-def private_file_retrieve(url, filename=None, token=None, url_retrieve=False):
+def private_file_retrieve(url, filename=None, token=None, url_open=False):
     """
     Purpose:
       Custom Request to privately retrieve a file with a token.
@@ -31,7 +31,13 @@ def private_file_retrieve(url, filename=None, token=None, url_retrieve=False):
     :param token: API token (str)
     """
 
-    if not url_retrieve:
+    if not url_open:
+        if token:
+            opener = build_opener()
+            opener.addheaders = [('Authorization', 'token {}'.format(token))]
+            install_opener(opener)
+        urlretrieve(url, filename)
+    else:
         req = Request(url)
         if token:
             req.add_header('Authorization', 'token {}'.format(token))
@@ -43,18 +49,10 @@ def private_file_retrieve(url, filename=None, token=None, url_retrieve=False):
         f = open(filename, 'wb')
         f.write(content)
         f.close()
-    else:
-        print("Using urlretrieve")
-        opener = build_opener()
-
-        if token:
-            opener.addheaders = [('Authorization', 'token {}'.format(token))]
-        install_opener(opener)
-        urlretrieve(url, filename)
 
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   copy_directory=None, readme_copy=False, url_retrieve=False):
+                   copy_directory=None, readme_copy=False, url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -97,7 +95,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
-                                  token=fs.token, url_retrieve=url_retrieve)
+                                  token=fs.token, url_open=url_open)
         else:
             print("File exists! Not overwriting!")
 
