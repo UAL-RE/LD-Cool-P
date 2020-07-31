@@ -14,7 +14,7 @@ config = configparser.ConfigParser()
 
 if __name__ == '__main__':
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P curation list retrieval.')
+    parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P retrieval of Qualtrics link.')
     parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
 
