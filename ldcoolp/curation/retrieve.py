@@ -3,7 +3,7 @@ import os
 from os.path import exists
 import glob
 
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
 
 from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
@@ -12,7 +12,7 @@ from ..config import api_token
 from ..config import readme_template
 
 
-def private_file_retrieve(url, filename=None, token=None):
+def private_file_retrieve(url, filename=None, token=None, url_open=False):
     """
     Purpose:
       Custom Request to privately retrieve a file with a token.
@@ -24,21 +24,28 @@ def private_file_retrieve(url, filename=None, token=None):
     :param token: API token (str)
     """
 
-    req = Request(url)
-    if token:
-        req.add_header('Authorization', 'token {}'.format(token))
+    if not url_open:
+        if token:
+            opener = build_opener()
+            opener.addheaders = [('Authorization', 'token {}'.format(token))]
+            install_opener(opener)
+        urlretrieve(url, filename)
+    else:
+        req = Request(url)
+        if token:
+            req.add_header('Authorization', 'token {}'.format(token))
 
-    response = urlopen(req)
-    content = response.read()
-    print(url)
+        response = urlopen(req)
+        content = response.read()
+        print(url)
 
-    f = open(filename, 'wb')
-    f.write(content)
-    f.close()
+        f = open(filename, 'wb')
+        f.write(content)
+        f.close()
 
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   copy_directory=None, readme_copy=False):
+                   copy_directory=None, readme_copy=False, url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -49,6 +56,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     :param data_directory: Relative folder path for primary location of data (str)
     :param copy_directory: Relative folder path for secondary location of data (str)
     :param readme_copy: Bool to indicate whether to copy README files into [copy_directory]
+    :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
     if root_directory is None:
         root_directory = os.getcwd()
@@ -81,7 +89,7 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
-                                  token=fs.token)
+                                  token=fs.token, url_open=url_open)
         else:
             print("File exists! Not overwriting!")
 

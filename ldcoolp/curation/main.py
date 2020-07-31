@@ -54,13 +54,14 @@ class PrerequisiteWorkflow:
        5. Check the README file
 
     """
-    def __init__(self, article_id):
+    def __init__(self, article_id, url_open=False):
         self.root_directory = root_directory
         self.article_id = article_id
         self.dn = DepositorName(self.article_id, fs_admin)
         self.data_directory = join(self.dn.folderName, folder_data)
 
         self.copy_data_directory = join(self.dn.folderName, folder_copy_data)
+        self.url_open = url_open
 
         self.make_folders()
 
@@ -81,7 +82,8 @@ class PrerequisiteWorkflow:
                        root_directory=self.root_directory,
                        data_directory=self.data_directory,
                        copy_directory=self.copy_data_directory,
-                       readme_copy=readme_copy_flag)
+                       readme_copy=True,
+                       url_open=self.url_open)
 
     def download_report(self):
         review_report(self.dn.folderName)
@@ -90,7 +92,7 @@ class PrerequisiteWorkflow:
         move.move_to_next(self.dn.folderName)
 
 
-def workflow(article_id):
+def workflow(article_id, url_open=False):
     """
     Purpose:
       This function follows our initial set-up to:
@@ -100,11 +102,12 @@ def workflow(article_id):
        4. Download Qualtrics Deposit Agreement form
        5. Check the README file
 
-    :param article_id:
+    :param article_id: str or int, Figshare article id
+    :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     :return:
     """
 
-    pw = PrerequisiteWorkflow(article_id)
+    pw = PrerequisiteWorkflow(article_id, url_open=url_open)
 
     # Retrieve data and place in 1.ToDo curation folder
     pw.download_data()
