@@ -10,6 +10,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
+    parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
     # parser.add_argument('--config', required=True, help='path to configuration file')
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
@@ -17,5 +18,5 @@ if __name__ == '__main__':
     cred_err = 0
 
     # Run pre-req steps
-    main.workflow(args.article_id, url_open=args.url_open)
+    main.workflow(args.article_id, url_open=args.url_open, browser=args.browser)
 
