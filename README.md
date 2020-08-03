@@ -166,7 +166,20 @@ that will be available in the v0.12.0 release:
 (curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/prereq_script --article_id 12345678
 ```
 
-Other options, specifically using a user interface, are on the roadmap.
+Additional python scripts are available to retrieve the list of pending curation and their `article_id`:
+
+```
+(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/get_curation_list \
+               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini
+```
+
+and retrieve the Qualtrics URL to provide to an author:
+
+```
+(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/generate_qualtrics_link \
+               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini --article_id 12345678
+```
+
 
 ## Versioning
 
