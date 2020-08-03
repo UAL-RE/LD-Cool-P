@@ -20,21 +20,31 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    banner_message = """
+    This is the command-line tool to generate custom Qualtrics URL for a deposit.
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+    print(banner_message)
+
     config.read(args.config)
 
-    api_token = config.get('global', 'api_token')
-    fs_admin = figshare.FigshareInstituteAdmin(token=api_token)
+    api_token = config.get('figshare', 'api_token')
+    stage_flag = config.getboolean('figshare', 'stage')
+    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
-    qualtrics_dataCenter = config.get('curation', 'qualtrics_dataCenter')
-    qualtrics_token = config.get('curation', 'qualtrics_token')
-    qualtrics_survey_id = config.get('curation', 'qualtrics_survey_id')
+    qualtrics_dataCenter = config.get('qualtrics', 'dataCenter')
+    qualtrics_token = config.get('qualtrics', 'token')
+    qualtrics_survey_id = config.get('qualtrics', 'survey_id')
     q = qualtrics.Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
 
-    dn = depositor_name.DepositorName(args.article_id, fs_admin)
-
     print("************************************")
-    print("Retrieving Deposit Agreement URL ...")
+    print(f"STATUS: Retrieving Deposit Agreement URL for {args.article_id} ...")
+
+    dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
+
     full_url = q.generate_url(dn.name_dict)
     print(full_url)
 
+    print("************************************")
     print("Exit 0")
