@@ -110,7 +110,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.11.1`.
+You should see that the version is `0.12.0`.
 
 ### Configuration Settings
 
@@ -159,14 +159,26 @@ The above script will perform the prerequisite steps of:
 5. Follow our curation workflow by relocating the content from `1.ToDo` to the
    `2.UnderReview`
 
-Another command-line approach is using the python script called `prereq_script`
-that will be available in the v0.12.0 release:
+Another command-line approach is using the python script called `prereq_script`:
 
 ```
 (curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/prereq_script --article_id 12345678
 ```
 
-Other options, specifically using a user interface, are on the roadmap.
+Additional python scripts are available to retrieve the list of pending curation and their `article_id`:
+
+```
+(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/get_curation_list \
+               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini
+```
+
+and retrieve the Qualtrics URL to provide to an author:
+
+```
+(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/generate_qualtrics_link \
+               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini --article_id 12345678
+```
+
 
 ## Versioning
 

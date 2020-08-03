@@ -82,7 +82,7 @@ class PrerequisiteWorkflow:
                        root_directory=self.root_directory,
                        data_directory=self.data_directory,
                        copy_directory=self.copy_data_directory,
-                       readme_copy=True,
+                       readme_copy=readme_copy_flag,
                        url_open=self.url_open)
 
     def download_report(self):
@@ -92,7 +92,7 @@ class PrerequisiteWorkflow:
         move.move_to_next(self.dn.folderName)
 
 
-def workflow(article_id, url_open=False):
+def workflow(article_id, url_open=False, browser=True):
     """
     Purpose:
       This function follows our initial set-up to:
@@ -104,7 +104,7 @@ def workflow(article_id, url_open=False):
 
     :param article_id: str or int, Figshare article id
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
-    :return:
+    :param browser: bool indicates opening a web browser for Qualtrics survey. Default: True
     """
 
     pw = PrerequisiteWorkflow(article_id, url_open=url_open)
@@ -117,7 +117,7 @@ def workflow(article_id, url_open=False):
 
     # Download Qualtrics deposit agreement form
     q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
-    q.retrieve_deposit_agreement(pw.dn.name_dict)
+    q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
     # Move to next curation stage, 2.UnderReview curation folder
     pw.move_to_next()

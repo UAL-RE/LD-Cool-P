@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
+from os.path import dirname
 import argparse
 
 from ldcoolp.curation import main
+
+# Version and branch info
+from ldcoolp import __version__
+from ldcoolp.get_branch_name import get_active_branch_name
+from ldcoolp import __file__ as library_path
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
 
 if __name__ == '__main__':
@@ -10,12 +18,33 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
+    parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
     # parser.add_argument('--config', required=True, help='path to configuration file')
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
-    cred_err = 0
+    branch_name = get_active_branch_name(library_root_path)
+
+    banner_message = f"""
+    This is the command-line tool that automates data retrieval, and curatorial review set-up. It:
+    1. Perform folder management for each deposit
+    2. Retrieves the dataset
+    3. Download a copy of the curatorial review process
+    4. Attempt to retrieve the Qualtrics deposit agreement or provide you with the link
+
+    LD-Cool-P branch: {branch_name}
+    LD-Cool-P version: {__version__}
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+    print(banner_message)
+
+    print("****************************")
+    print(f"Retrieving {args.article_id} ...")
 
     # Run pre-req steps
-    main.workflow(args.article_id, url_open=args.url_open)
+    main.workflow(args.article_id, url_open=args.url_open, browser=args.browser)
+
+    print("****************************")
+    print("Exit 0")
 
