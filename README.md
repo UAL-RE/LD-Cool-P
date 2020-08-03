@@ -159,8 +159,7 @@ The above script will perform the prerequisite steps of:
 5. Follow our curation workflow by relocating the content from `1.ToDo` to the
    `2.UnderReview`
 
-Another command-line approach is using the python script called `prereq_script`
-that will be available in the v0.12.0 release:
+Another command-line approach is using the python script called `prereq_script`:
 
 ```
 (curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/prereq_script --article_id 12345678
