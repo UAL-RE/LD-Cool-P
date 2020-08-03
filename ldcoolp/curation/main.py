@@ -82,7 +82,7 @@ class PrerequisiteWorkflow:
                        root_directory=self.root_directory,
                        data_directory=self.data_directory,
                        copy_directory=self.copy_data_directory,
-                       readme_copy=True,
+                       readme_copy=readme_copy_flag,
                        url_open=self.url_open)
 
     def download_report(self):
