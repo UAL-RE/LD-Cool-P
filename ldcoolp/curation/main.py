@@ -104,7 +104,7 @@ def workflow(article_id, url_open=False, browser=True):
 
     :param article_id: str or int, Figshare article id
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
-    :return:
+    :param browser: bool indicates opening a web browser for Qualtrics survey. Default: True
     """
 
     pw = PrerequisiteWorkflow(article_id, url_open=url_open)
