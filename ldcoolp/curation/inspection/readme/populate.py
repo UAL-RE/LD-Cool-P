@@ -1,13 +1,7 @@
-import configparser
-
 from figshare.figshare import Figshare  # , issue_request
 
-# Read in default configuration file
-from ldcoolp import config_file
-config = configparser.ConfigParser()
-config.read(config_file)
-
-api_token = config.get('global', 'api_token')
+# Read in default configuration settings
+from ....config import api_token
 
 if api_token is None or api_token == "***override***":
     print("ERROR: api_token not available from config file")

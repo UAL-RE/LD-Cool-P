@@ -2,8 +2,6 @@ from os.path import join
 import io
 from os import remove
 
-import configparser
-
 # CSV handling
 import zipfile
 import pandas as pd
@@ -17,17 +15,11 @@ import webbrowser
 # Convert single-entry DataFrame to dictionary
 from ldcoolp.curation import df_to_dict_single
 
-from ldcoolp import config_file
-
 # API
 from figshare.figshare import issue_request
 
-# Read in default configuration file
-config = configparser.ConfigParser()
-config.read(config_file)
-
-qualtrics_download_url = config.get('curation', 'qualtrics_download_url')
-qualtrics_generate_url = config.get('curation', 'qualtrics_generate_url')
+# Read in default configuration settings
+from ...config import qualtrics_download_url, qualtrics_generate_url
 
 # for quote and urlencode
 url_safe = '/ {},:"?=@%'
@@ -76,7 +68,7 @@ class Qualtrics:
       depositor name (implemented) and deposit title (to be implemented).
       Returns ResponseID if a unique match is available
 
-    retrieve_deposit_agreement(dn_dict=, ResponseId=)
+    retrieve_deposit_agreement(dn_dict=, ResponseId=, browser=True)
       Opens up web browser to an HTML page containing the deposit agreement.
       It will call find_deposit_agreement() with DepositorName dict if
       ResponseId is not provided. Otherwise, it will use the provided
@@ -206,7 +198,7 @@ class Qualtrics:
                 print(response_df[cols_order].to_markdown())
                 raise ValueError
 
-    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None):
+    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, browser=True):
         """Opens web browser to navigate to a page with Deposit Agreement Form"""
 
         if isinstance(ResponseId, type(None)):
@@ -225,12 +217,19 @@ class Qualtrics:
                     ResponseId = None
 
         if not isinstance(ResponseId, type(None)):
-            print("Bringing up a window to login to Qualtrics with SSO ....")
-            webbrowser.open('https://qualtrics.arizona.edu', new=2)
-            input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
+            if browser:
+                print("Bringing up a window to login to Qualtrics with SSO ....")
+                webbrowser.open('https://qualtrics.arizona.edu', new=2)
+                input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
+            else:
+                print("CLI: Not opening a browser!")
             full_url = '{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId,
                                                  self.survey_id)
-            webbrowser.open(full_url, new=2)
+            if browser:
+                webbrowser.open(full_url, new=2)
+            else:
+                print("Here's the URL : ")
+                print(full_url)
 
     def generate_url(self, dn_dict):
         """
