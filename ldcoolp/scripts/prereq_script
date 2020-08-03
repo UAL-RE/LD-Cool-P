@@ -15,8 +15,24 @@ if __name__ == '__main__':
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
-    cred_err = 0
+    banner_message = """
+    This is the command-line tool that automates data retrieval, and curatorial review set-up. It:
+    1. Perform folder management for each deposit
+    2. Retrieves the dataset
+    3. Download a copy of the curatorial review process
+    4. Attempt to retrieve the Qualtrics deposit agreement or provide you with the link
+
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+    print(banner_message)
+
+    print("****************************")
+    print(f"Retrieving {args.article_id} ...")
 
     # Run pre-req steps
     main.workflow(args.article_id, url_open=args.url_open, browser=args.browser)
+
+    print("****************************")
+    print("Exit 0")
 
