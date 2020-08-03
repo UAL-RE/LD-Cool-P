@@ -42,9 +42,10 @@ class DepositorName:
       Retrieve string containing preferred curation folder name for deposit
     """
 
-    def __init__(self, article_id, fs_admin):
+    def __init__(self, article_id, fs_admin, verbose=True):
         self.article_id = article_id
         self.fs_admin = fs_admin
+        self.verbose = verbose
 
         # Retrieves specific information for article (includes authors)
         self.curation_id   = self.get_curation_id()
@@ -65,7 +66,8 @@ class DepositorName:
         return self.fs_admin.get_curation_details(self.curation_id)
 
     def get_name_dict(self):
-        print("Retrieving depositor_name for {} ... ".format(self.article_id))
+        if self.verbose:
+            print("Retrieving depositor_name for {} ... ".format(self.article_id))
 
         account_id = self.curation_dict['account_id']
         acct_df = self.fs_admin.get_account_list()
@@ -108,11 +110,14 @@ class DepositorName:
         # Check to see if the depositor is in the list of authors
 
         if self.name_dict['self_deposit']:
-            print("  Depositor == author")
+            if self.verbose:
+                print("  Depositor == author")
             folderName = self.name_dict['simplify_fullName']
         else:
-            print("  Depositor != author")
+            if self.verbose:
+                print("  Depositor != author")
             folderName = '{} - {}'.format(self.name_dict['simplify_fullName'],
                                           self.name_dict['authors'][0])
-        print("depository_name : {}".format(folderName))
+        if self.verbose:
+            print("depository_name : {}".format(folderName))
         return folderName
