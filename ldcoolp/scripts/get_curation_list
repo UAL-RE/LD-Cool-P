@@ -22,20 +22,31 @@ if __name__ == '__main__':
     parser.add_argument('--config', required=True, help='path to configuration file')
     args = parser.parse_args()
 
+    banner_message = """
+    This is the command-line tool to retrieve the list of pending curation.
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+    print(banner_message)
+
     config.read(args.config)
 
     api_token = config.get('figshare', 'api_token')
     stage_flag = config.getboolean('figshare', 'stage')
     fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
+    print("STATUS: Retrieving list now ...")
+
     curation_df = fs_admin.get_curation_list()
 
+    print("STATUS: Truncating to pending list ...")
     pending_curation_df = curation_df.loc[curation_df['status'] == 'pending']
     pending_curation_article = pending_curation_df['article_id'].tolist()
 
     depositor_names = ['N/A'] * len(pending_curation_df)
     titles = ['N/A'] * len(pending_curation_df)
 
+    print("STATUS: Populating depositor_name and titles ...")
     for ii in range(len(pending_curation_df)):
         dn = depositor_name.DepositorName(pending_curation_article[ii],
                                           fs_admin, verbose=False)
@@ -47,7 +58,10 @@ if __name__ == '__main__':
     pending_curation_df.insert(2, 'depositor_name', depositor_names)
     pending_curation_df.insert(3, 'title', titles)
 
-    print("**************************************")
-    print("Providing list of pending curation ...")
+    print("****************************")
+    print("List of pending curation ...")
     print(pending_curation_df[cols_order].to_markdown())
     # print(pending_curation_df[cols_order].to_markdown(index=False))  # This require v1.1.0
+
+    print("****************************")
+    print("Exit 0")
