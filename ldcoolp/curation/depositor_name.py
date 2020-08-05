@@ -109,15 +109,22 @@ class DepositorName:
     def get_folder_name(self):
         # Check to see if the depositor is in the list of authors
 
+        # Remove spaces (use underscore)
+        temp_name = self.name_dict['simplify_fullName'].replace(' ', '_')
+
         if self.name_dict['self_deposit']:
             if self.verbose:
                 print("  Depositor == author")
-            folderName = self.name_dict['simplify_fullName']
+            folderName = temp_name
         else:
             if self.verbose:
                 print("  Depositor != author")
-            folderName = '{} - {}'.format(self.name_dict['simplify_fullName'],
-                                          self.name_dict['authors'][0])
+            first_author = self.name_dict['authors'][0].replace(' ', '_')
+            folderName = f"{temp_name}-{first_author}"
+
+        # Add article_id
+        folderName += f"_{self.article_id}_v{self.curation_dict['version']}"
+
         if self.verbose:
             print("depository_name : {}".format(folderName))
         return folderName
