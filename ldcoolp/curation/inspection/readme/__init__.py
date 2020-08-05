@@ -135,9 +135,12 @@ class ReadmeClass:
         citation_list.append(f"{str_list[-2]} {str_list[-1]}")
         readme_dict['preferred_citation'] = citation_list
 
-        # If DOI available, retrieve:
-        if 'doi' in self.article_dict['item']:
-            readme_dict['doi'] = self.article_dict['item']['doi']
+        # Retrieve DOI info. Reserve if it does not exist
+        if not self.article_dict['item']['doi']:
+            # Reserve DOI
+            doi_string = self.dn.fs_admin.reserve_doi(self.article_id)
+
+            readme_dict['doi'] = doi_string
         else:
             readme_dict['doi'] = f"10.25422/azu.data.{self.article_id}"
 

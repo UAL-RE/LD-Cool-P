@@ -67,7 +67,9 @@ class PrerequisiteWorkflow:
 
     def reserve_doi(self):
         # Mint DOI if this has not been done
-        fs_admin.reserve_doi(self.article_id)
+        doi_string = fs_admin.reserve_doi(self.article_id)
+
+        return doi_string
 
     def make_folders(self):
         # Create and set permissions to rwx

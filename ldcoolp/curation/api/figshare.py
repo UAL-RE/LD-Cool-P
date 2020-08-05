@@ -282,7 +282,7 @@ class FigshareInstituteAdmin:
         if article_details['doi']:
             check = True
 
-        return check
+        return check, article_details['doi']
 
     def reserve_doi(self, article_id):
         """Reserve DOI if one has not been reserved"""
@@ -290,10 +290,12 @@ class FigshareInstituteAdmin:
         url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
 
         # Check if DOI has been reserved
-        doi_check = self.doi_check(article_id)
+        doi_check, doi_string = self.doi_check(article_id)
 
         if doi_check:
             print("DOI already reserved! Skipping... ")
+
+            return doi_string
         else:
             print("DOI reservation has not occurred...")
             src_input = input("Do you wish to reserved? Type 'Yes', otherwise this is skipped : ")
@@ -301,5 +303,7 @@ class FigshareInstituteAdmin:
                 print("Reserving DOI ... ")
                 response = issue_request('POST', url, self.headers)
                 print(f"DOI minted : {response['doi']}")
+                return response['doi']
             else:
                 print("Skipping... ")
+                return doi_string
