@@ -298,7 +298,7 @@ class FigshareInstituteAdmin:
             return doi_string
         else:
             print("DOI reservation has not occurred...")
-            src_input = input("Do you wish to reserved? Type 'Yes', otherwise this is skipped : ")
+            src_input = input("Do you wish to reserve? Type 'Yes', otherwise this is skipped : ")
             if src_input == 'Yes':
                 print("Reserving DOI ... ")
                 response = issue_request('POST', url, self.headers)
