@@ -74,6 +74,13 @@ class FigshareInstituteAdmin:
     get_curation_comments(curation_id)
       Return list containing curatorial comments of a dataset
       See: https://docs.figshare.com/#account_institution_curation_comments
+
+    doi_check(article_id)
+      Check if DOI is present/reserved
+
+    reserve_doi(article_id)
+      Reserve a DOI if one has not been reserved
+      See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
     def __init__(self, token=None, stage=False):
@@ -264,3 +271,39 @@ class FigshareInstituteAdmin:
         curation_comments = issue_request('GET', url, self.headers)
 
         return curation_comments
+
+    def doi_check(self, article_id):
+        """Check if DOI is present/reserved"""
+        url = self.endpoint(f"articles/{article_id}", institute=False)
+
+        article_details = issue_request('GET', url, self.headers)
+
+        check = False
+        if article_details['doi']:
+            check = True
+
+        return check, article_details['doi']
+
+    def reserve_doi(self, article_id):
+        """Reserve DOI if one has not been reserved"""
+
+        url = self.endpoint(f"articles/{article_id}/reserve_doi", institute=False)
+
+        # Check if DOI has been reserved
+        doi_check, doi_string = self.doi_check(article_id)
+
+        if doi_check:
+            print("DOI already reserved! Skipping... ")
+
+            return doi_string
+        else:
+            print("DOI reservation has not occurred...")
+            src_input = input("Do you wish to reserve? Type 'Yes', otherwise this is skipped : ")
+            if src_input == 'Yes':
+                print("Reserving DOI ... ")
+                response = issue_request('POST', url, self.headers)
+                print(f"DOI minted : {response['doi']}")
+                return response['doi']
+            else:
+                print("Skipping... ")
+                return doi_string
