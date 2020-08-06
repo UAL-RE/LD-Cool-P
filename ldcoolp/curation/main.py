@@ -65,6 +65,12 @@ class PrerequisiteWorkflow:
 
         self.make_folders()
 
+    def reserve_doi(self):
+        # Mint DOI if this has not been done
+        doi_string = fs_admin.reserve_doi(self.article_id)
+
+        return doi_string
+
     def make_folders(self):
         # Create and set permissions to rwx
         full_data_path = join(self.root_directory, self.data_directory)
@@ -108,6 +114,9 @@ def workflow(article_id, url_open=False, browser=True):
     """
 
     pw = PrerequisiteWorkflow(article_id, url_open=url_open)
+
+    # Check if a DOI is reserved. If not, reserve DOI
+    pw.reserve_doi()
 
     # Retrieve data and place in 1.ToDo curation folder
     pw.download_data()

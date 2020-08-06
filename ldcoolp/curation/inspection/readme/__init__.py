@@ -1,5 +1,6 @@
 from os.path import exists, join, dirname
 from os import walk
+import shutil
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
@@ -135,9 +136,12 @@ class ReadmeClass:
         citation_list.append(f"{str_list[-2]} {str_list[-1]}")
         readme_dict['preferred_citation'] = citation_list
 
-        # If DOI available, retrieve:
-        if 'doi' in self.article_dict['item']:
-            readme_dict['doi'] = self.article_dict['item']['doi']
+        # Retrieve DOI info. Reserve if it does not exist
+        if not self.article_dict['item']['doi']:
+            # Reserve DOI
+            doi_string = self.dn.fs_admin.reserve_doi(self.article_id)
+
+            readme_dict['doi'] = doi_string
         else:
             readme_dict['doi'] = f"10.25422/azu.data.{self.article_id}"
 
@@ -170,6 +174,13 @@ class ReadmeClass:
 
         if not exists(self.readme_file_path):
             print(f"Constructing README file based on {self.template_source} template...")
+
+            if self.template_source == 'default':
+                print(f"Saving {self.template_source} template in DATA ...")
+
+                src_file = join(dirname(__file__), readme_template)
+                dest_file = join(self.data_path, readme_template)
+                shutil.copy(src_file, dest_file)
 
             # Write file
             print(f"Writing file : {self.readme_file_path}")
