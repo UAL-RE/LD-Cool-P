@@ -43,14 +43,18 @@ def main(depositor_name, source_stage, dest_stage):
                        folder_reviewed, folder_published, or folder_rejected
     """
 
-    # Define path:
-    source_path = join(root_directory_main, source_stage, depositor_name)
-    dest_path = join(root_directory_main, dest_stage, depositor_name)
+    try:
+        # Define path:
+        source_path = join(root_directory_main, source_stage, depositor_name)
 
-    # Move folder
-    print("Moving: {} from {} to ...".format(depositor_name, source_stage))
-    print(" ... {} on {}".format(dest_stage, root_directory_main))
-    shutil.move(source_path, dest_path)
+        dest_path = join(root_directory_main, dest_stage, depositor_name)
+
+        # Move folder
+        print("Moving: {} from {} to ...".format(depositor_name, source_stage))
+        print(" ... {} on {}".format(dest_stage, root_directory_main))
+        shutil.move(source_path, dest_path)
+    except FileNotFoundError:
+        print(f"WARNING: Unable to find source_path for {depositor_name}")
 
 
 def move_to_next(depositor_name):
@@ -61,16 +65,19 @@ def move_to_next(depositor_name):
     :param depositor_name: Exact name of the data curation folder with spaces
     """
 
-    # Get current path
-    source_stage = get_source_stage(depositor_name)
+    try:
+        # Get current path
+        source_stage = get_source_stage(depositor_name)
 
-    # Get destination path
-    dest_stage_i = [i+1 for i in range(len(stage_list)) if
-                    stage_list[i] == source_stage][0]
-    dest_stage = stage_list[dest_stage_i]
+        # Get destination path
+        dest_stage_i = [i+1 for i in range(len(stage_list)) if
+                        stage_list[i] == source_stage][0]
+        dest_stage = stage_list[dest_stage_i]
 
-    # Move folder
-    main(depositor_name, source_stage, dest_stage)
+        # Move folder
+        main(depositor_name, source_stage, dest_stage)
+    except FileNotFoundError:
+        print(f"WARNING: Unable to find source_path for {depositor_name}")
 
 
 def reject(depositor_name):
@@ -80,8 +87,12 @@ def reject(depositor_name):
 
     :param depositor_name: Exact name of the data curation folder with spaces
     """
-    # Get current path
-    source_stage = get_source_stage(depositor_name)
 
-    # Move folder to reject
-    main(depositor_name, source_stage, rejected_folder)
+    try:
+        # Get current path
+        source_stage = get_source_stage(depositor_name)
+
+        # Move folder to reject
+        main(depositor_name, source_stage, rejected_folder)
+    except FileNotFoundError:
+        print(f"WARNING: Unable to find source_path for {depositor_name}")
