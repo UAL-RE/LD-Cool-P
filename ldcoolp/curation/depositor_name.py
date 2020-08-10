@@ -122,8 +122,13 @@ class DepositorName:
             first_author = self.name_dict['authors'][0].replace(' ', '_')
             folderName = f"{temp_name}-{first_author}"
 
-        # Add article_id
-        folderName += f"_{self.article_id}_v{self.curation_dict['version']}"
+        # Add article_id and version number
+        if self.curation_dict['status'] == 'approved':
+            new_vers = self.curation_dict['version']
+        else:
+            new_vers = self.curation_dict['version'] + 1
+
+        folderName += f"_{self.article_id}_v{new_vers}"
 
         if self.verbose:
             print("depository_name : {}".format(folderName))
