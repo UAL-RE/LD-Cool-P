@@ -1,4 +1,4 @@
-from os.path import join, dirname
+from os.path import join, dirname, exists
 import shutil
 from glob import glob
 
@@ -43,17 +43,16 @@ def main(depositor_name, source_stage, dest_stage):
                        folder_reviewed, folder_published, or folder_rejected
     """
 
-    try:
-        # Define path:
-        source_path = join(root_directory_main, source_stage, depositor_name)
+    # Define paths:
+    source_path = join(root_directory_main, source_stage, depositor_name)
+    dest_path = join(root_directory_main, dest_stage, depositor_name)
 
-        dest_path = join(root_directory_main, dest_stage, depositor_name)
-
-        # Move folder
-        print("Moving: {} from {} to ...".format(depositor_name, source_stage))
-        print(" ... {} on {}".format(dest_stage, root_directory_main))
+    # Move folder
+    if exists(source_path):
+        print(f"Moving: {depositor_name} from {source_stage} to ...")
+        print(f" ... {dest_stage} on {root_directory_main}")
         shutil.move(source_path, dest_path)
-    except FileNotFoundError:
+    else:
         print(f"WARNING: Unable to find source_path for {depositor_name}")
 
 
