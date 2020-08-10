@@ -40,11 +40,24 @@ if __name__ == '__main__':
     print(banner_message)
 
     print("****************************")
-    print(f"Retrieving {args.article_id} ...")
 
-    # Run pre-req steps
-    main.workflow(args.article_id, url_open=args.url_open, browser=args.browser)
+    # Separate comma-separated list of articles
+    articles = args.article_id.split(',')
+    num_articles = len(articles)
+
+    print(f"INFO: Number of Deposits: {num_articles}")
+
+    # Loop over each article
+    count = 0
+    for ii in range(len(articles)):
+        print(f"Retrieving {articles[ii]}")  # ... {ii+1} / {num_articles}")
+
+        # Run pre-req steps
+        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser)
+        count += 1
+
+        print(f"STATUS: Completed ... {articles[ii]} ...")
+        print(f"STATUS: Completed ... {count} / {num_articles}")
 
     print("****************************")
-    print("Exit 0")
-
+    print("STATUS: Exit 0")

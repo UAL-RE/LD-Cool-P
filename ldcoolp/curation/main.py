@@ -2,7 +2,7 @@ from os.path import join, exists
 from os import makedirs, chmod
 
 # Admin
-from ..admin import move
+from ldcoolp.admin import move
 
 # Curation
 from ldcoolp.curation.retrieve import download_files
@@ -63,7 +63,16 @@ class PrerequisiteWorkflow:
         self.copy_data_directory = join(self.dn.folderName, folder_copy_data)
         self.url_open = url_open
 
-        self.make_folders()
+        # Check if dataset has been retrieved
+        try:
+            source_stage = move.get_source_stage(self.dn.folderName)
+            print(f"WARNING: Curation folder exists in {source_stage}. Will not retrieve!")
+            self.new_set = False
+        except FileNotFoundError:
+            self.new_set = True
+
+            # Create folders
+            self.make_folders()
 
     def reserve_doi(self):
         # Mint DOI if this has not been done
@@ -84,15 +93,17 @@ class PrerequisiteWorkflow:
             chmod(full_copy_data_path, 0o777)
 
     def download_data(self):
-        download_files(self.article_id, fs=fs,
-                       root_directory=self.root_directory,
-                       data_directory=self.data_directory,
-                       copy_directory=self.copy_data_directory,
-                       readme_copy=readme_copy_flag,
-                       url_open=self.url_open)
+        if self.new_set:
+            download_files(self.article_id, fs=fs,
+                           root_directory=self.root_directory,
+                           data_directory=self.data_directory,
+                           copy_directory=self.copy_data_directory,
+                           readme_copy=readme_copy_flag,
+                           url_open=self.url_open)
 
     def download_report(self):
-        review_report(self.dn.folderName)
+        if self.new_set:
+            review_report(self.dn.folderName)
 
     def move_to_next(self):
         move.move_to_next(self.dn.folderName)
@@ -115,22 +126,24 @@ def workflow(article_id, url_open=False, browser=True):
 
     pw = PrerequisiteWorkflow(article_id, url_open=url_open)
 
-    # Check if a DOI is reserved. If not, reserve DOI
-    pw.reserve_doi()
+    # Perform prerequisite workflow if dataset is entirely new
+    if pw.new_set:
+        # Check if a DOI is reserved. If not, reserve DOI
+        pw.reserve_doi()
 
-    # Retrieve data and place in 1.ToDo curation folder
-    pw.download_data()
+        # Retrieve data and place in 1.ToDo curation folder
+        pw.download_data()
 
-    # Download curation report
-    pw.download_report()
+        # Download curation report
+        pw.download_report()
 
-    # Download Qualtrics deposit agreement form
-    q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
-    q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
+        # Download Qualtrics deposit agreement form
+        q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
+        q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
-    # Move to next curation stage, 2.UnderReview curation folder
-    pw.move_to_next()
+        # Move to next curation stage, 2.UnderReview curation folder
+        pw.move_to_next()
 
-    # Check for README file and create one if it does not exist
-    rc = ReadmeClass(pw.dn)
-    rc.main()
+        # Check for README file and create one if it does not exist
+        rc = ReadmeClass(pw.dn)
+        rc.main()
