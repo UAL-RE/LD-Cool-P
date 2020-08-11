@@ -18,7 +18,7 @@ from ldcoolp.curation.api.qualtrics import Qualtrics
 # Read in default configuration settings
 from ..config import root_directory_main
 from ..config import todo_folder, folder_copy_data, folder_data
-from ..config import readme_copy_flag, stage_flag
+from ..config import stage_flag
 from ..config import api_token
 from ..config import qualtrics_survey_id, qualtrics_token, qualtrics_dataCenter
 
@@ -97,8 +97,6 @@ class PrerequisiteWorkflow:
             download_files(self.article_id, fs=fs,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
-                           copy_directory=self.copy_data_directory,
-                           readme_copy=readme_copy_flag,
                            url_open=self.url_open)
 
     def download_report(self):

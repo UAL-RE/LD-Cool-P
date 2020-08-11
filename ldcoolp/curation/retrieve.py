@@ -1,7 +1,5 @@
-import shutil
 import os
 from os.path import exists
-import glob
 
 from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
 
@@ -9,7 +7,6 @@ from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
 
 from ..config import api_token
-from ..config import readme_template
 
 
 def private_file_retrieve(url, filename=None, token=None, url_open=False):
@@ -22,6 +19,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
     :param url: Full URL (str)
     :param filename: Full filename for file to be written (str)
     :param token: API token (str)
+    :param url_open: Boolean to indicate whether to use urlopen. Default: False
     """
 
     if not url_open:
@@ -45,7 +43,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
 
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   copy_directory=None, readme_copy=False, url_open=False):
+                   url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -54,8 +52,6 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     :param fs: Figshare object
     :param root_directory: Root path for curation workflow (str)
     :param data_directory: Relative folder path for primary location of data (str)
-    :param copy_directory: Relative folder path for secondary location of data (str)
-    :param readme_copy: Bool to indicate whether to copy README files into [copy_directory]
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
     if root_directory is None:
@@ -94,7 +90,5 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
             print("File exists! Not overwriting!")
 
     # Change permissions on folders and files
-    if not readme_copy:
-        permissions.curation(dir_path)
-    else:
-        permissions.curation(dir_path, mode=0o555)  # read and execute only
+    # permissions.curation(dir_path)
+    permissions.curation(dir_path, mode=0o555)  # read and execute only
