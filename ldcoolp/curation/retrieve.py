@@ -1,7 +1,5 @@
-import shutil
 import os
 from os.path import exists
-import glob
 
 from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
 
@@ -9,7 +7,6 @@ from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
 
 from ..config import api_token
-from ..config import readme_template
 
 
 def private_file_retrieve(url, filename=None, token=None, url_open=False):
@@ -22,6 +19,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
     :param url: Full URL (str)
     :param filename: Full filename for file to be written (str)
     :param token: API token (str)
+    :param url_open: Boolean to indicate whether to use urlopen. Default: False
     """
 
     if not url_open:
@@ -45,7 +43,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
 
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   copy_directory=None, readme_copy=False, url_open=False):
+                   url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -54,8 +52,6 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     :param fs: Figshare object
     :param root_directory: Root path for curation workflow (str)
     :param data_directory: Relative folder path for primary location of data (str)
-    :param copy_directory: Relative folder path for secondary location of data (str)
-    :param readme_copy: Bool to indicate whether to copy README files into [copy_directory]
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
     if root_directory is None:
@@ -94,43 +90,5 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
             print("File exists! Not overwriting!")
 
     # Change permissions on folders and files
-    if not readme_copy:
-        permissions.curation(dir_path)
-    else:
-        permissions.curation(dir_path, mode=0o555)  # read and execute only
-
-        # Save a copy of README files
-        if copy_directory:
-            print("Saving a copy in {}".format(copy_directory))
-
-            # Create [copy_path] location
-            copy_path = os.path.join(root_directory, copy_directory)
-            os.makedirs(copy_path, exist_ok=True)
-
-            README_files = glob.glob(os.path.join(dir_path, 'README*.txt')) + \
-                           glob.glob(os.path.join(dir_path, 'README*.md'))
-            if len(README_files) != 0:
-                for r_file in README_files:
-                    print("Saving a copy of : {}".format(r_file))
-                    shutil.copy(r_file, copy_path)
-
-                if len(README_files) == 1:
-                    print("Only one README file found!")
-                    print("Renaming to README_template.md")
-
-                    src_rename = os.path.join(copy_path,
-                                              os.path.basename(README_files[0]))
-                    dst_rename = os.path.join(copy_path, readme_template)
-                    os.rename(src_rename, dst_rename)
-                else:
-                    print("More than one README file found!")
-                    print("Manual intervention needed ...")
-                    print(f"Select and save a README file in {copy_path} as {readme_template}")
-                    input("Hit ENTER when ready to proceed ...")
-            else:
-                print("No README files found.")
-                print(f"Note: default {readme_template} will be used")
-
-            permissions.curation(copy_path)  # rwx permissions
-        else:
-            print("Not saving a copy in {}".format(copy_directory))
+    # permissions.curation(dir_path)
+    permissions.curation(dir_path, mode=0o555)  # read and execute only
