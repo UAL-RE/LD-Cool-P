@@ -98,39 +98,3 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
         permissions.curation(dir_path)
     else:
         permissions.curation(dir_path, mode=0o555)  # read and execute only
-
-        # Save a copy of README files
-        if copy_directory:
-            print("Saving a copy in {}".format(copy_directory))
-
-            # Create [copy_path] location
-            copy_path = os.path.join(root_directory, copy_directory)
-            os.makedirs(copy_path, exist_ok=True)
-
-            README_files = glob.glob(os.path.join(dir_path, 'README*.txt')) + \
-                           glob.glob(os.path.join(dir_path, 'README*.md'))
-            if len(README_files) != 0:
-                for r_file in README_files:
-                    print("Saving a copy of : {}".format(r_file))
-                    shutil.copy(r_file, copy_path)
-
-                if len(README_files) == 1:
-                    print("Only one README file found!")
-                    print("Renaming to README_template.md")
-
-                    src_rename = os.path.join(copy_path,
-                                              os.path.basename(README_files[0]))
-                    dst_rename = os.path.join(copy_path, readme_template)
-                    os.rename(src_rename, dst_rename)
-                else:
-                    print("More than one README file found!")
-                    print("Manual intervention needed ...")
-                    print(f"Select and save a README file in {copy_path} as {readme_template}")
-                    input("Hit ENTER when ready to proceed ...")
-            else:
-                print("No README files found.")
-                print(f"Note: default {readme_template} will be used")
-
-            permissions.curation(copy_path)  # rwx permissions
-        else:
-            print("Not saving a copy in {}".format(copy_directory))

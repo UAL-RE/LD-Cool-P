@@ -1,6 +1,7 @@
-from os.path import exists, join, dirname
+from os.path import exists, join, dirname, basename
 from os import walk
 import shutil
+from glob import glob
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
@@ -9,7 +10,7 @@ from html2text import html2text
 from ....admin import permissions
 
 # Read in default configuration settings
-from ....config import folder_copy_data, root_directory_main
+from ....config import folder_copy_data, folder_data, root_directory_main
 from ....config import underreview_folder, readme_template
 
 root_directory = join(root_directory_main, underreview_folder)
@@ -49,20 +50,23 @@ class ReadmeClass:
 
     Methods
     -------
-    import_template(template)
-      Returns a jinja2 template by importing markdown README file (README_template.txt) into jinja template
+    get_readme_files()
+      Return list of README files in the ORIGINAL_DATA path
+
+    check_for_readme()
+      Check if a README file is provided and provide list of README files
+
+    save_template()
+      Save either default or user-provided templates in DATA path
+
+    import_template()
+     Returns a jinja2 template by importing markdown README file (README_template.md)
 
     retrieve article_metadata()
       Returns a dictionary containing metadata for jinja2 template
 
     construct()
-      Write README.txt by using jinja2 rendering
-
-    retrieve()
-      Checks to see if file exists and execute construct()
-
-    walkthrough(data_path, ignore)
-      Identify other possible locations for README.txt
+      Create README.txt file with jinja2 README template and populate with metadata information
 
     main()
       Construct README.txt by calling retrieve
@@ -74,39 +78,85 @@ class ReadmeClass:
         self.article_id = self.dn.article_id
         self.article_dict = self.dn.curation_dict
 
-        self.data_path = join(root_directory, self.folderName,
-                              folder_copy_data)
+        # Paths
+        self.folder_path = join(root_directory, self.folderName)
+        self.data_path = join(self.folder_path, folder_copy_data)      # DATA
+        self.original_data_path = join(self.folder_path, folder_data)  # ORIGINAL_DATA
 
-        # This is the path of the final README.txt file for creation
+        # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
-        # Use README template in DATA folder if exists. Otherwise, use default
-        user_readme_template = join(self.data_path, readme_template)
-        if exists(user_readme_template):
-            print(f"{readme_template} found in DATA folder!")
-            src_input = input("Type 'Yes' if you wish to use.  Anything else will use 'default' : ")
-            if src_input == 'Yes':
-                self.template_source = 'user'
-            else:
-                self.template_source = 'default'
-        else:
-            print("Unable to find README_template.txt in DATA folder. Using 'default'")
-            self.template_source = 'default'
-
-        self.readme_template = self.import_template(temp_src=self.template_source)
-
+        # Retrieve Figshare metadata for jinja template engine
         self.readme_dict = self.retrieve_article_metadata()
 
-    def import_template(self, temp_src='default'):
-        if temp_src not in ['default', 'user']:
-            print("Incorrect [template] input")
-            raise ValueError
+        # Retrieve list of README files provided by user
+        self.README_files = self.get_readme_files()
 
-        template_location = dirname(__file__)
-        if temp_src == 'user':
-            template_location = self.data_path
+        try:
+            # Define template_source
+            self.template_source = self.check_for_readme()
 
-        file_loader = FileSystemLoader(template_location)
+            # Save copy of template in DATA as README_template.md
+            self.save_template()
+
+            # Import README template as jinja2 template
+            self.readme_template = self.import_template()
+        except SystemError:
+            print("WARNING: More than one README files found!")
+
+    def get_readme_files(self):
+        """Return list of README files in the ORIGINAL_DATA path"""
+        README_files = glob(join(self.original_data_path, 'README*.txt'))
+        README_files += glob(join(self.original_data_path, 'README*.md'))
+
+        return README_files
+
+    def check_for_readme(self):
+        """Check if a README file is provided and provide list of README files"""
+
+        if len(self.README_files) == 0:
+            print("No README files found.")
+            print(f"Note: default {readme_template} will be used")
+            template_source = 'default'
+        else:
+            if len(self.README_files) == 1:
+                print("Only one README file found!")
+
+                print("Type 'Yes'/'yes' if you wish to use as template.")
+                src_input = input("Anything else will use 'default' : ")
+                if src_input.lower() == 'yes':
+                    template_source = 'user'
+                else:
+                    template_source = 'default'
+            else:
+                print("More than one README file found!")
+                print("Manual intervention needed ...")
+                raise SystemError
+                # print(f"Select and save a README file in {copy_path} as {readme_template}")
+
+        return template_source
+
+    def save_template(self):
+        """Save either default or user-provided templates in DATA path"""
+
+        dest_file = join(self.data_path, readme_template)
+
+        if not exists(dest_file):
+            print(f"Saving {self.template_source} template in DATA ...")
+
+            if self.template_source == 'default':
+                src_file = join(dirname(__file__), readme_template)
+            else:
+                src_file = self.README_files[0]
+
+            shutil.copy(src_file, dest_file)
+        else:
+            print(f"{readme_template} exists. Not overwriting template!")
+
+    def import_template(self):
+        """Returns a jinja2 template by importing README markdown template (README_template.md)"""
+
+        file_loader = FileSystemLoader(self.data_path)
         env = Environment(loader=file_loader)
 
         jinja_template = env.get_template(readme_template)
@@ -143,7 +193,7 @@ class ReadmeClass:
 
             readme_dict['doi'] = doi_string
         else:
-            readme_dict['doi'] = f"10.25422/azu.data.{self.article_id}"
+            readme_dict['doi'] = f"10.25422/azu.data.{self.article_id} [DOI NOT MINTED!]"
 
         readme_dict['lastname'] = self.dn.name_dict['surName']
         readme_dict['firstname'] = self.dn.name_dict['firstName']
@@ -165,22 +215,10 @@ class ReadmeClass:
         return readme_dict
 
     def construct(self):
-        """
-        Purpose:
-          Create README.txt file with jinja2 README template and populate with
-          metadata information
-
-        """
+        """Create README.txt file with jinja2 README template and populate with metadata information"""
 
         if not exists(self.readme_file_path):
-            print(f"Constructing README file based on {self.template_source} template...")
-
-            if self.template_source == 'default':
-                print(f"Saving {self.template_source} template in DATA ...")
-
-                src_file = join(dirname(__file__), readme_template)
-                dest_file = join(self.data_path, readme_template)
-                shutil.copy(src_file, dest_file)
+            print(f"Constructing README.txt file based on {self.template_source} template...")
 
             # Write file
             print(f"Writing file : {self.readme_file_path}")
@@ -190,51 +228,35 @@ class ReadmeClass:
             f.writelines(content_list)
             f.close()
         else:
-            print("Default README file found! Not overwriting with template!")
+            print("Default README.txt file found! Not overwriting with template!")
 
         # Set permission for rwx
         permissions.curation(self.readme_file_path)
 
-    @staticmethod
-    def walkthrough(data_path, ignore=''):
-        """
-        Purpose:
-          Perform walkthrough to find other README files
-
-        :param data_path: path to DATA folder
-        :param ignore: full path of default README.txt to ignore
-        :return:
-        """
-
-        for dir_path, dir_names, files in walk(data_path):
-            for file in files:
-                if 'README' in file.upper():  # case insensitive
-                    file_fullname = join(dir_path, file)
-                    if file_fullname != ignore:
-                        print("File exists : {}".format(file_fullname))
-
     def main(self):
-        """
-        Purpose:
-          Check that a README file exists
+        """Main function for README file construction"""
 
-        :return: Will raise error
-        """
-
-        if exists(self.readme_file_path):
-            print("Default README.txt file exists!!!")
-
-            print("Checking for additional README files")
-            self.walkthrough(self.data_path, ignore=self.readme_file_path)
+        user_response = input("If you wish to create a README file, type 'Yes'/'yes'. Anything else will exit : ")
+        if user_response.lower() == "yes":
+            self.construct()
         else:
-            print("Default README.txt file DOES NOT exist!!!")
-            print("Searching other possible locations...")
+            print("Exiting script")
+            return
 
-            self.walkthrough(self.data_path)
 
-            user_response = input("If you wish to create a README file, type 'Yes'. RETURN KEY will exit : ")
-            if user_response == "Yes":
-                self.construct()
-            else:
-                print("Exiting script")
-                return
+def walkthrough(data_path, ignore=''):
+    """
+    Purpose:
+      Perform walkthrough to find other README files
+
+    :param data_path: path to DATA folder
+    :param ignore: full path of default README.txt to ignore
+    :return:
+    """
+
+    for dir_path, dir_names, files in walk(data_path):
+        for file in files:
+            if 'README' in file.upper():  # case insensitive
+                file_fullname = join(dir_path, file)
+                if file_fullname != ignore:
+                    print("File exists : {}".format(file_fullname))
