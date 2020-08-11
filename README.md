@@ -196,6 +196,7 @@ v0.13.0
    Handles multiple deposits from same depositor, including different versions #55
  * Script automation can handle multiple dataset retrieval #72
  * Re-organization of README-related functionality into `ReadmeClass` #80
+ * Minor `curation.main` workflow improvements #81 and #82
 
 v0.12.0 - 0.12.1
  * Centralized definition of configuration settings #60
