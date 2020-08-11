@@ -11,9 +11,9 @@ from ....admin import permissions
 
 # Read in default configuration settings
 from ....config import folder_copy_data, folder_data, root_directory_main
-from ....config import underreview_folder, readme_template
+from ....config import todo_folder, readme_template
 
-root_directory = join(root_directory_main, underreview_folder)
+root_directory = join(root_directory_main, todo_folder)
 
 
 class ReadmeClass:

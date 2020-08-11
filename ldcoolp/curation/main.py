@@ -139,9 +139,10 @@ def workflow(article_id, url_open=False, browser=True):
         q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
         q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
-        # Move to next curation stage, 2.UnderReview curation folder
-        pw.move_to_next()
-
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn)
         rc.main()
+
+        # Move to next curation stage, 2.UnderReview curation folder
+        pw.move_to_next()
+
