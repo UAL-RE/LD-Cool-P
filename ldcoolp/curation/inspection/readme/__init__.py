@@ -102,6 +102,7 @@ class ReadmeClass:
             # Import README template as jinja2 template
             self.readme_template = self.import_template()
         except SystemError:
+            self.template_source = 'unknown'
             print("WARNING: More than one README files found!")
 
     def get_readme_files(self):
@@ -236,12 +237,15 @@ class ReadmeClass:
     def main(self):
         """Main function for README file construction"""
 
-        user_response = input("If you wish to create a README file, type 'Yes'/'yes'. Anything else will exit : ")
-        if user_response.lower() == "yes":
-            self.construct()
+        if self.template_source != 'unknown':
+            user_response = input("If you wish to create a README file, type 'Yes'/'yes'. Anything else will exit : ")
+            if user_response.lower() == "yes":
+                self.construct()
+            else:
+                print("Exiting script")
+                return
         else:
-            print("Exiting script")
-            return
+            print(f"Multiple README files. Unable to save {readme_template} and README.txt")
 
 
 def walkthrough(data_path, ignore=''):

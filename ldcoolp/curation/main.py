@@ -144,7 +144,8 @@ def workflow(article_id, url_open=False, browser=True):
         rc.main()
 
         # Move to next curation stage, 2.UnderReview curation folder
-        print("Do you wish to move deposit to the next curation stage?")
-        user_response = input("Type 'Yes'/'yes'. Anything else will skip : ")
-        if user_response.lower == 'yes':
-            pw.move_to_next()
+        if rc.template_source != 'unknown':
+            print("Do you wish to move deposit to the next curation stage?")
+            user_response = input("Type 'Yes'/'yes'. Anything else will skip : ")
+            if user_response.lower == 'yes':
+                pw.move_to_next()
