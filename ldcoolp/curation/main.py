@@ -18,7 +18,7 @@ from ldcoolp.curation.api.qualtrics import Qualtrics
 # Read in default configuration settings
 from ..config import root_directory_main
 from ..config import todo_folder, folder_copy_data, folder_data
-from ..config import readme_copy_flag, stage_flag
+from ..config import stage_flag
 from ..config import api_token
 from ..config import qualtrics_survey_id, qualtrics_token, qualtrics_dataCenter
 
@@ -97,8 +97,6 @@ class PrerequisiteWorkflow:
             download_files(self.article_id, fs=fs,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
-                           copy_directory=self.copy_data_directory,
-                           readme_copy=readme_copy_flag,
                            url_open=self.url_open)
 
     def download_report(self):
@@ -141,9 +139,13 @@ def workflow(article_id, url_open=False, browser=True):
         q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
         q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
-        # Move to next curation stage, 2.UnderReview curation folder
-        pw.move_to_next()
-
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn)
         rc.main()
+
+        # Move to next curation stage, 2.UnderReview curation folder
+        if rc.template_source != 'unknown':
+            print("Do you wish to move deposit to the next curation stage?")
+            user_response = input("Type 'Yes'/'yes'. Anything else will skip : ")
+            if user_response.lower == 'yes':
+                pw.move_to_next()

@@ -8,6 +8,7 @@
     - [Testing Installation](#testing-installation)
 - [Execution](#execution)
 - [Versioning](#versioning)
+- [Changelog](#changelog)
 - [Authors](#authors)
 - [License](#license)
 
@@ -110,7 +111,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.12.0`.
+You should see that the version is `0.13.0`.
 
 ### Configuration Settings
 
@@ -185,6 +186,69 @@ and retrieve the Qualtrics URL to provide to an author:
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
 [tags on this repository](https://github.com/ualibraries/LD_Cool_P/tags).
 
+## Changelog
+
+A list of released features and their issue number(s).
+List is sorted from moderate to minor revisions for reach release.
+
+v0.13.0
+ * Re-definition of `DepositorName` `folderName` for uniqueness.
+   Handles multiple deposits from same depositor, including different versions #55
+ * Script automation can handle multiple dataset retrieval #72
+ * Re-organization of README-related functionality into `ReadmeClass` #80
+ * Minor `curation.main` workflow improvements #81 and #82
+
+v0.12.0 - 0.12.1
+ * Centralized definition of configuration settings #60
+ * Scripts for data curation #59
+ * Figshare API DOI minting #58
+ * Figshare file retrieval with memory caching #69
+ * Add option to disable opening web browser for CLI #70
+ * Add option to disable verbosity with `DepositorName` call #74
+ * Establish a copy of README_template even when using the default template #77
+
+v0.11.0 - 0.11.1:
+ * Data Curation README inspection tool (`ReadmeClass`) with `jinja2` #15
+ * Documentation update for installation, configuration settings, CLI
+ * Use `pandas.to_markdown()` to prettify output #24
+
+v0.10.0 - 0.10.1:
+ * Re-organization of data curation workflow with ORIGINAL_DATA and DATA folder #38
+ * Figshare API endpoint support for stage institutional instances #62
+
+v0.9.0 - 0.9.3:
+ * Re-naming of software #34
+ * Minor bug with permission issue tool #45
+ * Minor bug with ill-determined Qualtrics ResponseId #48
+ * Minor bug with limited retrieval curation list in `FigshareInstituteAdmin` #50
+
+v0.8.0 - 0.8.1:
+ * Update to `Qualtrics` class for web browser handling #24
+ * Embedded data for Qualtrics #37, #40
+
+v0.7.0:
+ * Re-packaging for easier installation #9
+ * Variable definition of configuration file #9
+
+v0.6.0:
+ * Identification of depositor and other information with `DepositorName` class #28
+
+v0.5.0:
+ * Primary pre-requisite curation workflow (`curation.main`) #20
+ * `Qualtrics` API implementation #24
+
+v0.4.0:
+ * Data curation workflow move tool #19
+
+v0.3.0 - 0.3.1:
+ * Retrieval of curation report #12, #17
+
+v0.2.0:
+ * File permission settings #6
+
+v0.1.0:
+ * Figshare administrative tool for institution with `FigshareInstituteAdmin` class #1
+ * Private file retrieval #1
 
 ## Authors
 
