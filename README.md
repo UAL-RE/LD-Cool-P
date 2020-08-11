@@ -191,6 +191,11 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
+v0.13.0
+ * Re-definition of `DepositorName` `folderName` for uniqueness.
+   Handles multiple deposits from same depositor, including different versions #55
+ * Script automation can handle multiple dataset retrieval #72
+
 v0.12.0 - 0.12.1
  * Centralized definition of configuration settings #60
  * Scripts for data curation #59
@@ -201,9 +206,9 @@ v0.12.0 - 0.12.1
  * Establish a copy of README_template even when using the default template #77
 
 v0.11.0 - 0.11.1:
- * Data Curation README inspection tool with `jinja` template #15
+ * Data Curation README inspection tool (`ReadmeClass`) with `jinja2` #15
  * Documentation update for installation, configuration settings, CLI
- * Use pandas to_markdown() for prettify output #24
+ * Use `pandas.to_markdown()` to prettify output #24
 
 v0.10.0 - 0.10.1:
  * Re-organization of data curation workflow with ORIGINAL_DATA and DATA folder #38
