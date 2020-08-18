@@ -61,7 +61,8 @@ class DepositorName:
         # This retrieves basic curation information for article (this includes all curation)
         cur_df = self.fs_admin.get_curation_list(article_id=self.article_id)
 
-        cur_loc_dict = df_to_dict_single(cur_df, curation_id=self.curation_id)
+        # By default it retrieves the most recent one
+        cur_loc_dict = df_to_dict_single(cur_df)
 
         return cur_loc_dict['id']
 
