@@ -42,6 +42,9 @@ if __name__ == '__main__':
     banner_message = f"""
     This is the command-line tool that maps the old folder names to the new ones.
 
+    Note that it is not perfect as the old names have changed over time.
+    Thus, user intervention is required.  However, the new name is correct
+
     LD-Cool-P branch: {branch_name}
     LD-Cool-P version: {__version__}
     Created by Chun Ly
