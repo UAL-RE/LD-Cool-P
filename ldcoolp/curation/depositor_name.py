@@ -42,22 +42,26 @@ class DepositorName:
       Retrieve string containing preferred curation folder name for deposit
     """
 
-    def __init__(self, article_id, fs_admin, verbose=True):
+    def __init__(self, article_id, fs_admin, curation_id=None, verbose=True):
         self.article_id = article_id
         self.fs_admin = fs_admin
         self.verbose = verbose
 
         # Retrieves specific information for article (includes authors)
-        self.curation_id   = self.get_curation_id()
+        if isinstance(curation_id, type(None)):
+            self.curation_id = self.get_curation_id()
+        else:
+            self.curation_id = curation_id
         self.curation_dict = self.get_curation_dict()
 
         self.name_dict  = self.get_name_dict()
         self.folderName = self.get_folder_name()
 
     def get_curation_id(self):
-        # This retrieves basic curation information for article
+        # This retrieves basic curation information for article (this includes all curation)
         cur_df = self.fs_admin.get_curation_list(article_id=self.article_id)
-        cur_loc_dict = df_to_dict_single(cur_df)
+
+        cur_loc_dict = df_to_dict_single(cur_df, curation_id=self.curation_id)
 
         return cur_loc_dict['id']
 
