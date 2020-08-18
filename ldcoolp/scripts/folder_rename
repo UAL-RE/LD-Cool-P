@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+
+from os.path import dirname
+import argparse
+import configparser
+
+from ldcoolp.curation.api import figshare
+from ldcoolp.curation.depositor_name import DepositorName
+
+# Version and branch info
+from ldcoolp import __version__
+from ldcoolp.get_branch_name import get_active_branch_name
+from ldcoolp import __file__ as library_path
+
+# Read in configuration file
+config = configparser.ConfigParser()
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
+
+
+def old_folder_name(name_dict):
+    temp_name = name_dict['simplify_fullName']
+
+    if name_dict['self_deposit']:
+        old_folderName = temp_name
+    else:
+        first_author = name_dict['authors'][0]
+        old_folderName = f"{temp_name} - {first_author}"
+
+    old_folderName = old_folderName.replace(' ', "\ ")  # Escape spaces
+    return old_folderName
+
+
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P folder renaming script.')
+    parser.add_argument('--config', required=True, help='full path to configuration file')
+    args = parser.parse_args()
+
+    branch_name = get_active_branch_name(library_root_path)
+
+    banner_message = f"""
+    This is the command-line tool that maps the old folder names to the new ones.
+
+    Note that it is not perfect as the old names have changed over time.
+    Thus, user intervention is required.  However, the new name is correct
+
+    LD-Cool-P branch: {branch_name}
+    LD-Cool-P version: {__version__}
+    Created by Chun Ly
+    Bug/Suggestions? Submit a GitHub bug report here: https://github.com/ualibraries/LD_Cool_P/issues/choose
+    """
+    print(banner_message)
+
+    print("****************************")
+
+    config.read(args.config)
+
+    api_token = config.get('figshare', 'api_token')
+    stage_flag = config.getboolean('figshare', 'stage')
+    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+
+    print("STATUS: Retrieving curation list ...")
+    curation_df = fs_admin.get_curation_list()
+
+    print("STATUS: Truncating to non-pending (approved, rejected, closed) list ...")
+    non_pending_df = curation_df.loc[curation_df['status'] != 'pending']
+
+    mv_cmd = list()
+
+    # Loop over each article
+    for index, row in non_pending_df.iterrows():  # zip(non_pending_article, non_pending_curation_status):
+        article_id = row['article_id']
+        curation_id = row['id']
+        article_status = row['status']
+
+        print(f"Retrieving {article_id} {curation_id} ({article_status})")
+
+        dn = DepositorName(article_id, fs_admin, curation_id=curation_id,
+                           verbose=False)
+
+        old_name = old_folder_name(dn.name_dict)
+        new_name = dn.folderName
+        mv_cmd.append(f"mv {old_name} {new_name}")
+
+    print("INFO: LIST OF COMMANDS")
+    for cmd0 in mv_cmd:
+        print(cmd0)
+
+    print("****************************")
+    print("STATUS: Exit 0")
