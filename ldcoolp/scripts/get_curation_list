@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-from os.path import dirname
+from os.path import dirname, exists, join
+from os import mkdir
+
 import argparse
 import configparser
 
+from datetime import date
+
+from ldcoolp.logger import LogClass
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation import depositor_name
 
@@ -17,6 +22,8 @@ config = configparser.ConfigParser()
 
 cols_order = ['article_id', 'id', 'depositor_name', 'title', 'account_id',
               'modified_date', 'created_date']
+
+today = date.today()
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -40,22 +47,37 @@ if __name__ == '__main__':
 
     config.read(args.config)
 
+    root_directory_main = config.get('curation',
+                                     config.get('curation', 'log_parent_dir'))
+
+    log_dir = join(root_directory_main, config.get('curation', 'log_dir'))
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'get_curation_list'
+    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("************************************")
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__}")
+
     api_token = config.get('figshare', 'api_token')
     stage_flag = config.getboolean('figshare', 'stage')
     fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
-    print("STATUS: Retrieving list now ...")
+    log.info("Retrieving list now ...")
 
     curation_df = fs_admin.get_curation_list()
 
-    print("STATUS: Truncating to pending list ...")
+    log.info("Truncating to pending list ...")
     pending_curation_df = curation_df.loc[curation_df['status'] == 'pending']
     pending_curation_article = pending_curation_df['article_id'].tolist()
 
     depositor_names = ['N/A'] * len(pending_curation_df)
     titles = ['N/A'] * len(pending_curation_df)
 
-    print("STATUS: Populating depositor_name and titles ...")
+    log.info("Populating depositor_name and titles ...")
     for ii in range(len(pending_curation_df)):
         dn = depositor_name.DepositorName(pending_curation_article[ii],
                                           fs_admin, verbose=False)
@@ -67,10 +89,10 @@ if __name__ == '__main__':
     pending_curation_df.insert(2, 'depositor_name', depositor_names)
     pending_curation_df.insert(3, 'title', titles)
 
-    print("****************************")
-    print("List of pending curation ...")
+    log.info("****************************")
+    log.info("List of pending curation ...")
     print(pending_curation_df[cols_order].to_markdown())
     # print(pending_curation_df[cols_order].to_markdown(index=False))  # This require v1.1.0
 
-    print("****************************")
-    print("Exit 0")
+    log.info("****************************")
+    log.info("Exit 0")
