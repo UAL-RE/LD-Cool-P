@@ -25,7 +25,7 @@ class LogClass:
         self.LOG_FILENAME = join(log_dir, logfile)
 
     def get_logger(self):
-        log_level = logging.INFO
+        log_level = logging.DEBUG
         log = logging.getLogger(self.LOG_FILENAME)
         if not getattr(log, 'handler_set', None):
             log.setLevel(logging.INFO)
