@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-from os.path import dirname
+from os.path import dirname, exists
+from os import mkdir
+
 import argparse
 import configparser
 
+from datetime import date
+
+from ldcoolp.logger import LogClass
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
@@ -15,6 +20,8 @@ from ldcoolp import __file__ as library_path
 
 # Read in default configuration file
 config = configparser.ConfigParser()
+
+today = date.today()
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -40,6 +47,14 @@ if __name__ == '__main__':
 
     config.read(args.config)
 
+    log_dir = config.get('curation', 'log_dir')
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'generate_qualtrics_link'
+    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+
+    log = LogClass(log_dir, logfile).get_logger()
+
     api_token = config.get('figshare', 'api_token')
     stage_flag = config.getboolean('figshare', 'stage')
     fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
@@ -49,13 +64,16 @@ if __name__ == '__main__':
     qualtrics_survey_id = config.get('qualtrics', 'survey_id')
     q = qualtrics.Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
 
-    print("************************************")
-    print(f"STATUS: Retrieving Deposit Agreement URL for {args.article_id} ...")
+    log.info("************************************")
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__}")
+
+    log.info(f"Retrieving Deposit Agreement URL for {args.article_id} ...")
 
     dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
 
     full_url = q.generate_url(dn.name_dict)
-    print(full_url)
+    log.info(full_url)
 
-    print("************************************")
-    print("Exit 0")
+    log.info("************************************")
+    log.info("Exit 0")
