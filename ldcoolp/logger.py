@@ -41,3 +41,13 @@ class LogClass:
             log.setLevel(log_level)
             log.handler_set = True
         return log
+
+
+def log_stdout():
+    log_level = logging.DEBUG
+    log = logging.getLogger()
+    log.setLevel(log_level)
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setFormatter(formatter)
+    log.addHandler(sh)
+    return log
