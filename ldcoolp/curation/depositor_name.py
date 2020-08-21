@@ -80,7 +80,7 @@ class DepositorName:
 
     def get_name_dict(self):
         if self.verbose:
-            self.log.info("Retrieving depositor_name for {} ... ".format(self.article_id))
+            self.log.info(f"Retrieving depositor_name for {self.article_id} ... ")
 
         account_id = self.curation_dict['account_id']
         acct_df = self.fs_admin.get_account_list()
@@ -89,10 +89,11 @@ class DepositorName:
 
         surName            = temp_dict['last_name']   # full last name
         firstName          = temp_dict['first_name']  # full first name
-        simplify_firstName = firstName.split(' ')[0]
+        fullName           = f"{firstName} {surName}"
+
         simplify_surName   = surName.split(' ')[0]
-        fullName           = "{} {}".format(firstName, surName)
-        simplify_fullName  = "{} {}".format(simplify_firstName, simplify_surName)
+        simplify_firstName = firstName.split(' ')[0]
+        simplify_fullName  = f"{simplify_firstName} {simplify_surName}"
 
         name_dict = dict()
         name_dict['surName']   = surName
@@ -144,5 +145,5 @@ class DepositorName:
         folderName += f"_{self.article_id}_v{new_vers}"
 
         if self.verbose:
-            self.log.info("depository_name : {}".format(folderName))
+            self.log.info(f"depository_name : {folderName}")
         return folderName
