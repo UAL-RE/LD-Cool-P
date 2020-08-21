@@ -1,5 +1,8 @@
 from ldcoolp.curation import df_to_dict_single
 
+# Logging
+from ldcoolp.logger import log_stdout
+
 
 class DepositorName:
     """
@@ -42,10 +45,15 @@ class DepositorName:
       Retrieve string containing preferred curation folder name for deposit
     """
 
-    def __init__(self, article_id, fs_admin, curation_id=None, verbose=True):
+    def __init__(self, article_id, fs_admin, curation_id=None, verbose=True, log=None):
         self.article_id = article_id
         self.fs_admin = fs_admin
         self.verbose = verbose
+
+        if isinstance(log, type(None)):
+            self.log = log_stdout()
+        else:
+            self.log = log
 
         # Retrieves specific information for article (includes authors)
         if isinstance(curation_id, type(None)):
@@ -72,7 +80,7 @@ class DepositorName:
 
     def get_name_dict(self):
         if self.verbose:
-            print("Retrieving depositor_name for {} ... ".format(self.article_id))
+            self.log.info("Retrieving depositor_name for {} ... ".format(self.article_id))
 
         account_id = self.curation_dict['account_id']
         acct_df = self.fs_admin.get_account_list()
@@ -119,11 +127,11 @@ class DepositorName:
 
         if self.name_dict['self_deposit']:
             if self.verbose:
-                print("  Depositor == author")
+                self.log.info("  Depositor == author")
             folderName = temp_name
         else:
             if self.verbose:
-                print("  Depositor != author")
+                self.log.info("  Depositor != author")
             first_author = self.name_dict['authors'][0].replace(' ', '_')
             folderName = f"{temp_name}-{first_author}"
 
@@ -136,5 +144,5 @@ class DepositorName:
         folderName += f"_{self.article_id}_v{new_vers}"
 
         if self.verbose:
-            print("depository_name : {}".format(folderName))
+            self.log.info("depository_name : {}".format(folderName))
         return folderName
