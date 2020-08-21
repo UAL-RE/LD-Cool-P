@@ -15,6 +15,9 @@ import webbrowser
 # Convert single-entry DataFrame to dictionary
 from ldcoolp.curation import df_to_dict_single
 
+# Logging
+from ldcoolp.logger import log_stdout
+
 # API
 from figshare.figshare import issue_request
 
@@ -78,7 +81,7 @@ class Qualtrics:
       Generate URL with customized query strings based on Figshare metadata
     """
 
-    def __init__(self, dataCenter, token, survey_id):
+    def __init__(self, dataCenter, token, survey_id, log=None):
         self.token = token
         self.data_center = dataCenter
         self.baseurl = "https://{0}.qualtrics.com/API/v3/".format(self.data_center)
@@ -86,6 +89,11 @@ class Qualtrics:
                         "Content-Type": "application/json"}
         self.survey_id = survey_id
         self.file_format = 'csv'
+
+        if isinstance(log, type(None)):
+            self.log = log_stdout()
+        else:
+            self.log = log
 
     def endpoint(self, link):
         """Concatenate the endpoint to the baseurl"""
@@ -116,17 +124,19 @@ class Qualtrics:
         # Check on Data Export Progress and waiting until export is ready
         while progress_status != "complete" and progress_status != "failed":
             if verbose:
-                print("progress_status: {}".format(progress_status))
+                self.log.debug("progress_status: {}".format(progress_status))
             check_url = join(download_url, progress_id)
             check_response = issue_request("GET", check_url, headers=self.headers)
             check_progress = check_response["result"]["percentComplete"]
             if verbose:
-                print("Download is " + str(check_progress) + " complete")
+                self.log.debug("Download is " + str(check_progress) + " complete")
             progress_status = check_response["result"]["status"]
 
         # Check for error
         if progress_status is "failed":
-            raise Exception("export failed")
+            err = "export failed"
+            self.log.warn(err)
+            raise Exception(err)
 
         file_id = check_response["result"]["fileId"]
 
@@ -148,7 +158,7 @@ class Qualtrics:
         qualtrics_df = self.get_survey_responses()
 
         # First perform search via article_id or curation_id
-        print("Attempting to identify using article_id or curation_id")
+        self.log.info("Attempting to identify using article_id or curation_id ...")
         article_id = str(dn_dict['article_id'])
         curation_id = str(dn_dict['curation_id'])
 
@@ -156,17 +166,17 @@ class Qualtrics:
             response_df = qualtrics_df[(qualtrics_df['article_id'] == article_id) |
                                        (qualtrics_df['curation_id'] == curation_id)]
         except KeyError:
-            print("article_id and curation_id not in qualtrics survey")
+            self.log.warn("article_id and curation_id not in qualtrics survey !")
             response_df = pd.DataFrame()
 
         if not response_df.empty:
-            print("Unique match based on article_id or curation_id !")
+            self.log.info("Unique match based on article_id or curation_id !")
             if response_df.shape[0] != 1:
-                print("More than one entries found !!!")
+                self.log.warn("More than one entries found !!!")
             print(response_df[cols_order].to_markdown())
         else:
-            print("Unable to identify based article_id or curation_id.")
-            print("Attempting to identify with name")
+            self.log.info("Unable to identify based on article_id or curation_id ...")
+            self.log.info("Attempting to identify with name ...")
 
             response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
                                        (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName']) |
@@ -174,27 +184,27 @@ class Qualtrics:
 
             # Identify corresponding author cases if different from depositor name
             if not dn_dict['self_deposit'] and not response_df.empty:
-                print("Not self-deposit.  Identifying based on corresponding author as well")
+                self.log.info("Not self-deposit. Identifying based on corresponding author as well ...")
                 df_select = response_df[(response_df['Q6_1'] == dn_dict['authors'][0])]
                 if df_select.empty:
-                    print("Unable to identify based on corresponding author")
-                    print("Listing all deposit agreements based on Depositor")
-                    print(response_df[cols_order].to_markdown())
+                    self.log.warn("Unable to identify based on corresponding author")
+                    self.log.info("Listing all deposit agreements based on Depositor")
+                    self.log.info(response_df[cols_order].to_markdown())
                 else:
                     response_df = df_select
 
         if response_df.empty:
-            print("Empty DataFrame")
+            self.log.warn("Empty DataFrame")
             raise ValueError
         else:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
-                print("Only one entry found!")
-                print("Survey completed on {} for {}".format(response_dict['Date Completed'],
-                                                             response_dict['Q7']))
+                self.log.info("Only one entry found!")
+                self.log.info("Survey completed on {} for {}".format(response_dict['Date Completed'],
+                                                                     response_dict['Q7']))
                 return response_dict['ResponseId']
             else:
-                print("Multiple entries found")
+                self.log.warn("Multiple entries found")
                 print(response_df[cols_order].to_markdown())
                 raise ValueError
 
@@ -204,32 +214,33 @@ class Qualtrics:
         if isinstance(ResponseId, type(None)):
             try:
                 ResponseId = self.find_deposit_agreement(dn_dict)
-                print("Qualtrics ResponseID : {}".format(ResponseId))
+                self.log.info("Qualtrics ResponseID : {}".format(ResponseId))
             except ValueError:
-                print("Error with retrieving ResponseId")
-                print("If you wish, you can manually enter ResponseId to retrieve.")
-                ResponseId = input("An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                self.log.warn("Error with retrieving ResponseId")
+                self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
+                ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                self.log.info(f"RESPONSE: {ResponseId}")
 
                 if ResponseId == '':
                     custom_url = self.generate_url(dn_dict)
-                    print("CUSTOM URL BELOW : ")
-                    print(custom_url)
+                    self.log.info("CUSTOM URL BELOW : ")
+                    self.log.info(custom_url)
                     ResponseId = None
 
         if not isinstance(ResponseId, type(None)):
             if browser:
-                print("Bringing up a window to login to Qualtrics with SSO ....")
+                self.log.info("Bringing up a window to login to Qualtrics with SSO ....")
                 webbrowser.open('https://qualtrics.arizona.edu', new=2)
                 input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
             else:
-                print("CLI: Not opening a browser!")
+                self.log.info("CLI: Not opening a browser!")
             full_url = '{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId,
                                                  self.survey_id)
             if browser:
                 webbrowser.open(full_url, new=2)
             else:
-                print("Here's the URL : ")
-                print(full_url)
+                self.log.info("Here's the URL : ")
+                self.log.info(full_url)
 
     def generate_url(self, dn_dict):
         """
