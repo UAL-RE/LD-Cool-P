@@ -3,6 +3,8 @@ from figshare.figshare import issue_request
 import pandas as pd
 import numpy as np
 
+from ldcoolp.logger import log_stdout
+
 
 class FigshareInstituteAdmin:
     """
@@ -83,7 +85,7 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, token=None, stage=False):
+    def __init__(self, token=None, stage=False, log=None):
         if not stage:
             self.baseurl = "https://api.figshare.com/v2/account/"
         else:
@@ -95,6 +97,11 @@ class FigshareInstituteAdmin:
         self.headers = {'Content-Type': 'application/json'}
         if token:
             self.headers['Authorization'] = 'token {0}'.format(token)
+
+        if isinstance(log, type(None)):
+            self.log = log_stdout()
+        else:
+            self.log = log
 
     def endpoint(self, link, institute=True):
         """Concatenate the endpoint to the baseurl"""
@@ -200,20 +207,19 @@ class FigshareInstituteAdmin:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
             except Exception as e:
-                print("Unable to retrieve articles for : {}".format(account_id))
+                self.log.warn("Unable to retrieve articles for : {}".format(account_id))
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
             except Exception as e:
-
-                print("Unable to retrieve projects for : {}".format(account_id))
+                self.log.warn("Unable to retrieve projects for : {}".format(account_id))
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
             except Exception as e:
-                print("Unable to retrieve collections for : {}".format(account_id))
+                self.log.warn("Unable to retrieve collections for : {}".format(account_id))
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -232,7 +238,7 @@ class FigshareInstituteAdmin:
         accounts_df['Reviewer'] = reviewer_flag
 
         for group_id, group_name in zip(groups_df['id'], groups_df['name']):
-            print(group_id, group_name)
+            self.log.info(f"{group_id} - {group_name}")
             group_assoc = [sub.replace(str(group_id), group_name) for
                            sub in group_assoc]
 
@@ -293,17 +299,18 @@ class FigshareInstituteAdmin:
         doi_check, doi_string = self.doi_check(article_id)
 
         if doi_check:
-            print("DOI already reserved! Skipping... ")
+            self.log.info("DOI already reserved! Skipping... ")
 
             return doi_string
         else:
-            print("DOI reservation has not occurred...")
-            src_input = input("Do you wish to reserve? Type 'Yes', otherwise this is skipped : ")
-            if src_input == 'Yes':
-                print("Reserving DOI ... ")
+            self.log.info("PROMPT: DOI reservation has not occurred! Do you wish to reserve?")
+            src_input = input("PROMPT: Type 'Yes'/'yes'. Anything else will skip : ")
+            self.log.info(f"RESPONSE: {src_input}")
+            if src_input.lower == 'yes':
+                self.log.info("Reserving DOI ... ")
                 response = issue_request('POST', url, self.headers)
-                print(f"DOI minted : {response['doi']}")
+                self.log.info(f"DOI minted : {response['doi']}")
                 return response['doi']
             else:
-                print("Skipping... ")
+                self.log.warn("Skipping... ")
                 return doi_string
