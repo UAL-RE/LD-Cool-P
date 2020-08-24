@@ -28,13 +28,13 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
     if not url_open:
         if token:
             opener = build_opener()
-            opener.addheaders = [('Authorization', 'token {}'.format(token))]
+            opener.addheaders = [('Authorization', f'token {token}')]
             install_opener(opener)
         urlretrieve(url, filename)
     else:
         req = Request(url)
         if token:
-            req.add_header('Authorization', 'token {}'.format(token))
+            req.add_header('Authorization', f'token {token}')
 
         response = urlopen(req)
         content = response.read()
@@ -79,17 +79,17 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     n_files = len(file_list)
 
     if not data_directory:
-        dir_path = os.path.join(root_directory, "figshare_{0}/".format(article_id))
+        dir_path = os.path.join(root_directory, f"figshare_{article_id}/")
     else:
         dir_path = os.path.join(root_directory, data_directory)
 
     os.makedirs(dir_path, exist_ok=True)  # This might require Python >=3.2
     permissions.curation(dir_path)
 
-    log.info("Total number of files: {}".format(n_files))
+    log.info(f"Total number of files: {n_files}")
 
     for n, file_dict in zip(range(n_files), file_list):
-        log.info("Retrieving {} of {} : {}".format(n+1, n_files, file_dict['name']))
+        log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']}")
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
