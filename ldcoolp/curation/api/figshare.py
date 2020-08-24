@@ -306,7 +306,7 @@ class FigshareInstituteAdmin:
             self.log.info("PROMPT: DOI reservation has not occurred! Do you wish to reserve?")
             src_input = input("PROMPT: Type 'Yes'/'yes'. Anything else will skip : ")
             self.log.info(f"RESPONSE: {src_input}")
-            if src_input.lower == 'yes':
+            if src_input.lower() == 'yes':
                 self.log.info("Reserving DOI ... ")
                 response = issue_request('POST', url, self.headers)
                 self.log.info(f"DOI minted : {response['doi']}")
