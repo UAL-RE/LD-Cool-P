@@ -28,11 +28,13 @@ class LogClass:
 
     def get_logger(self):
         file_log_level = logging.DEBUG  # This is for file logging
-        log = logging.getLogger(self.LOG_FILENAME)
-        if not getattr(log, 'handler_set', None):
+        log = logging.getLogger("main_logger")
+        if not log.handlers:
+            log.setLevel(file_log_level)
+
             sh = logging.StreamHandler(sys.stdout)
+            sh.setLevel(logging.INFO)  # Only at INFO level
             sh.setFormatter(formatter)
-            sh.setLevel(logging.info)  # Only at INFO level
             log.addHandler(sh)
 
             fh = logging.FileHandler(self.LOG_FILENAME)
@@ -41,6 +43,7 @@ class LogClass:
             log.addHandler(fh)
 
             log.handler_set = True
+            log.propagate = False
         return log
 
 
