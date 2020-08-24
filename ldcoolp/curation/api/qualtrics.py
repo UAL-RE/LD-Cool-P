@@ -84,7 +84,7 @@ class Qualtrics:
     def __init__(self, dataCenter, token, survey_id, log=None):
         self.token = token
         self.data_center = dataCenter
-        self.baseurl = "https://{0}.qualtrics.com/API/v3/".format(self.data_center)
+        self.baseurl = f"https://{self.data_center}.qualtrics.com/API/v3/"
         self.headers = {"X-API-TOKEN": self.token,
                         "Content-Type": "application/json"}
         self.survey_id = survey_id
@@ -113,7 +113,7 @@ class Qualtrics:
 
         progress_status = "inProgress"
 
-        download_url = self.endpoint("surveys/{0}/export-responses".format(self.survey_id))
+        download_url = self.endpoint(f"surveys/{self.survey_id}/export-responses")
 
         # Create Data Export
         download_payload = {"format": self.file_format}
@@ -124,12 +124,12 @@ class Qualtrics:
         # Check on Data Export Progress and waiting until export is ready
         while progress_status != "complete" and progress_status != "failed":
             if verbose:
-                self.log.debug("progress_status: {}".format(progress_status))
+                self.log.debug(f"progress_status: {progress_status}")
             check_url = join(download_url, progress_id)
             check_response = issue_request("GET", check_url, headers=self.headers)
             check_progress = check_response["result"]["percentComplete"]
             if verbose:
-                self.log.debug("Download is " + str(check_progress) + " complete")
+                self.log.debug(f"Download is {str(check_progress)}% complete")
             progress_status = check_response["result"]["status"]
 
         # Check for error
@@ -141,7 +141,7 @@ class Qualtrics:
         file_id = check_response["result"]["fileId"]
 
         # Retrieve zipfile and extract and read in CSV into pandas DataFrame
-        download_url = join(download_url, '{0}/file'.format(file_id))
+        download_url = join(download_url, f'{file_id}/file')
         requestDownload = requests.request("GET", download_url, headers=self.headers, stream=True)
         input_zip = zipfile.ZipFile(io.BytesIO(requestDownload.content))
         csv_filename = input_zip.namelist()[0]
@@ -200,8 +200,8 @@ class Qualtrics:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
                 self.log.info("Only one entry found!")
-                self.log.info("Survey completed on {} for {}".format(response_dict['Date Completed'],
-                                                                     response_dict['Q7']))
+                self.log.info(f"Survey completed on {response_dict['Date Completed']}")
+                self.log.info(f" ... for {response_dict['Q7']}")
                 return response_dict['ResponseId']
             else:
                 self.log.warn("Multiple entries found")
@@ -214,7 +214,7 @@ class Qualtrics:
         if isinstance(ResponseId, type(None)):
             try:
                 ResponseId = self.find_deposit_agreement(dn_dict)
-                self.log.info("Qualtrics ResponseID : {}".format(ResponseId))
+                self.log.info(f"Qualtrics ResponseID : {ResponseId}")
             except ValueError:
                 self.log.warn("Error with retrieving ResponseId")
                 self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
@@ -234,8 +234,8 @@ class Qualtrics:
                 input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
             else:
                 self.log.info("CLI: Not opening a browser!")
-            full_url = '{}?RID={}&SID={}'.format(qualtrics_download_url, ResponseId,
-                                                 self.survey_id)
+            full_url = f'{qualtrics_download_url}?RID={ResponseId}&SID={self.survey_id}'
+
             if browser:
                 webbrowser.open(full_url, new=2)
             else:
