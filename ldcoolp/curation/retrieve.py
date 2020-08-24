@@ -6,6 +6,9 @@ from urllib.request import Request, urlopen, build_opener, install_opener, urlre
 from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
 
+# Logging
+from ldcoolp.logger import log_stdout
+
 from ..config import api_token
 
 
@@ -43,7 +46,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
 
 
 def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   url_open=False):
+                   log=None, url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -52,15 +55,20 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     :param fs: Figshare object
     :param root_directory: Root path for curation workflow (str)
     :param data_directory: Relative folder path for primary location of data (str)
+    :param log: logger.LogClass object. Default is stdout via python logging
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
+
+    if isinstance(log, type(None)):
+        log = log_stdout()
+
     if root_directory is None:
         root_directory = os.getcwd()
 
     if not fs:
         if api_token is None or api_token == "***override***":
-            print("ERROR: api_token not available from config file")
-            api_token = input("Provide token through prompt : ")
+            log.warn("ERROR: api_token not available from config file")
+            api_token = input("PROMPT: Provide token through prompt : ")
 
         fs = Figshare(token=api_token, private=True)
 
@@ -78,16 +86,16 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     os.makedirs(dir_path, exist_ok=True)  # This might require Python >=3.2
     permissions.curation(dir_path)
 
-    print("Total number of files: {}".format(n_files))
+    log.info("Total number of files: {}".format(n_files))
 
     for n, file_dict in zip(range(n_files), file_list):
-        print("Retrieving {} of {} : {}".format(n+1, n_files, file_dict['name']))
+        log.info("Retrieving {} of {} : {}".format(n+1, n_files, file_dict['name']))
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
                                   token=fs.token, url_open=url_open)
         else:
-            print("File exists! Not overwriting!")
+            log.info("File exists! Not overwriting!")
 
     # Change permissions on folders and files
     # permissions.curation(dir_path)
