@@ -96,7 +96,7 @@ class FigshareInstituteAdmin:
 
         self.headers = {'Content-Type': 'application/json'}
         if token:
-            self.headers['Authorization'] = 'token {0}'.format(token)
+            self.headers['Authorization'] = f'token {token}'
 
         if isinstance(log, type(None)):
             self.log = log_stdout()
@@ -173,7 +173,7 @@ class FigshareInstituteAdmin:
 
     def get_account_group_roles(self, account_id):
         """Retrieve group roles for a given account"""
-        url = self.endpoint("roles/{}".format(account_id))
+        url = self.endpoint(f"roles/{account_id}")
 
         roles = issue_request('GET', url, self.headers)
         return roles
@@ -207,19 +207,19 @@ class FigshareInstituteAdmin:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
             except Exception as e:
-                self.log.warn("Unable to retrieve articles for : {}".format(account_id))
+                self.log.warn(f"Unable to retrieve articles for : {account_id}")
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
             except Exception as e:
-                self.log.warn("Unable to retrieve projects for : {}".format(account_id))
+                self.log.warn(f"Unable to retrieve projects for : {account_id}")
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
             except Exception as e:
-                self.log.warn("Unable to retrieve collections for : {}".format(account_id))
+                self.log.warn(f"Unable to retrieve collections for : {account_id}")
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -263,7 +263,7 @@ class FigshareInstituteAdmin:
     def get_curation_details(self, curation_id):
         """Retrieve details about a specified curation item"""
 
-        url = self.endpoint("review/{}".format(curation_id))
+        url = self.endpoint(f"review/{curation_id}")
 
         curation_details = issue_request('GET', url, self.headers)
 
@@ -272,7 +272,7 @@ class FigshareInstituteAdmin:
     def get_curation_comments(self, curation_id):
         """Retrieve comments about specified curation item"""
 
-        url = self.endpoint("review/{}/comments".format(curation_id))
+        url = self.endpoint(f"review/{curation_id}/comments")
 
         curation_comments = issue_request('GET', url, self.headers)
 
