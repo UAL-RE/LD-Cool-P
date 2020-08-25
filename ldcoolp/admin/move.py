@@ -13,14 +13,15 @@ from ..config import todo_folder, underreview_folder, reviewed_folder, \
 stage_list = [todo_folder, underreview_folder, reviewed_folder, published_folder]
 
 
-def get_source_stage(depositor_name, log=None):
+def get_source_stage(depositor_name, log=None, verbose=True):
     """
     Purpose:
       Retrieve source stage folder by searching for dataset on curation server
 
     :param depositor_name: Exact name of the data curation folder with spaces
     :param log: logger.LogClass object. Default is stdout via python logging
-
+    :param verbose: bool that warns source_path does not exist.  Default: True
+           This is best used for new folders to avoid warning
     :return source_stage: str containing source stage name
     """
 
@@ -30,7 +31,8 @@ def get_source_stage(depositor_name, log=None):
     source_path = glob(join(root_directory_main, '?.*', depositor_name))
     if len(source_path) == 0:
         err = f"Unable to find source_path for {depositor_name}"
-        log.warn(err)
+        if not verbose:
+            log.warn(err)
         raise FileNotFoundError(err)
     if len(source_path) > 1:
         err = f"Multiple paths found for {depositor_name}"

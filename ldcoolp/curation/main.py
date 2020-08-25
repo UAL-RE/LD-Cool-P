@@ -79,7 +79,8 @@ class PrerequisiteWorkflow:
 
         # Check if dataset has been retrieved
         try:
-            source_stage = move.get_source_stage(self.dn.folderName)
+            source_stage = move.get_source_stage(self.dn.folderName,
+                                                 log=self.log, verbose=False)
             self.log.warn(f"Curation folder exists in {source_stage}. Will not retrieve!")
             self.new_set = False
         except FileNotFoundError:
