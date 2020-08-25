@@ -4,6 +4,9 @@ from os.path import join
 import logging
 formatter = logging.Formatter('%(asctime)s - %(levelname)8s: %(message)s', "%H:%M:%S")
 
+file_formatter = logging.Formatter('%(asctime)s %(levelname)8s - %(module)18s %(funcName)30s - : %(message)s',
+                                   "%H:%M:%S")
+
 
 class LogClass:
     """
@@ -39,7 +42,7 @@ class LogClass:
 
             fh = logging.FileHandler(self.LOG_FILENAME)
             fh.setLevel(file_log_level)
-            fh.setFormatter(formatter)
+            fh.setFormatter(file_formatter)
             log.addHandler(fh)
 
             log.handler_set = True
