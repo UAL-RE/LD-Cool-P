@@ -1,14 +1,24 @@
 #!/usr/bin/env python
 
-from os.path import dirname
+from os.path import dirname, exists, join
+from os import mkdir
+
+import configparser
 import argparse
 
+from datetime import date
+
 from ldcoolp.curation import main
+from ldcoolp.logger import LogClass
 
 # Version and branch info
 from ldcoolp import __version__
 from ldcoolp.get_branch_name import get_active_branch_name
 from ldcoolp import __file__ as library_path
+
+config = configparser.ConfigParser()
+
+today = date.today()
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -16,6 +26,7 @@ library_root_path = dirname(dirname(library_path))  # Retrieve parent directory 
 if __name__ == '__main__':
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
+    parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
     parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
@@ -39,25 +50,43 @@ if __name__ == '__main__':
     """
     print(banner_message)
 
-    print("****************************")
+    config.read(args.config)
+
+    # Define logfile
+    root_directory_main = config.get('curation',
+                                     config.get('curation', 'log_parent_dir'))
+
+    log_dir = join(root_directory_main, config.get('curation', 'log_dir'))
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'prereq_script'
+    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("****************************")
+
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__}")
 
     # Separate comma-separated list of articles
     articles = args.article_id.split(',')
     num_articles = len(articles)
 
-    print(f"INFO: Number of Deposits: {num_articles}")
+    log.info(f"Number of Deposits: {num_articles}")
 
     # Loop over each article
     count = 0
     for ii in range(len(articles)):
-        print(f"Retrieving {articles[ii]}")  # ... {ii+1} / {num_articles}")
+        log.info(f"Retrieving: {articles[ii]} ...")  # ... {ii+1} / {num_articles}")
 
         # Run pre-req steps
-        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser)
+        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser,
+                      log=log)
         count += 1
 
-        print(f"STATUS: Completed ... {articles[ii]} ...")
-        print(f"STATUS: Completed ... {count} / {num_articles}")
+        log.info(f"Completed: {articles[ii]} ...")
+        log.info(f"Completed: {count} / {num_articles}")
 
-    print("****************************")
-    print("STATUS: Exit 0")
+    log.info("****************************")
+    log.info("STATUS: Exit 0")
