@@ -8,7 +8,7 @@ import configparser
 
 from datetime import date
 
-from ldcoolp.logger import LogClass
+from ldcoolp.logger import LogClass, get_user_hostname
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
@@ -73,6 +73,12 @@ if __name__ == '__main__':
     log.debug(f"LD-Cool-P branch: {branch_name}")
     log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
     log.debug(f"LD-Cool-P commit hash: {git_commit}")
+
+    # Retrieve username, hostname, IP
+    sys_info = get_user_hostname()
+    log.debug(f"username : {sys_info['user']}")
+    log.debug(f"hostname : {sys_info['hostname']}")
+    log.debug(f"IP Addr  : {sys_info['ip']}")
 
     log.info(f"Retrieving Deposit Agreement URL for {args.article_id} ...")
 
