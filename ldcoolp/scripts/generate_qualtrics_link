@@ -79,6 +79,7 @@ if __name__ == '__main__':
     log.debug(f"username : {sys_info['user']}")
     log.debug(f"hostname : {sys_info['hostname']}")
     log.debug(f"IP Addr  : {sys_info['ip']}")
+    log.debug(f"Op. Sys. : {sys_info['os']}")
 
     log.info(f"Retrieving Deposit Agreement URL for {args.article_id} ...")
 
