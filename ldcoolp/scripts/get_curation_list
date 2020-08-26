@@ -14,7 +14,7 @@ from ldcoolp.curation import depositor_name
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.get_branch_name import get_active_branch_name
+from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
 
 # Read in default configuration file
@@ -35,11 +35,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     branch_name = get_active_branch_name(library_root_path)
+    git_commit, git_short_commit = get_latest_commit(library_root_path)
 
     banner_message = f"""
     This is the command-line tool to retrieve the list of pending curation.
     LD-Cool-P branch: {branch_name}
     LD-Cool-P version: {__version__}
+    LD-Cool-P commit hash: {git_short_commit}
     Created by Chun Ly
     Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
     """
@@ -60,7 +62,8 @@ if __name__ == '__main__':
 
     log.info("************************************")
     log.debug(f"LD-Cool-P branch: {branch_name}")
-    log.debug(f"LD-Cool-P version: {__version__}")
+    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {git_commit}")
 
     api_token = config.get('figshare', 'api_token')
     stage_flag = config.getboolean('figshare', 'stage')
