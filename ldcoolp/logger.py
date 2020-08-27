@@ -58,11 +58,15 @@ class LogClass:
 
 def log_stdout():
     log_level = logging.INFO
-    log = logging.getLogger()
-    log.setLevel(log_level)
-    sh = logging.StreamHandler(sys.stdout)
-    sh.setFormatter(formatter)
-    log.addHandler(sh)
+    log = logging.getLogger("stdout_logger")
+    if not log.handlers:
+        log.setLevel(log_level)
+        sh = logging.StreamHandler(sys.stdout)
+        sh.setFormatter(formatter)
+        log.addHandler(sh)
+
+        log.handler_set = True
+        log.propagate = False
     return log
 
 
