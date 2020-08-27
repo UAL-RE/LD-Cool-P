@@ -2,6 +2,7 @@
 
 from os.path import dirname, exists, join
 from os import mkdir
+from io import StringIO
 
 import argparse
 import configparser
@@ -101,8 +102,12 @@ if __name__ == '__main__':
 
     log.info("****************************")
     log.info("List of pending curation ...")
-    print(pending_curation_df[cols_order].to_markdown())
-    # print(pending_curation_df[cols_order].to_markdown(index=False))  # This require v1.1.0
+    buffer = StringIO()
+    pending_curation_df[cols_order].to_markdown(buffer)
+    # pending_curation_df[cols_order].to_markdown(buffer, index=False)  # This require v1.1.0 of pandas
+    print(buffer.getvalue())
+    with open(join(log_dir, logfile), mode='a') as f:
+        print(buffer.getvalue(), file=f)
 
     log.info("****************************")
     log.info("Exit 0")
