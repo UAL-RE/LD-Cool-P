@@ -17,6 +17,7 @@ from ldcoolp.curation import df_to_dict_single
 
 # Logging
 from ldcoolp.logger import log_stdout
+import logging
 
 # API
 from figshare.figshare import issue_request
@@ -90,10 +91,16 @@ class Qualtrics:
         self.survey_id = survey_id
         self.file_format = 'csv'
 
+        # Logging
+        self.file_logging = False
         if isinstance(log, type(None)):
             self.log = log_stdout()
         else:
             self.log = log
+            for handler in log.handlers:
+                if isinstance(handler, logging.FileHandler):
+                    self.log_filename = handler.baseFilename
+                    self.file_logging = True
 
     def endpoint(self, link):
         """Concatenate the endpoint to the baseurl"""
@@ -152,6 +159,17 @@ class Qualtrics:
 
         return response_df
 
+    def pandas_write_buffer(self, df):
+        """Write pandas content via to_markdown() to logfile"""
+
+        buffer = io.StringIO()
+        df.to_markdown(buffer)
+        print(buffer.getvalue())
+        if self.file_logging:
+            with open(self.log_filename, mode='a') as f:
+                print(buffer.getvalue(), file=f)
+        buffer.close()
+
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
 
@@ -173,7 +191,8 @@ class Qualtrics:
             self.log.info("Unique match based on article_id or curation_id !")
             if response_df.shape[0] != 1:
                 self.log.warn("More than one entries found !!!")
-            print(response_df[cols_order].to_markdown())
+
+            self.pandas_write_buffer(response_df[cols_order])
         else:
             self.log.info("Unable to identify based on article_id or curation_id ...")
             self.log.info("Attempting to identify with name ...")
@@ -189,7 +208,8 @@ class Qualtrics:
                 if df_select.empty:
                     self.log.warn("Unable to identify based on corresponding author")
                     self.log.info("Listing all deposit agreements based on Depositor")
-                    self.log.info(response_df[cols_order].to_markdown())
+
+                    self.pandas_write_buffer(response_df[cols_order])
                 else:
                     response_df = df_select
 
@@ -205,7 +225,9 @@ class Qualtrics:
                 return response_dict['ResponseId']
             else:
                 self.log.warn("Multiple entries found")
-                print(response_df[cols_order].to_markdown())
+
+                self.pandas_write_buffer(response_df[cols_order])
+
                 raise ValueError
 
     def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, browser=True):
