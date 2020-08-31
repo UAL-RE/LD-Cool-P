@@ -81,6 +81,9 @@ if __name__ == '__main__':
     log.debug(f"IP Addr  : {sys_info['ip']}")
     log.debug(f"Op. Sys. : {sys_info['os']}")
 
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
     log.info(f"Retrieving Deposit Agreement URL for {args.article_id} ...")
 
     dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
