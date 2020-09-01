@@ -10,6 +10,7 @@ from datetime import date
 
 from ldcoolp.curation import main
 from ldcoolp.logger import LogClass, get_user_hostname
+from ldcoolp.admin import permissions
 
 # Version and branch info
 from ldcoolp import __version__
@@ -97,6 +98,9 @@ if __name__ == '__main__':
 
         log.info(f"Completed: {articles[ii]} ...")
         log.info(f"Completed: {count} / {num_articles}")
+
+    # Change permission to mode=777
+    permissions.curation(join(log_dir, logfile), mode=0o666)
 
     log.info("****************************")
     log.info("STATUS: Exit 0")

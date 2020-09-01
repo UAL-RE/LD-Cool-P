@@ -12,6 +12,7 @@ from ldcoolp.logger import LogClass, get_user_hostname
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
+from ldcoolp.admin import permissions
 
 # Version and branch info
 from ldcoolp import __version__
@@ -90,6 +91,9 @@ if __name__ == '__main__':
 
     full_url = q.generate_url(dn.name_dict)
     log.info(full_url)
+
+    # Change permission to mode=666 (rw for all)
+    permissions.curation(join(log_dir, logfile), mode=0o666)
 
     log.info("************************************")
     log.info("Exit 0")

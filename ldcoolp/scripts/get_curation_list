@@ -12,6 +12,7 @@ from datetime import date
 from ldcoolp.logger import LogClass, get_user_hostname
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation import depositor_name
+from ldcoolp.admin import permissions
 
 # Version and branch info
 from ldcoolp import __version__
@@ -111,6 +112,9 @@ if __name__ == '__main__':
     print(buffer.getvalue())
     with open(join(log_dir, logfile), mode='a') as f:
         print(buffer.getvalue(), file=f)
+
+    # Change permission to mode=777
+    permissions.curation(join(log_dir, logfile), mode=0o666)
 
     log.info("****************************")
     log.info("Exit 0")
