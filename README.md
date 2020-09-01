@@ -111,7 +111,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.13.1`.
+You should see that the version is `0.13.2`.
 
 ### Configuration Settings
 
@@ -191,7 +191,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.13.0 - 0.13.1:
+v0.13.0 - 0.13.2:
  * Re-definition of `DepositorName` `folderName` for uniqueness.
    Handles multiple deposits from same depositor, including different versions #55
  * Script automation can handle multiple dataset retrieval #72
