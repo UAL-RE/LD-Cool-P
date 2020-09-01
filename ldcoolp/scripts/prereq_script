@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from os.path import dirname, exists, join
-from os import mkdir
+from os import mkdir, stat
 
 import configparser
 import argparse
@@ -99,8 +99,13 @@ if __name__ == '__main__':
         log.info(f"Completed: {articles[ii]} ...")
         log.info(f"Completed: {count} / {num_articles}")
 
-    # Change permission to mode=777
-    permissions.curation(join(log_dir, logfile), mode=0o666)
+    # Change permission to mode=666 (rw for all)
+    status = stat(join(log_dir, logfile))
+    if oct(status.st_mode)[-3:] == '666':
+        log.debug("Permissions set for logfile")
+    else:
+        log.debug("Changing permissions on logfile...")
+        permissions.curation(join(log_dir, logfile), mode=0o666)
 
     log.info("****************************")
-    log.info("STATUS: Exit 0")
+    log.info("Exit 0")
