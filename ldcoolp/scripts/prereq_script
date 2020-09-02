@@ -35,6 +35,9 @@ if __name__ == '__main__':
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
     branch_name = get_active_branch_name(library_root_path)
     git_commit, git_short_commit = get_latest_commit(library_root_path)
 
