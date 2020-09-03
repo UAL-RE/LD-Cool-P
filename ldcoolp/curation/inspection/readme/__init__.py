@@ -7,6 +7,9 @@ from glob import glob
 from jinja2 import Environment, FileSystemLoader
 from html2text import html2text
 
+# Logging
+from ldcoolp.logger import log_stdout
+
 from ....admin import permissions
 
 # Read in default configuration settings
@@ -72,11 +75,16 @@ class ReadmeClass:
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn):
+    def __init__(self, dn, log=None):
         self.dn = dn
         self.folderName = self.dn.folderName
         self.article_id = self.dn.article_id
         self.article_dict = self.dn.curation_dict
+
+        if isinstance(log, type(None)):
+            self.log = log_stdout()
+        else:
+            self.log = log
 
         # Paths
         self.folder_path = join(root_directory, self.folderName)
@@ -103,7 +111,7 @@ class ReadmeClass:
             self.readme_template = self.import_template()
         except SystemError:
             self.template_source = 'unknown'
-            print("WARNING: More than one README files found!")
+            self.log.warn("More than one README files found!")
 
     def get_readme_files(self):
         """Return list of README files in the ORIGINAL_DATA path"""
@@ -116,22 +124,24 @@ class ReadmeClass:
         """Check if a README file is provided and provide list of README files"""
 
         if len(self.README_files) == 0:
-            print("No README files found.")
-            print(f"Note: default {readme_template} will be used")
+            self.log.info("No README files found.")
+            self.log.info(f"Note: default {readme_template} will be used")
             template_source = 'default'
         else:
             if len(self.README_files) == 1:
-                print("Only one README file found!")
+                self.log.info("Only one README file found!")
 
-                print("Type 'Yes'/'yes' if you wish to use as template.")
-                src_input = input("Anything else will use 'default' : ")
+                self.log.info("PROMPT: Type 'Yes'/'yes' if you wish to use as template.")
+                src_input = input("PROMPT: Anything else will use 'default' : ")
+                self.log.info(f"RESPONSE: {src_input}")
+
                 if src_input.lower() == 'yes':
                     template_source = 'user'
                 else:
                     template_source = 'default'
             else:
-                print("More than one README file found!")
-                print("Manual intervention needed ...")
+                self.log.warn("More than one README file found!")
+                self.log.warn("Manual intervention needed ...")
                 raise SystemError
                 # print(f"Select and save a README file in {copy_path} as {readme_template}")
 
@@ -143,7 +153,7 @@ class ReadmeClass:
         dest_file = join(self.data_path, readme_template)
 
         if not exists(dest_file):
-            print(f"Saving {self.template_source} template in DATA ...")
+            self.log.info(f"Saving {self.template_source} template in DATA ...")
 
             if self.template_source == 'default':
                 src_file = join(dirname(__file__), readme_template)
@@ -152,7 +162,7 @@ class ReadmeClass:
 
             shutil.copy(src_file, dest_file)
         else:
-            print(f"{readme_template} exists. Not overwriting template!")
+            self.log.info(f"{readme_template} exists. Not overwriting template!")
 
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
@@ -219,17 +229,17 @@ class ReadmeClass:
         """Create README.txt file with jinja2 README template and populate with metadata information"""
 
         if not exists(self.readme_file_path):
-            print(f"Constructing README.txt file based on {self.template_source} template...")
+            self.log.info(f"Constructing README.txt file based on {self.template_source} template ...")
 
             # Write file
-            print(f"Writing file : {self.readme_file_path}")
+            self.log.info(f"Writing file : {self.readme_file_path}")
             f = open(self.readme_file_path, 'w')
 
             content_list = self.readme_template.render(readme_dict=self.readme_dict)
             f.writelines(content_list)
             f.close()
         else:
-            print("Default README.txt file found! Not overwriting with template!")
+            self.log.warn("Default README.txt file found! Not overwriting with template!")
 
         # Set permission for rwx
         permissions.curation(self.readme_file_path)
@@ -238,29 +248,37 @@ class ReadmeClass:
         """Main function for README file construction"""
 
         if self.template_source != 'unknown':
-            user_response = input("If you wish to create a README file, type 'Yes'/'yes'. Anything else will exit : ")
+            self.log.info("PROMPT: Do you wish to create a README file?")
+            user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")
+            self.log.info(f"RESPONSE: {user_response}")
             if user_response.lower() == "yes":
                 self.construct()
             else:
-                print("Exiting script")
+                self.log.warn("Exiting script")
                 return
         else:
-            print(f"Multiple README files. Unable to save {readme_template} and README.txt")
+            self.log.warn(f"Multiple README files. Unable to save {readme_template} and README.txt")
 
 
-def walkthrough(data_path, ignore=''):
+def walkthrough(data_path, ignore='', log=None):
     """
     Purpose:
       Perform walkthrough to find other README files
 
     :param data_path: path to DATA folder
     :param ignore: full path of default README.txt to ignore
+    :param log: logger.LogClass object. Default is stdout via python logging
     :return:
     """
+
+    if isinstance(log, type(None)):
+        log = log_stdout()
+    else:
+        log = log
 
     for dir_path, dir_names, files in walk(data_path):
         for file in files:
             if 'README' in file.upper():  # case insensitive
                 file_fullname = join(dir_path, file)
                 if file_fullname != ignore:
-                    print("File exists : {}".format(file_fullname))
+                    log.info(f"File exists : {file_fullname}")

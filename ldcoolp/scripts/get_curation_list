@@ -1,15 +1,22 @@
 #!/usr/bin/env python
 
-from os.path import dirname
+from os.path import dirname, exists, join
+from os import mkdir, stat
+from io import StringIO
+
 import argparse
 import configparser
 
+from datetime import date
+
+from ldcoolp.logger import LogClass, get_user_hostname
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation import depositor_name
+from ldcoolp.admin import permissions
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.get_branch_name import get_active_branch_name
+from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
 
 # Read in default configuration file
@@ -17,6 +24,8 @@ config = configparser.ConfigParser()
 
 cols_order = ['article_id', 'id', 'depositor_name', 'title', 'account_id',
               'modified_date', 'created_date']
+
+today = date.today()
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -27,12 +36,17 @@ if __name__ == '__main__':
     parser.add_argument('--config', required=True, help='path to configuration file')
     args = parser.parse_args()
 
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
     branch_name = get_active_branch_name(library_root_path)
+    git_commit, git_short_commit = get_latest_commit(library_root_path)
 
     banner_message = f"""
     This is the command-line tool to retrieve the list of pending curation.
     LD-Cool-P branch: {branch_name}
     LD-Cool-P version: {__version__}
+    LD-Cool-P commit hash: {git_short_commit}
     Created by Chun Ly
     Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
     """
@@ -40,22 +54,48 @@ if __name__ == '__main__':
 
     config.read(args.config)
 
+    root_directory_main = config.get('curation',
+                                     config.get('curation', 'log_parent_dir'))
+
+    log_dir = join(root_directory_main, config.get('curation', 'log_dir'))
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'get_curation_list'
+    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("************************************")
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+
+    # Retrieve username, hostname, IP
+    sys_info = get_user_hostname()
+    log.debug(f"username : {sys_info['user']}")
+    log.debug(f"hostname : {sys_info['hostname']}")
+    log.debug(f"IP Addr  : {sys_info['ip']}")
+    log.debug(f"Op. Sys. : {sys_info['os']}")
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
     api_token = config.get('figshare', 'api_token')
     stage_flag = config.getboolean('figshare', 'stage')
     fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
-    print("STATUS: Retrieving list now ...")
+    log.info("Retrieving list now ...")
 
     curation_df = fs_admin.get_curation_list()
 
-    print("STATUS: Truncating to pending list ...")
+    log.info("Truncating to pending list ...")
     pending_curation_df = curation_df.loc[curation_df['status'] == 'pending']
     pending_curation_article = pending_curation_df['article_id'].tolist()
 
     depositor_names = ['N/A'] * len(pending_curation_df)
     titles = ['N/A'] * len(pending_curation_df)
 
-    print("STATUS: Populating depositor_name and titles ...")
+    log.info("Populating depositor_name and titles ...")
     for ii in range(len(pending_curation_df)):
         dn = depositor_name.DepositorName(pending_curation_article[ii],
                                           fs_admin, verbose=False)
@@ -67,10 +107,22 @@ if __name__ == '__main__':
     pending_curation_df.insert(2, 'depositor_name', depositor_names)
     pending_curation_df.insert(3, 'title', titles)
 
-    print("****************************")
-    print("List of pending curation ...")
-    print(pending_curation_df[cols_order].to_markdown())
-    # print(pending_curation_df[cols_order].to_markdown(index=False))  # This require v1.1.0
+    log.info("****************************")
+    log.info("List of pending curation ...")
+    buffer = StringIO()
+    pending_curation_df[cols_order].to_markdown(buffer)
+    # pending_curation_df[cols_order].to_markdown(buffer, index=False)  # This require v1.1.0 of pandas
+    print(buffer.getvalue())
+    with open(join(log_dir, logfile), mode='a') as f:
+        print(buffer.getvalue(), file=f)
 
-    print("****************************")
-    print("Exit 0")
+    # Change permission to mode=666 (rw for all)
+    status = stat(join(log_dir, logfile))
+    if oct(status.st_mode)[-3:] == '666':
+        log.debug("Permissions set for logfile")
+    else:
+        log.debug("Changing permissions on logfile...")
+        permissions.curation(join(log_dir, logfile), mode=0o666)
+
+    log.info("****************************")
+    log.info("Exit 0")
