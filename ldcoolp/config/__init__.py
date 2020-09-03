@@ -2,6 +2,10 @@ import configparser
 
 from .. import config_file
 
+from .dict_load import dict_load
+
+config_default_dict = dict_load(config_file)
+
 config = configparser.ConfigParser()
 config.read(config_file)
 
@@ -46,3 +50,4 @@ qualtrics_dataCenter = config.get('qualtrics', 'dataCenter')
 # Qualtrics URLs
 qualtrics_download_url = config.get('qualtrics', 'download_url')
 qualtrics_generate_url = config.get('qualtrics', 'generate_url')
+
