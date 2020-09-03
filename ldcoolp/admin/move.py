@@ -74,13 +74,14 @@ def main(depositor_name, source_stage, dest_stage, log=None):
         log.info(f"WARNING: Unable to find source_path for {depositor_name}")
 
 
-def move_to_next(depositor_name, log=None):
+def move_to_next(depositor_name, log=None, verbose=True):
     """
     Purpose:
       Perform move from one curation stage to the next
 
     :param depositor_name: Exact name of the data curation folder with spaces
     :param log: logger.LogClass object. Default is stdout via python logging
+    :param verbose: bool that warns source_path does not exist.  Default: True
     """
 
     if isinstance(log, type(None)):
@@ -88,7 +89,7 @@ def move_to_next(depositor_name, log=None):
 
     try:
         # Get current path
-        source_stage = get_source_stage(depositor_name, log=log)
+        source_stage = get_source_stage(depositor_name, log=log, verbose=verbose)
 
         # Get destination path
         dest_stage_i = [i+1 for i in range(len(stage_list)) if
@@ -101,13 +102,14 @@ def move_to_next(depositor_name, log=None):
         log.warn(f"Unable to find source_path for {depositor_name}")
 
 
-def reject(depositor_name, log=None):
+def reject(depositor_name, log=None, verbose=True):
     """
     Purpose:
       Perform move from current stage to rejection stage
 
     :param depositor_name: Exact name of the data curation folder with spaces
     :param log: logger.LogClass object. Default is stdout via python logging
+    :param verbose: bool that warns source_path does not exist.  Default: True
     """
 
     if isinstance(log, type(None)):
@@ -115,7 +117,7 @@ def reject(depositor_name, log=None):
 
     try:
         # Get current path
-        source_stage = get_source_stage(depositor_name, log=log)
+        source_stage = get_source_stage(depositor_name, log=log, verbose=verbose)
 
         # Move folder to reject
         main(depositor_name, source_stage, rejected_folder, log=log)
