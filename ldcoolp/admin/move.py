@@ -31,7 +31,7 @@ def get_source_stage(depositor_name, log=None, verbose=True):
     source_path = glob(join(root_directory_main, '?.*', depositor_name))
     if len(source_path) == 0:
         err = f"Unable to find source_path for {depositor_name}"
-        if not verbose:
+        if verbose:
             log.warn(err)
         raise FileNotFoundError(err)
     if len(source_path) > 1:
