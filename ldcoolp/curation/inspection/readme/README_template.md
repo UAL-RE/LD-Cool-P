@@ -69,7 +69,7 @@ DOI:
 ---------------------------------------------
 ## Contributor Roles
 
-The roles are defined by the CRediT taxonomy https://casrai.org/credit
+The roles are defined by the CRediT taxonomy http://credit.niso.org/
 
 - [FirstName1 LastName1], [Affiliation]: [role1], [role2], [...]
 - [FirstName2 LastName2], [Affiliation]: [role1], [role2], [...]
