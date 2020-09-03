@@ -18,9 +18,9 @@ from ldcoolp.curation.api.qualtrics import Qualtrics
 # Read in default configuration settings
 from ..config import root_directory_main
 from ..config import todo_folder, folder_copy_data, folder_data
+from ..config import config_default_dict
 from ..config import stage_flag
 from ..config import api_token
-from ..config import qualtrics_survey_id, qualtrics_token, qualtrics_dataCenter
 
 if api_token is None or api_token == "***override***":
     print("ERROR: figshare api_token not available from config file")
@@ -31,14 +31,6 @@ fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
 acct_df = fs_admin.get_account_list()
 
-if qualtrics_survey_id is None or qualtrics_survey_id == "***override***":
-    qualtrics_survey_id = input("Provide Qualtrics Survey ID through prompt : ")
-
-if qualtrics_token is None or qualtrics_token == "***override***":
-    qualtrics_token = input("Provide Qualtrics API token through prompt : ")
-
-if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
-    qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
 
 root_directory = join(root_directory_main, todo_folder)
 
@@ -107,7 +99,7 @@ class PrerequisiteWorkflow:
         move.move_to_next(self.dn.folderName)
 
 
-def workflow(article_id, url_open=False, browser=True):
+def workflow(article_id, url_open=False, browser=True, config_dict=config_default_dict):
     """
     Purpose:
       This function follows our initial set-up to:
@@ -119,7 +111,9 @@ def workflow(article_id, url_open=False, browser=True):
 
     :param article_id: str or int, Figshare article id
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
-    :param browser: bool indicates opening a web browser for Qualtrics survey. Default: True
+    :param browser: bool to open a web browser of Qualtrics form. Default: True
+    :param config_dict: dict of dict with hierarchy of sections
+           (figshare, curation, qualtrics) follow by options
     """
 
     pw = PrerequisiteWorkflow(article_id, url_open=url_open)
@@ -136,7 +130,7 @@ def workflow(article_id, url_open=False, browser=True):
         pw.download_report()
 
         # Download Qualtrics deposit agreement form
-        q = Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
+        q = Qualtrics(qualtrics_dict=config_dict['qualtrics'])
         q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
         # Check for README file and create one if it does not exist

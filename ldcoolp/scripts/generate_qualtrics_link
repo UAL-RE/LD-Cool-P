@@ -2,19 +2,16 @@
 
 from os.path import dirname
 import argparse
-import configparser
 
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
+from ldcoolp.config import dict_load
 
 # Version and branch info
 from ldcoolp import __version__
 from ldcoolp.get_branch_name import get_active_branch_name
 from ldcoolp import __file__ as library_path
-
-# Read in default configuration file
-config = configparser.ConfigParser()
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -38,16 +35,15 @@ if __name__ == '__main__':
 
     print(banner_message)
 
-    config.read(args.config)
+    # Load configuration
+    config_dict = dict_load(args.config)
 
-    api_token = config.get('figshare', 'api_token')
-    stage_flag = config.getboolean('figshare', 'stage')
+    api_token = config_dict['figshare']['api_token']
+    stage_flag = config_dict['figshare']['stage']
     fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
-    qualtrics_dataCenter = config.get('qualtrics', 'dataCenter')
-    qualtrics_token = config.get('qualtrics', 'token')
-    qualtrics_survey_id = config.get('qualtrics', 'survey_id')
-    q = qualtrics.Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
+    q_dict = config_dict['qualtrics']
+    q = qualtrics.Qualtrics(qualtrics_dict=q_dict)
 
     print("************************************")
     print(f"STATUS: Retrieving Deposit Agreement URL for {args.article_id} ...")

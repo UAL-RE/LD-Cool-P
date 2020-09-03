@@ -42,6 +42,7 @@ api_token = config.get('figshare', 'api_token')
 # Flag for using different Figshare API endpoint (stage vs production)
 stage_flag = config.getboolean('figshare', 'stage')
 
+'''
 # Qualtrics API settings
 qualtrics_survey_id = config.get('qualtrics', 'survey_id')
 qualtrics_token = config.get('qualtrics', 'token')
@@ -50,4 +51,4 @@ qualtrics_dataCenter = config.get('qualtrics', 'dataCenter')
 # Qualtrics URLs
 qualtrics_download_url = config.get('qualtrics', 'download_url')
 qualtrics_generate_url = config.get('qualtrics', 'generate_url')
-
+'''
