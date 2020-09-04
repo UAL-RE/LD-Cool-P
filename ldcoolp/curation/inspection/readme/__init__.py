@@ -10,10 +10,7 @@ from html2text import html2text
 from ....admin import permissions
 
 # Read in default configuration settings
-from ....config import folder_copy_data, folder_data, root_directory_main
-from ....config import todo_folder, readme_template
-
-root_directory = join(root_directory_main, todo_folder)
+from ....config import config_default_dict
 
 
 class ReadmeClass:
@@ -72,16 +69,23 @@ class ReadmeClass:
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn):
+    def __init__(self, dn, curation_dict=config_default_dict['curation']):
         self.dn = dn
         self.folderName = self.dn.folderName
         self.article_id = self.dn.article_id
         self.article_dict = self.dn.curation_dict
 
+        self.root_directory_main = curation_dict[curation_dict['parent_dir']]
+        self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
+
         # Paths
-        self.folder_path = join(root_directory, self.folderName)
-        self.data_path = join(self.folder_path, folder_copy_data)      # DATA
-        self.original_data_path = join(self.folder_path, folder_data)  # ORIGINAL_DATA
+        self.folder_path = join(self.root_directory, self.folderName)
+        self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
+        self.original_data_path = join(self.folder_path,
+                                       curation_dict['folder_data'])  # ORIGINAL_DATA
+
+        # README template
+        self.readme_template = curation_dict['readme_template']
 
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
@@ -117,7 +121,7 @@ class ReadmeClass:
 
         if len(self.README_files) == 0:
             print("No README files found.")
-            print(f"Note: default {readme_template} will be used")
+            print(f"Note: default {self.readme_template} will be used")
             template_source = 'default'
         else:
             if len(self.README_files) == 1:
@@ -140,19 +144,19 @@ class ReadmeClass:
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
 
-        dest_file = join(self.data_path, readme_template)
+        dest_file = join(self.data_path, self.readme_template)
 
         if not exists(dest_file):
             print(f"Saving {self.template_source} template in DATA ...")
 
             if self.template_source == 'default':
-                src_file = join(dirname(__file__), readme_template)
+                src_file = join(dirname(__file__), self.readme_template)
             else:
                 src_file = self.README_files[0]
 
             shutil.copy(src_file, dest_file)
         else:
-            print(f"{readme_template} exists. Not overwriting template!")
+            print(f"{self.readme_template} exists. Not overwriting template!")
 
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
@@ -160,7 +164,7 @@ class ReadmeClass:
         file_loader = FileSystemLoader(self.data_path)
         env = Environment(loader=file_loader)
 
-        jinja_template = env.get_template(readme_template)
+        jinja_template = env.get_template(self.readme_template)
         return jinja_template
 
     def retrieve_article_metadata(self):
@@ -245,7 +249,7 @@ class ReadmeClass:
                 print("Exiting script")
                 return
         else:
-            print(f"Multiple README files. Unable to save {readme_template} and README.txt")
+            print(f"Multiple README files. Unable to save {self.readme_template} and README.txt")
 
 
 def walkthrough(data_path, ignore=''):
