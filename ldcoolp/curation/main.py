@@ -16,23 +16,7 @@ from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
 from ldcoolp.curation.api.qualtrics import Qualtrics
 
 # Read in default configuration settings
-from ..config import root_directory_main
-from ..config import todo_folder, folder_copy_data, folder_data
 from ..config import config_default_dict
-from ..config import stage_flag
-from ..config import api_token
-
-if api_token is None or api_token == "***override***":
-    print("ERROR: figshare api_token not available from config file")
-    api_token = input("Provide figshare token through prompt : ")
-
-fs = Figshare(token=api_token, private=True, stage=stage_flag)
-fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag)
-
-acct_df = fs_admin.get_account_list()
-
-
-root_directory = join(root_directory_main, todo_folder)
 
 
 class PrerequisiteWorkflow:
@@ -46,18 +30,31 @@ class PrerequisiteWorkflow:
        5. Check the README file
 
     """
-    def __init__(self, article_id, url_open=False):
-        self.root_directory = root_directory
-        self.article_id = article_id
-        self.dn = DepositorName(self.article_id, fs_admin)
-        self.data_directory = join(self.dn.folderName, folder_data)
+    def __init__(self, article_id, url_open=False, config_dict=config_default_dict):
+        self.mc = move.MoveClass(curation_dict=config_dict['curation'])
 
-        self.copy_data_directory = join(self.dn.folderName, folder_copy_data)
+        self.root_directory = join(self.mc.root_directory_main, self.mc.todo_folder)
+
+        self.article_id = article_id
+
+        self.curation_dict = config_dict['curation']
+        self.figshare_dict = config_dict['figshare']
+
+        self.fs = Figshare(token=self.figshare_dict['api_token'], private=True,
+                           stage=self.figshare_dict['stage'])
+        self.fs_admin = FigshareInstituteAdmin(figshare_dict=self.figshare_dict)
+
+        self.dn = DepositorName(self.article_id, self.fs_admin)
+        self.data_directory = join(self.dn.folderName,
+                                   self.curation_dict['folder_data'])
+
+        self.copy_data_directory = join(self.dn.folderName,
+                                        self.curation_dict['folder_copy_data'])
         self.url_open = url_open
 
         # Check if dataset has been retrieved
         try:
-            source_stage = move.get_source_stage(self.dn.folderName)
+            source_stage = self.mc.get_source_stage(self.dn.folderName)
             print(f"WARNING: Curation folder exists in {source_stage}. Will not retrieve!")
             self.new_set = False
         except FileNotFoundError:
@@ -68,7 +65,7 @@ class PrerequisiteWorkflow:
 
     def reserve_doi(self):
         # Mint DOI if this has not been done
-        doi_string = fs_admin.reserve_doi(self.article_id)
+        doi_string = self.fs_admin.reserve_doi(self.article_id)
 
         return doi_string
 
@@ -86,17 +83,17 @@ class PrerequisiteWorkflow:
 
     def download_data(self):
         if self.new_set:
-            download_files(self.article_id, fs=fs,
+            download_files(self.article_id, self.fs,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
                            url_open=self.url_open)
 
     def download_report(self):
         if self.new_set:
-            review_report(self.dn.folderName)
+            review_report(self.dn.folderName, curation_dict=self.curation_dict)
 
     def move_to_next(self):
-        move.move_to_next(self.dn.folderName)
+        self.mc.move_to_next(self.dn.folderName)
 
 
 def workflow(article_id, url_open=False, browser=True, config_dict=config_default_dict):
@@ -116,7 +113,7 @@ def workflow(article_id, url_open=False, browser=True, config_dict=config_defaul
            (figshare, curation, qualtrics) follow by options
     """
 
-    pw = PrerequisiteWorkflow(article_id, url_open=url_open)
+    pw = PrerequisiteWorkflow(article_id, url_open=url_open, config_dict=config_dict)
 
     # Perform prerequisite workflow if dataset is entirely new
     if pw.new_set:
@@ -134,7 +131,7 @@ def workflow(article_id, url_open=False, browser=True, config_dict=config_defaul
         q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
         # Check for README file and create one if it does not exist
-        rc = ReadmeClass(pw.dn)
+        rc = ReadmeClass(pw.dn, curation_dict=config_dict['curation'])
         rc.main()
 
         # Move to next curation stage, 2.UnderReview curation folder
