@@ -10,16 +10,19 @@ from ldcoolp import __version__
 from ldcoolp.get_branch_name import get_active_branch_name
 from ldcoolp import __file__ as library_path
 
+# Config loader
+from ldcoolp.config import dict_load
+
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
 
 if __name__ == '__main__':
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
+    parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
     parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
-    # parser.add_argument('--config', required=True, help='path to configuration file')
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
@@ -39,6 +42,9 @@ if __name__ == '__main__':
     """
     print(banner_message)
 
+    # Load configuration
+    config_dict = dict_load(args.config)
+
     print("****************************")
 
     # Separate comma-separated list of articles
@@ -53,7 +59,8 @@ if __name__ == '__main__':
         print(f"Retrieving {articles[ii]}")  # ... {ii+1} / {num_articles}")
 
         # Run pre-req steps
-        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser)
+        main.workflow(articles[ii], url_open=args.url_open,
+                      browser=args.browser, config_dict=config_dict)
         count += 1
 
         print(f"STATUS: Completed ... {articles[ii]} ...")
