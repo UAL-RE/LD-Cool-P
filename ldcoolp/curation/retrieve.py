@@ -3,10 +3,7 @@ from os.path import exists
 
 from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
 
-from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
-
-from ..config import api_token
 
 
 def private_file_retrieve(url, filename=None, token=None, url_open=False):
@@ -42,7 +39,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
         f.close()
 
 
-def download_files(article_id, fs=None, root_directory=None, data_directory=None,
+def download_files(article_id, fs, root_directory=None, data_directory=None,
                    url_open=False):
     """
     Purpose:
@@ -56,13 +53,6 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     """
     if root_directory is None:
         root_directory = os.getcwd()
-
-    if not fs:
-        if api_token is None or api_token == "***override***":
-            print("ERROR: api_token not available from config file")
-            api_token = input("Provide token through prompt : ")
-
-        fs = Figshare(token=api_token, private=True)
 
     # Retrieve article information
     # article_details = fs.get_article_details(article_id)
