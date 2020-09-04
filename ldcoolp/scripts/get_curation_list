@@ -13,7 +13,7 @@ from ldcoolp.get_branch_name import get_active_branch_name
 from ldcoolp import __file__ as library_path
 
 # Read in default configuration file
-config = configparser.ConfigParser()
+from ldcoolp.config import dict_load
 
 cols_order = ['article_id', 'id', 'depositor_name', 'title', 'account_id',
               'modified_date', 'created_date']
@@ -38,11 +38,11 @@ if __name__ == '__main__':
     """
     print(banner_message)
 
-    config.read(args.config)
+    # Load configuration
+    config_dict = dict_load(args.config)
 
-    api_token = config.get('figshare', 'api_token')
-    stage_flag = config.getboolean('figshare', 'stage')
-    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
 
     print("STATUS: Retrieving list now ...")
 

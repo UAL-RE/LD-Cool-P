@@ -38,9 +38,8 @@ if __name__ == '__main__':
     # Load configuration
     config_dict = dict_load(args.config)
 
-    api_token = config_dict['figshare']['api_token']
-    stage_flag = config_dict['figshare']['stage']
-    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
 
     q_dict = config_dict['qualtrics']
     q = qualtrics.Qualtrics(qualtrics_dict=q_dict)
