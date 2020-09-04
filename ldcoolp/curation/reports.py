@@ -5,16 +5,22 @@ from urllib.request import urlretrieve
 
 from ldcoolp.admin import permissions
 
-from ..config import root_directory_main, todo_folder, folder_ual_rdm, report_url
-
-staging_directory = join(root_directory_main, todo_folder)
+from ..config import config_default_dict
 
 
-def review_report(depositor_name=''):
+def review_report(depositor_name='', curation_dict=config_default_dict['curation']):
     """
     Purpose:
       Retrieve Curation Review Report and save on curation server
     """
+
+    root_directory_main = curation_dict[curation_dict['parent_dir']]
+    todo_folder = curation_dict['folder_todo']
+    folder_ual_rdm = curation_dict['folder_ual_rdm']
+    report_url = curation_dict['report_url']
+
+    staging_directory = join(root_directory_main, todo_folder)
+
     # Complete path to UAL_RDM folder
     out_path = join(staging_directory, depositor_name, folder_ual_rdm)
     if not exists(out_path):
