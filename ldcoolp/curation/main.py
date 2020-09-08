@@ -138,5 +138,7 @@ def workflow(article_id, url_open=False, browser=True, config_dict=config_defaul
         if rc.template_source != 'unknown':
             print("Do you wish to move deposit to the next curation stage?")
             user_response = input("Type 'Yes'/'yes'. Anything else will skip : ")
-            if user_response.lower == 'yes':
+            if user_response.lower() == 'yes':
                 pw.move_to_next()
+            else:
+                print("Skipping move ...")
