@@ -1,5 +1,8 @@
 from figshare.figshare import issue_request
 
+# Read in default configuration file
+from ...config import config_default_dict
+
 import pandas as pd
 import numpy as np
 
@@ -11,8 +14,18 @@ class FigshareInstituteAdmin:
     Purpose:
       A Python interface for administration of institutional Figshare accounts
 
+    :param figshare_dict: Dict that contains Figshare configuration.
+      This should include:
+        - api_token
+        - stage bool
+
+      Default: config_default_dict from config/default.ini
+
     Attributes
     ----------
+    dict : dict
+      Figshare configuration dictionary
+
     baseurl : str
       Base URL of the Figshare v2 API
 
@@ -85,18 +98,19 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, token=None, stage=False, log=None):
-        if not stage:
+    def __init__(self, figshare_dict=config_default_dict['figshare'], log=None):
+        self.dict = figshare_dict
+        if not self.dict['stage']:
             self.baseurl = "https://api.figshare.com/v2/account/"
         else:
             self.baseurl = "https://api.figsh.com/v2/account/"
 
         self.baseurl_institute = self.baseurl + "institution/"
-        self.token = token
+        self.token = self.dict['api_token']
 
         self.headers = {'Content-Type': 'application/json'}
-        if token:
-            self.headers['Authorization'] = f'token {token}'
+        if self.token:
+            self.headers['Authorization'] = f'token {self.token}'
 
         if isinstance(log, type(None)):
             self.log = log_stdout()

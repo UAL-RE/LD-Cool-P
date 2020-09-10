@@ -19,33 +19,7 @@ from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
 from ldcoolp.curation.api.qualtrics import Qualtrics
 
 # Read in default configuration settings
-from ..config import root_directory_main
-from ..config import todo_folder, folder_copy_data, folder_data
-from ..config import stage_flag
-from ..config import api_token
-from ..config import qualtrics_survey_id, qualtrics_token, qualtrics_dataCenter
-
-'''
-if api_token is None or api_token == "***override***":
-    print("ERROR: figshare api_token not available from config file")
-    api_token = input("Provide figshare token through prompt : ")
-
-fs = Figshare(token=api_token, private=True, stage=stage_flag)
-fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag)
-
-acct_df = fs_admin.get_account_list()
-'''
-
-if qualtrics_survey_id is None or qualtrics_survey_id == "***override***":
-    qualtrics_survey_id = input("Provide Qualtrics Survey ID through prompt : ")
-
-if qualtrics_token is None or qualtrics_token == "***override***":
-    qualtrics_token = input("Provide Qualtrics API token through prompt : ")
-
-if qualtrics_dataCenter is None or qualtrics_dataCenter == "***override***":
-    qualtrics_dataCenter = input("Provide Qualtrics dataCenter through prompt : ")
-
-root_directory = join(root_directory_main, todo_folder)
+from ..config import config_default_dict
 
 
 class PrerequisiteWorkflow:
@@ -59,11 +33,9 @@ class PrerequisiteWorkflow:
        5. Check the README file
 
     """
-    def __init__(self, article_id, fs_admin, fs, log=None, url_open=False):
-        self.root_directory = root_directory
-        self.article_id = article_id
-        self.fs_admin = fs_admin
-        self.fs = fs
+
+    def __init__(self, article_id, log=None, url_open=False,
+                 config_dict=config_default_dict):
 
         # If log is not defined, then output log to stdout
         if isinstance(log, type(None)):
@@ -71,16 +43,29 @@ class PrerequisiteWorkflow:
         else:
             self.log = log
 
-        self.dn = DepositorName(self.article_id, self.fs_admin, log=self.log)
-        self.data_directory = join(self.dn.folderName, folder_data)
+        self.mc = move.MoveClass(curation_dict=config_dict['curation'], log=self.log)
 
-        self.copy_data_directory = join(self.dn.folderName, folder_copy_data)
+        self.root_directory = join(self.mc.root_directory_main, self.mc.todo_folder)
+
+        self.article_id = article_id
+
+        self.curation_dict = config_dict['curation']
+        self.figshare_dict = config_dict['figshare']
+
+        self.fs = Figshare(token=self.figshare_dict['api_token'], private=True,
+                           stage=self.figshare_dict['stage'])
+        self.fs_admin = FigshareInstituteAdmin(figshare_dict=self.figshare_dict, log=self.log)
+
+        self.dn = DepositorName(self.article_id, self.fs_admin, log=self.log)
+        self.data_directory = join(self.dn.folderName, self.curation_dict['folder_data'])
+
+        self.copy_data_directory = join(self.dn.folderName,
+                                        self.curation_dict['folder_copy_data'])
         self.url_open = url_open
 
         # Check if dataset has been retrieved
         try:
-            source_stage = move.get_source_stage(self.dn.folderName,
-                                                 log=self.log, verbose=False)
+            source_stage = self.mc.get_source_stage(self.dn.folderName, verbose=False)
             self.log.warn(f"Curation folder exists in {source_stage}. Will not retrieve!")
             self.new_set = False
         except FileNotFoundError:
@@ -110,20 +95,22 @@ class PrerequisiteWorkflow:
 
     def download_data(self):
         if self.new_set:
-            download_files(self.article_id, fs=self.fs,
+            download_files(self.article_id, self.fs,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
                            log=self.log, url_open=self.url_open)
 
     def download_report(self):
         if self.new_set:
-            review_report(self.dn.folderName, log=self.log)
+            review_report(self.dn.folderName, curation_dict=self.curation_dict,
+                          log=self.log)
 
     def move_to_next(self):
-        move.move_to_next(self.dn.folderName, log=self.log)
+        self.mc.move_to_next(self.dn.folderName)
 
 
-def workflow(article_id, url_open=False, browser=True, log=None):
+def workflow(article_id, url_open=False, browser=True, log=None,
+             config_dict=config_default_dict):
     """
     Purpose:
       This function follows our initial set-up to:
@@ -137,19 +124,16 @@ def workflow(article_id, url_open=False, browser=True, log=None):
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     :param browser: bool indicates opening a web browser for Qualtrics survey. Default: True
     :param log: logger.LogClass object. Default is stdout via python logging
+    :param config_dict: dict of dict with hierarchy of sections
+           (figshare, curation, qualtrics) follow by options
     """
 
     # If log is not defined, then output log to stdout
     if isinstance(log, type(None)):
         log = log_stdout()
 
-    # Define Figshare API objects
-    fs = Figshare(token=api_token, private=True, stage=stage_flag)
-    fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag,
-                                      log=log)
-
-    pw = PrerequisiteWorkflow(article_id, fs_admin, fs, log=log,
-                              url_open=url_open)
+    pw = PrerequisiteWorkflow(article_id, url_open=url_open, log=log,
+                              config_dict=config_dict)
 
     # Perform prerequisite workflow if dataset is entirely new
     if pw.new_set:
@@ -163,12 +147,11 @@ def workflow(article_id, url_open=False, browser=True, log=None):
         pw.download_report()
 
         # Download Qualtrics deposit agreement form
-        q = Qualtrics(qualtrics_dataCenter, qualtrics_token,
-                      qualtrics_survey_id, log=log)
+        q = Qualtrics(qualtrics_dict=config_dict['qualtrics'], log=log)
         q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
 
         # Check for README file and create one if it does not exist
-        rc = ReadmeClass(pw.dn, log=log)
+        rc = ReadmeClass(pw.dn, log=log, curation_dict=config_dict['curation'])
         rc.main()
 
         # Move to next curation stage, 2.UnderReview curation folder
@@ -178,3 +161,5 @@ def workflow(article_id, url_open=False, browser=True, log=None):
             log.info(f"RESPONSE: {user_response}")
             if user_response.lower() == 'yes':
                 pw.move_to_next()
+            else:
+                print("Skipping move ...")

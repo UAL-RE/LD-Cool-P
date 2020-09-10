@@ -4,7 +4,6 @@ from os.path import dirname, exists, join
 from os import mkdir, stat
 
 import argparse
-import configparser
 
 from datetime import date
 
@@ -13,14 +12,12 @@ from ldcoolp.curation.api import figshare
 from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
 from ldcoolp.admin import permissions
+from ldcoolp.config import dict_load
 
 # Version and branch info
 from ldcoolp import __version__
 from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
-
-# Read in default configuration file
-config = configparser.ConfigParser()
 
 today = date.today()
 
@@ -51,12 +48,13 @@ if __name__ == '__main__':
 
     print(banner_message)
 
-    config.read(args.config)
+    # Load configuration
+    config_dict = dict_load(args.config)
 
-    root_directory_main = config.get('curation',
-                                     config.get('curation', 'log_parent_dir'))
+    curation_dict = config_dict['curation']
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
 
-    log_dir = join(root_directory_main, config.get('curation', 'log_dir'))
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'generate_qualtrics_link'
@@ -64,14 +62,11 @@ if __name__ == '__main__':
 
     log = LogClass(log_dir, logfile).get_logger()
 
-    api_token = config.get('figshare', 'api_token')
-    stage_flag = config.getboolean('figshare', 'stage')
-    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
 
-    qualtrics_dataCenter = config.get('qualtrics', 'dataCenter')
-    qualtrics_token = config.get('qualtrics', 'token')
-    qualtrics_survey_id = config.get('qualtrics', 'survey_id')
-    q = qualtrics.Qualtrics(qualtrics_dataCenter, qualtrics_token, qualtrics_survey_id)
+    q_dict = config_dict['qualtrics']
+    q = qualtrics.Qualtrics(qualtrics_dict=q_dict, log=log)
 
     log.info("************************************")
     log.debug(f"LD-Cool-P branch: {branch_name}")

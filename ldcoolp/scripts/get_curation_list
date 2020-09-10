@@ -5,7 +5,6 @@ from os import mkdir, stat
 from io import StringIO
 
 import argparse
-import configparser
 
 from datetime import date
 
@@ -20,7 +19,7 @@ from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
 
 # Read in default configuration file
-config = configparser.ConfigParser()
+from ldcoolp.config import dict_load
 
 cols_order = ['article_id', 'id', 'depositor_name', 'title', 'account_id',
               'modified_date', 'created_date']
@@ -52,12 +51,13 @@ if __name__ == '__main__':
     """
     print(banner_message)
 
-    config.read(args.config)
+    # Load configuration
+    config_dict = dict_load(args.config)
 
-    root_directory_main = config.get('curation',
-                                     config.get('curation', 'log_parent_dir'))
+    curation_dict = config_dict['curation']
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
 
-    log_dir = join(root_directory_main, config.get('curation', 'log_dir'))
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'get_curation_list'
@@ -80,9 +80,8 @@ if __name__ == '__main__':
     # Configuration information
     log.info(f"Config file: {args.config}")
 
-    api_token = config.get('figshare', 'api_token')
-    stage_flag = config.getboolean('figshare', 'stage')
-    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
 
     log.info("Retrieving list now ...")
 

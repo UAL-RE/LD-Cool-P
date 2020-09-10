@@ -23,7 +23,7 @@ import logging
 from figshare.figshare import issue_request
 
 # Read in default configuration settings
-from ...config import qualtrics_download_url, qualtrics_generate_url
+from ...config import config_default_dict
 
 # for quote and urlencode
 url_safe = '/ {},:"?=@%'
@@ -35,10 +35,24 @@ cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
 class Qualtrics:
     """
     Purpose:
-      A Python interface for interaction with Qualtrics API for Deposit Agreement form survey
+      A Python interface for interaction with Qualtrics API for Deposit
+      Agreement form survey
+
+    :param qualtrics_dict: Dict that contains Qualtrics configuration.
+      This should include:
+        - survey_id
+        - token
+        - datacenter
+        - download_url
+        - generate_url
+
+      Default: config_default_dict from config/default.ini
 
     Attributes
     ----------
+    dict : dict
+      Qualtrics configuration dictionary
+
     token : str
       The Qualtrics API Key authentication token
 
@@ -82,13 +96,15 @@ class Qualtrics:
       Generate URL with customized query strings based on Figshare metadata
     """
 
-    def __init__(self, dataCenter, token, survey_id, log=None):
-        self.token = token
-        self.data_center = dataCenter
+    def __init__(self, qualtrics_dict=config_default_dict['qualtrics'], log=None):
+        self.dict = qualtrics_dict
+        self.token = self.dict['token']
+        self.data_center = self.dict['datacenter']
+
         self.baseurl = f"https://{self.data_center}.qualtrics.com/API/v3/"
         self.headers = {"X-API-TOKEN": self.token,
                         "Content-Type": "application/json"}
-        self.survey_id = survey_id
+        self.survey_id = self.dict['survey_id']
         self.file_format = 'csv'
 
         # Logging
@@ -256,7 +272,8 @@ class Qualtrics:
                 input("Press the RETURN/ENTER key when you're signed on via SSO ... ")
             else:
                 self.log.info("CLI: Not opening a browser!")
-            full_url = f'{qualtrics_download_url}?RID={ResponseId}&SID={self.survey_id}'
+
+            full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={self.survey_id}"
 
             if browser:
                 webbrowser.open(full_url, new=2)
@@ -282,7 +299,7 @@ class Qualtrics:
                           'curation_id': dn_dict['curation_id'],
                           'Q_PopulateResponse': json_txt}
 
-        full_url = f'{qualtrics_generate_url}{self.survey_id}?' + \
+        full_url = f"{self.dict['generate_url']}{self.survey_id}?" + \
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
 
         return full_url

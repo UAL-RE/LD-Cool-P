@@ -3,7 +3,6 @@
 from os.path import dirname, exists, join
 from os import mkdir, stat
 
-import configparser
 import argparse
 
 from datetime import date
@@ -17,9 +16,10 @@ from ldcoolp import __version__
 from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
 
-config = configparser.ConfigParser()
-
 today = date.today()
+
+# Config loader
+from ldcoolp.config import dict_load
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -31,7 +31,6 @@ if __name__ == '__main__':
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
     parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
-    # parser.add_argument('--config', required=True, help='path to configuration file')
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
@@ -56,13 +55,15 @@ if __name__ == '__main__':
     """
     print(banner_message)
 
-    config.read(args.config)
+    # Load configuration
+    config_dict = dict_load(args.config)
+
+    curation_dict = config_dict['curation']
 
     # Define logfile
-    root_directory_main = config.get('curation',
-                                     config.get('curation', 'log_parent_dir'))
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
 
-    log_dir = join(root_directory_main, config.get('curation', 'log_dir'))
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'prereq_script'
@@ -96,7 +97,7 @@ if __name__ == '__main__':
 
         # Run pre-req steps
         main.workflow(articles[ii], url_open=args.url_open, browser=args.browser,
-                      log=log)
+                      log=log, config_dict=config_dict)
         count += 1
 
         log.info(f"Completed: {articles[ii]} ...")
