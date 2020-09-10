@@ -51,7 +51,6 @@ class MoveClass:
           Retrieve source stage folder by searching for dataset on curation server
 
         :param depositor_name: Exact name of the data curation folder with spaces
-        :param log: logger.LogClass object. Default is stdout via python logging
         :param verbose: bool that warns source_path does not exist.  Default: True
                This is best used for new folders to avoid warning
 
