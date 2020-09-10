@@ -115,12 +115,21 @@ You should see that the version is `0.14.0`.
 
 ### Configuration Settings
 
-Configuration settings are specified through the [__init__.py](ldcoolp/__init__.py) settings:
+Configuration settings are specified through the `--config` flag in the scripts
+described below. For example:
+```
+    --config ldcoolp/config/myconfig.ini
+```
+
+Note that in the [__init__.py](ldcoolp/__init__.py), there's a default setting:
 ```
 config_dir       = path.join(co_path, 'config/')
 main_config_file = 'default.ini'
 config_file      = path.join(config_dir, main_config_file)
 ```
+This is used when a configuration file is not provided in all modules and functions
+that require settings.
+
 
 A [template for this configuration file](ldcoolp/config/default.ini) is provided.
 There are a number of config sections, including `figshare`, `curation`, and `qualtrics`.
