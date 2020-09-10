@@ -220,19 +220,19 @@ class FigshareInstituteAdmin:
             try:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
-            except Exception as e:
+            except Exception:
                 self.log.warn(f"Unable to retrieve articles for : {account_id}")
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
-            except Exception as e:
+            except Exception:
                 self.log.warn(f"Unable to retrieve projects for : {account_id}")
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
-            except Exception as e:
+            except Exception:
                 self.log.warn(f"Unable to retrieve collections for : {account_id}")
 
             for key in roles.keys():
