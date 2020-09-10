@@ -3,10 +3,10 @@ from os.path import exists
 
 from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
 
-from figshare.figshare import Figshare  # , issue_request
 from ldcoolp.admin import permissions
 
-from ..config import api_token
+# Logging
+from ldcoolp.logger import log_stdout
 
 
 def private_file_retrieve(url, filename=None, token=None, url_open=False):
@@ -25,13 +25,13 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
     if not url_open:
         if token:
             opener = build_opener()
-            opener.addheaders = [('Authorization', 'token {}'.format(token))]
+            opener.addheaders = [('Authorization', f'token {token}')]
             install_opener(opener)
         urlretrieve(url, filename)
     else:
         req = Request(url)
         if token:
-            req.add_header('Authorization', 'token {}'.format(token))
+            req.add_header('Authorization', f'token {token}')
 
         response = urlopen(req)
         content = response.read()
@@ -42,8 +42,8 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
         f.close()
 
 
-def download_files(article_id, fs=None, root_directory=None, data_directory=None,
-                   url_open=False):
+def download_files(article_id, fs, root_directory=None, data_directory=None,
+                   log=None, url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -52,17 +52,15 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     :param fs: Figshare object
     :param root_directory: Root path for curation workflow (str)
     :param data_directory: Relative folder path for primary location of data (str)
+    :param log: logger.LogClass object. Default is stdout via python logging
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
+
+    if isinstance(log, type(None)):
+        log = log_stdout()
+
     if root_directory is None:
         root_directory = os.getcwd()
-
-    if not fs:
-        if api_token is None or api_token == "***override***":
-            print("ERROR: api_token not available from config file")
-            api_token = input("Provide token through prompt : ")
-
-        fs = Figshare(token=api_token, private=True)
 
     # Retrieve article information
     # article_details = fs.get_article_details(article_id)
@@ -71,23 +69,23 @@ def download_files(article_id, fs=None, root_directory=None, data_directory=None
     n_files = len(file_list)
 
     if not data_directory:
-        dir_path = os.path.join(root_directory, "figshare_{0}/".format(article_id))
+        dir_path = os.path.join(root_directory, f"figshare_{article_id}/")
     else:
         dir_path = os.path.join(root_directory, data_directory)
 
     os.makedirs(dir_path, exist_ok=True)  # This might require Python >=3.2
     permissions.curation(dir_path)
 
-    print("Total number of files: {}".format(n_files))
+    log.info(f"Total number of files: {n_files}")
 
     for n, file_dict in zip(range(n_files), file_list):
-        print("Retrieving {} of {} : {}".format(n+1, n_files, file_dict['name']))
+        log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']}")
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
                                   token=fs.token, url_open=url_open)
         else:
-            print("File exists! Not overwriting!")
+            log.info("File exists! Not overwriting!")
 
     # Change permissions on folders and files
     # permissions.curation(dir_path)

@@ -2,96 +2,138 @@ from os.path import join, dirname, exists
 import shutil
 from glob import glob
 
+# Logging
+from ..logger import log_stdout
+
 # Read in default configuration settings
-from ..config import root_directory_main
-from ..config import todo_folder, underreview_folder, reviewed_folder, \
-    published_folder, rejected_folder
-
-stage_list = [todo_folder, underreview_folder, reviewed_folder, published_folder]
+from ..config import config_default_dict
 
 
-def get_source_stage(depositor_name):
+class MoveClass:
     """
     Purpose:
-      Retrieve source stage folder by searching for dataset on curation server
+      Python interface for administrative content move following curation workflow
 
-    :param depositor_name: : Exact name of the data curation folder with spaces
-    :return source_stage: str containing source stage name
+    :param curation_dict: Dict that contains curation configuration.
+      This should include:
+       - parent_dir (str)
+       - folder_todo (str)
+       - folder_underreview (str)
+       - folder_reviewed (str)
+       - folder_published (str)
+       - folder_rejected (str)
+
+    :param log: logger.LogClass object. Default is stdout via python logging
     """
 
-    source_path = glob(join(root_directory_main, '?.*', depositor_name))
-    if len(source_path) == 0:
-        raise FileNotFoundError(f"Unable to find source_path for {depositor_name}")
-    if len(source_path) > 1:
-        print(source_path)
-        raise ValueError(f"Multiple paths found for {depositor_name}")
-    if len(source_path) == 1:
-        source_stage = dirname(source_path[0].replace(join(root_directory_main, ''), ''))
+    def __init__(self, curation_dict=config_default_dict['curation'], log=None):
 
-        return source_stage
+        if isinstance(log, type(None)):
+            self.log = log_stdout()
+        else:
+            self.log = log
 
+        self.root_directory_main = curation_dict[curation_dict['parent_dir']]
+        self.todo_folder = curation_dict['folder_todo']
+        self.underreview_folder = curation_dict['folder_underreview']
+        self.reviewed_folder = curation_dict['folder_reviewed']
+        self.published_folder = curation_dict['folder_published']
+        self.rejected_folder = curation_dict['folder_rejected']
 
-def main(depositor_name, source_stage, dest_stage):
-    """
-    Purpose:
-      Move a data set on the curation server from one curation stage to another
+        self.stage_list = [self.todo_folder,
+                           self.underreview_folder,
+                           self.reviewed_folder,
+                           self.published_folder]
 
-    :param depositor_name: Exact name of the data curation folder with spaces
-    :param source_stage: folder name either folder_todo, folder_underreview,
-                         folder_reviewed, folder_published, or folder_rejected
-    :param dest_stage: folder name either folder_todo, folder_underreview,
-                       folder_reviewed, folder_published, or folder_rejected
-    """
+    def get_source_stage(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Retrieve source stage folder by searching for dataset on curation server
 
-    # Define paths:
-    source_path = join(root_directory_main, source_stage, depositor_name)
-    dest_path = join(root_directory_main, dest_stage, depositor_name)
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+               This is best used for new folders to avoid warning
 
-    # Move folder
-    if exists(source_path):
-        print(f"Moving: {depositor_name} from {source_stage} to ...")
-        print(f" ... {dest_stage} on {root_directory_main}")
-        shutil.move(source_path, dest_path)
-    else:
-        print(f"WARNING: Unable to find source_path for {depositor_name}")
+        :return source_stage: str containing source stage name
+        """
 
+        source_path = glob(join(self.root_directory_main, '?.*', depositor_name))
+        if len(source_path) == 0:
+            err = f"Unable to find source_path for {depositor_name}"
+            if verbose:
+                self.log.warn(err)
+            raise FileNotFoundError(err)
+        if len(source_path) > 1:
+            err = f"Multiple paths found for {depositor_name}"
+            self.log.warn(err)
+            self.log.debug(source_path)
+            raise ValueError(err)
+        if len(source_path) == 1:
+            source_stage = dirname(source_path[0].replace(join(self.root_directory_main, ''), ''))
 
-def move_to_next(depositor_name):
-    """
-    Purpose:
-      Perform move from one curation stage to the next
+            return source_stage
 
-    :param depositor_name: Exact name of the data curation folder with spaces
-    """
+    def main(self, depositor_name, source_stage, dest_stage):
+        """
+        Purpose:
+          Move a data set on the curation server from one curation stage to another
 
-    try:
-        # Get current path
-        source_stage = get_source_stage(depositor_name)
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param source_stage: folder name either folder_todo, folder_underreview,
+                             folder_reviewed, folder_published, or folder_rejected
+        :param dest_stage: folder name either folder_todo, folder_underreview,
+                           folder_reviewed, folder_published, or folder_rejected
+        """
 
-        # Get destination path
-        dest_stage_i = [i+1 for i in range(len(stage_list)) if
-                        stage_list[i] == source_stage][0]
-        dest_stage = stage_list[dest_stage_i]
+        # Define paths:
+        source_path = join(self.root_directory_main, source_stage, depositor_name)
+        dest_path = join(self.root_directory_main, dest_stage, depositor_name)
 
         # Move folder
-        main(depositor_name, source_stage, dest_stage)
-    except FileNotFoundError:
-        print(f"WARNING: Unable to find source_path for {depositor_name}")
+        if exists(source_path):
+            self.log.info(f"Moving: {depositor_name} from {source_stage} to ...")
+            self.log.info(f" ... {dest_stage} on {self.root_directory_main}")
+            shutil.move(source_path, dest_path)
+        else:
+            self.log.info(f"WARNING: Unable to find source_path for {depositor_name}")
 
+    def move_to_next(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Perform move from one curation stage to the next
 
-def reject(depositor_name):
-    """
-    Purpose:
-      Perform move from current stage to rejection stage
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+        """
 
-    :param depositor_name: Exact name of the data curation folder with spaces
-    """
+        try:
+            # Get current path
+            source_stage = self.get_source_stage(depositor_name, verbose=verbose)
 
-    try:
-        # Get current path
-        source_stage = get_source_stage(depositor_name)
+            # Get destination path
+            dest_stage_i = [i+1 for i in range(len(self.stage_list)) if
+                            self.stage_list[i] == source_stage][0]
+            dest_stage = self.stage_list[dest_stage_i]
 
-        # Move folder to reject
-        main(depositor_name, source_stage, rejected_folder)
-    except FileNotFoundError:
-        print(f"WARNING: Unable to find source_path for {depositor_name}")
+            # Move folder
+            self.main(depositor_name, source_stage, dest_stage)
+        except FileNotFoundError:
+            self.log.warn(f"Unable to find source_path for {depositor_name}")
+
+    def reject(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Perform move from current stage to rejection stage
+
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+        """
+
+        try:
+            # Get current path
+            source_stage = self.get_source_stage(depositor_name, verbose=verbose)
+
+            # Move folder to reject
+            self.main(depositor_name, source_stage, self.rejected_folder)
+        except FileNotFoundError:
+            self.log.warn(f"Unable to find source_path for {depositor_name}")

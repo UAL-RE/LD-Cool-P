@@ -1,14 +1,25 @@
 #!/usr/bin/env python
 
-from os.path import dirname
+from os.path import dirname, exists, join
+from os import mkdir, stat
+
 import argparse
 
+from datetime import date
+
 from ldcoolp.curation import main
+from ldcoolp.logger import LogClass, get_user_hostname
+from ldcoolp.admin import permissions
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.get_branch_name import get_active_branch_name
+from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
+
+today = date.today()
+
+# Config loader
+from ldcoolp.config import dict_load
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -16,14 +27,18 @@ library_root_path = dirname(dirname(library_path))  # Retrieve parent directory 
 if __name__ == '__main__':
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
+    parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
     parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
-    # parser.add_argument('--config', required=True, help='path to configuration file')
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
     branch_name = get_active_branch_name(library_root_path)
+    git_commit, git_short_commit = get_latest_commit(library_root_path)
 
     banner_message = f"""
     This is the command-line tool that automates data retrieval, and curatorial review set-up. It:
@@ -34,30 +49,67 @@ if __name__ == '__main__':
 
     LD-Cool-P branch: {branch_name}
     LD-Cool-P version: {__version__}
+    LD-Cool-P commit hash: {git_short_commit}
     Created by Chun Ly
     Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
     """
     print(banner_message)
 
-    print("****************************")
+    # Load configuration
+    config_dict = dict_load(args.config)
+
+    curation_dict = config_dict['curation']
+
+    # Define logfile
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'prereq_script'
+    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("****************************")
+
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+
+    # Retrieve username, hostname, IP
+    sys_info = get_user_hostname()
+    log.debug(f"username : {sys_info['user']}")
+    log.debug(f"hostname : {sys_info['hostname']}")
+    log.debug(f"IP Addr  : {sys_info['ip']}")
+    log.debug(f"Op. Sys. : {sys_info['os']}")
 
     # Separate comma-separated list of articles
     articles = args.article_id.split(',')
     num_articles = len(articles)
 
-    print(f"INFO: Number of Deposits: {num_articles}")
+    log.info(f"Number of Deposits: {num_articles}")
 
     # Loop over each article
     count = 0
     for ii in range(len(articles)):
-        print(f"Retrieving {articles[ii]}")  # ... {ii+1} / {num_articles}")
+        log.info(f"Retrieving: {articles[ii]} ...")  # ... {ii+1} / {num_articles}")
 
         # Run pre-req steps
-        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser)
+        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser,
+                      log=log, config_dict=config_dict)
         count += 1
 
-        print(f"STATUS: Completed ... {articles[ii]} ...")
-        print(f"STATUS: Completed ... {count} / {num_articles}")
+        log.info(f"Completed: {articles[ii]} ...")
+        log.info(f"Completed: {count} / {num_articles}")
 
-    print("****************************")
-    print("STATUS: Exit 0")
+    # Change permission to mode=666 (rw for all)
+    status = stat(join(log_dir, logfile))
+    if oct(status.st_mode)[-3:] == '666':
+        log.debug("Permissions set for logfile")
+    else:
+        log.debug("Changing permissions on logfile...")
+        permissions.curation(join(log_dir, logfile), mode=0o666)
+
+    log.info("****************************")
+    log.info("Exit 0")

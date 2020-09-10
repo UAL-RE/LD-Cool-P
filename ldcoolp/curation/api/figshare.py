@@ -1,7 +1,12 @@
 from figshare.figshare import issue_request
 
+# Read in default configuration file
+from ...config import config_default_dict
+
 import pandas as pd
 import numpy as np
+
+from ldcoolp.logger import log_stdout
 
 
 class FigshareInstituteAdmin:
@@ -9,8 +14,18 @@ class FigshareInstituteAdmin:
     Purpose:
       A Python interface for administration of institutional Figshare accounts
 
+    :param figshare_dict: Dict that contains Figshare configuration.
+      This should include:
+        - api_token
+        - stage bool
+
+      Default: config_default_dict from config/default.ini
+
     Attributes
     ----------
+    dict : dict
+      Figshare configuration dictionary
+
     baseurl : str
       Base URL of the Figshare v2 API
 
@@ -83,18 +98,24 @@ class FigshareInstituteAdmin:
       See: https://docs.figshare.com/#private_article_reserve_doi
     """
 
-    def __init__(self, token=None, stage=False):
-        if not stage:
+    def __init__(self, figshare_dict=config_default_dict['figshare'], log=None):
+        self.dict = figshare_dict
+        if not self.dict['stage']:
             self.baseurl = "https://api.figshare.com/v2/account/"
         else:
             self.baseurl = "https://api.figsh.com/v2/account/"
 
         self.baseurl_institute = self.baseurl + "institution/"
-        self.token = token
+        self.token = self.dict['api_token']
 
         self.headers = {'Content-Type': 'application/json'}
-        if token:
-            self.headers['Authorization'] = 'token {0}'.format(token)
+        if self.token:
+            self.headers['Authorization'] = f'token {self.token}'
+
+        if isinstance(log, type(None)):
+            self.log = log_stdout()
+        else:
+            self.log = log
 
     def endpoint(self, link, institute=True):
         """Concatenate the endpoint to the baseurl"""
@@ -166,7 +187,7 @@ class FigshareInstituteAdmin:
 
     def get_account_group_roles(self, account_id):
         """Retrieve group roles for a given account"""
-        url = self.endpoint("roles/{}".format(account_id))
+        url = self.endpoint(f"roles/{account_id}")
 
         roles = issue_request('GET', url, self.headers)
         return roles
@@ -199,21 +220,20 @@ class FigshareInstituteAdmin:
             try:
                 articles_df = self.get_user_articles(account_id)
                 num_articles[n] = articles_df.shape[0]
-            except Exception as e:
-                print("Unable to retrieve articles for : {}".format(account_id))
+            except Exception:
+                self.log.warn(f"Unable to retrieve articles for : {account_id}")
 
             try:
                 projects_df = self.get_user_projects(account_id)
                 num_projects[n] = projects_df.shape[0]
-            except Exception as e:
-
-                print("Unable to retrieve projects for : {}".format(account_id))
+            except Exception:
+                self.log.warn(f"Unable to retrieve projects for : {account_id}")
 
             try:
                 collections_df = self.get_user_collections(account_id)
                 num_collections[n] = collections_df.shape[0]
-            except Exception as e:
-                print("Unable to retrieve collections for : {}".format(account_id))
+            except Exception:
+                self.log.warn(f"Unable to retrieve collections for : {account_id}")
 
             for key in roles.keys():
                 for t_dict in roles[key]:
@@ -232,7 +252,7 @@ class FigshareInstituteAdmin:
         accounts_df['Reviewer'] = reviewer_flag
 
         for group_id, group_name in zip(groups_df['id'], groups_df['name']):
-            print(group_id, group_name)
+            self.log.info(f"{group_id} - {group_name}")
             group_assoc = [sub.replace(str(group_id), group_name) for
                            sub in group_assoc]
 
@@ -257,7 +277,7 @@ class FigshareInstituteAdmin:
     def get_curation_details(self, curation_id):
         """Retrieve details about a specified curation item"""
 
-        url = self.endpoint("review/{}".format(curation_id))
+        url = self.endpoint(f"review/{curation_id}")
 
         curation_details = issue_request('GET', url, self.headers)
 
@@ -266,7 +286,7 @@ class FigshareInstituteAdmin:
     def get_curation_comments(self, curation_id):
         """Retrieve comments about specified curation item"""
 
-        url = self.endpoint("review/{}/comments".format(curation_id))
+        url = self.endpoint(f"review/{curation_id}/comments")
 
         curation_comments = issue_request('GET', url, self.headers)
 
@@ -293,17 +313,18 @@ class FigshareInstituteAdmin:
         doi_check, doi_string = self.doi_check(article_id)
 
         if doi_check:
-            print("DOI already reserved! Skipping... ")
+            self.log.info("DOI already reserved! Skipping... ")
 
             return doi_string
         else:
-            print("DOI reservation has not occurred...")
-            src_input = input("Do you wish to reserve? Type 'Yes', otherwise this is skipped : ")
-            if src_input == 'Yes':
-                print("Reserving DOI ... ")
+            self.log.info("PROMPT: DOI reservation has not occurred! Do you wish to reserve?")
+            src_input = input("PROMPT: Type 'Yes'/'yes'. Anything else will skip : ")
+            self.log.info(f"RESPONSE: {src_input}")
+            if src_input.lower() == 'yes':
+                self.log.info("Reserving DOI ... ")
                 response = issue_request('POST', url, self.headers)
-                print(f"DOI minted : {response['doi']}")
+                self.log.info(f"DOI minted : {response['doi']}")
                 return response['doi']
             else:
-                print("Skipping... ")
+                self.log.warn("Skipping... ")
                 return doi_string
