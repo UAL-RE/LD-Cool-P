@@ -112,7 +112,7 @@ class ReadmeClass:
             self.save_template()
 
             # Import README template as jinja2 template
-            self.readme_template = self.import_template()
+            self.jinja_template = self.import_template()
         except SystemError:
             self.template_source = 'unknown'
             self.log.warn("More than one README files found!")
@@ -239,7 +239,7 @@ class ReadmeClass:
             self.log.info(f"Writing file : {self.readme_file_path}")
             f = open(self.readme_file_path, 'w')
 
-            content_list = self.readme_template.render(readme_dict=self.readme_dict)
+            content_list = self.jinja_template.render(readme_dict=self.readme_dict)
             f.writelines(content_list)
             f.close()
         else:
