@@ -88,7 +88,12 @@ if __name__ == '__main__':
     dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
 
     full_url = q.generate_url(dn.name_dict)
+    log.info("URL for Deposit Agreement form: ")
     log.info(full_url)
+
+    readme_full_url = q.generate_readme_url(dn)
+    log.info("URL for README form: ")
+    log.info(readme_full_url)
 
     # Change permission to mode=666 (rw for all)
     status = stat(join(log_dir, logfile))
