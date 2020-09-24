@@ -80,7 +80,7 @@ class Qualtrics:
       List all surveys for a user in a dictionary form:
       See: https://api.qualtrics.com/docs/managing-surveys#list-surveys
 
-    get_survey_responses()
+    get_survey_responses(survey_id)
       Retrieve pandas DataFrame containing responses for a survey
       See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
 
@@ -136,12 +136,12 @@ class Qualtrics:
 
         return survey_dict
 
-    def get_survey_responses(self, verbose=False):
+    def get_survey_responses(self, survey_id, verbose=False):
         """Retrieve pandas DataFrame containing responses for a survey"""
 
         progress_status = "inProgress"
 
-        download_url = self.endpoint(f"surveys/{self.survey_id}/export-responses")
+        download_url = self.endpoint(f"surveys/{survey_id}/export-responses")
 
         # Create Data Export
         download_payload = {"format": self.file_format}
@@ -194,7 +194,7 @@ class Qualtrics:
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
 
-        qualtrics_df = self.get_survey_responses()
+        qualtrics_df = self.get_survey_responses(self.survey_id)
 
         # First perform search via article_id or curation_id
         self.log.info("Attempting to identify using article_id or curation_id ...")
