@@ -34,6 +34,10 @@ url_safe = '/ {},:"?=@%'
 # Column order for markdown print-out of Qualtrics table
 cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
 
+readme_cols_order = ['ResponseId', 'article_id', 'curation_id']
+
+readme_custom_content = ['cite', 'summary', 'files', 'materials', 'contrib', 'notes']
+
 
 class Qualtrics:
     """
@@ -352,3 +356,66 @@ class Qualtrics:
                    'Q_EED=' + q_eed
 
         return full_url
+
+    def find_qualtrics_readme(self, dn_dict):
+        """Get Response ID based on a article_id,curation_id search"""
+
+        qualtrics_df = self.get_survey_responses(self.readme_survey_id)
+        print(qualtrics_df['article_id'])
+        print(qualtrics_df['curation_id'])
+
+        # First perform search via article_id or curation_id
+        self.log.info("Attempting to identify using article_id or curation_id ...")
+        article_id = str(dn_dict['article_id'])
+        curation_id = str(dn_dict['curation_id'])
+
+        try:
+            response_df = qualtrics_df[(qualtrics_df['article_id'] == article_id) |
+                                       (qualtrics_df['curation_id'] == curation_id)]
+        except KeyError:
+            self.log.warn("article_id and curation_id not in qualtrics survey !")
+            response_df = pd.DataFrame()
+
+        if not response_df.empty:
+            self.log.info("Unique match based on article_id or curation_id !")
+            if response_df.shape[0] != 1:
+                self.log.warn("More than one entries found !!!")
+
+            self.pandas_write_buffer(response_df[readme_cols_order])
+
+        if response_df.empty:
+            self.log.warn("Empty DataFrame")
+            raise ValueError
+        else:
+            if response_df.shape[0] == 1:
+                response_dict = df_to_dict_single(response_df)
+                self.log.info("Only one entry found!")
+                self.log.info(f"Survey completed on {response_dict['date_completed']}")
+                self.log.info(f" ... for {response_dict['article_id']}")
+                return response_dict['ResponseId'], response_df
+            else:
+                self.log.warn("Multiple entries found")
+                response_df = pd.DataFrame()
+                self.pandas_write_buffer(response_df[readme_cols_order])
+
+                raise ValueError
+
+    def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
+        """Opens web browser to navigate to a page with Deposit Agreement Form"""
+
+        if isinstance(ResponseId, type(None)):
+            try:
+                ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
+                self.log.info(f"Qualtrics README ResponseID : {ResponseId}")
+
+                qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
+                for key in qualtrics_dict.keys():
+                    if isinstance(qualtrics_dict[key], float):
+                        qualtrics_dict[key] = str(qualtrics_dict[key])
+
+                return qualtrics_dict
+            except ValueError:
+                self.log.warn("Error with retrieving ResponseId")
+                self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
+                ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                self.log.info(f"RESPONSE: {ResponseId}")
