@@ -110,6 +110,8 @@ class Qualtrics:
         self.survey_id = self.dict['survey_id']
         self.file_format = 'csv'
 
+        self.readme_survey_id = self.dict['readme_survey_id']
+
         # Logging
         self.file_logging = False
         if isinstance(log, type(None)):
@@ -346,7 +348,7 @@ class Qualtrics:
         # query_str_encode = str(query_str_dict).encode('base64', 'strict')
         q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
 
-        full_url = f"{self.dict['generate_url']}{self.dict['readme_survey_id']}?" + \
+        full_url = f"{self.dict['generate_url']}{self.readme_survey_id}?" + \
                    'Q_EED=' + q_eed
 
         return full_url
