@@ -15,6 +15,8 @@ from ....admin import permissions
 # Read in default configuration settings
 from ....config import config_default_dict
 
+from ...api.qualtrics import Qualtrics
+
 
 class ReadmeClass:
     """
@@ -72,7 +74,9 @@ class ReadmeClass:
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn, curation_dict=config_default_dict['curation'], log=None):
+    def __init__(self, dn, config_dict=config_default_dict, log=None):
+        self.config_dict = config_dict
+
         self.dn = dn
         self.folderName = self.dn.folderName
         self.article_id = self.dn.article_id
@@ -83,6 +87,7 @@ class ReadmeClass:
         else:
             self.log = log
 
+        curation_dict = self.config_dict['curation']
         self.root_directory_main = curation_dict[curation_dict['parent_dir']]
         self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
 
@@ -100,6 +105,9 @@ class ReadmeClass:
 
         # Retrieve Figshare metadata for jinja template engine
         self.figshare_dict = self.retrieve_article_metadata()
+
+        # Retrieve Qualtrics README information for jinja template engine
+        self.qualtrics_dict = self.retrieve_qualtrics_readme()
 
         # Retrieve list of README files provided by user
         self.README_files = self.get_readme_files()
@@ -229,6 +237,15 @@ class ReadmeClass:
 
         return readme_dict
 
+    def retrieve_qualtrics_readme(self):
+        """Retrieve README custom information from Qualtrics form"""
+
+        q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
+
+        qualtrics_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
+
+        return qualtrics_dict
+
     def construct(self):
         """Create README.txt file with jinja2 README template and populate with metadata information"""
 
@@ -239,7 +256,8 @@ class ReadmeClass:
             self.log.info(f"Writing file : {self.readme_file_path}")
             f = open(self.readme_file_path, 'w')
 
-            content_list = self.jinja_template.render(readme_dict=self.figshare_dict)
+            content_list = self.jinja_template.render(figshare_dict=self.figshare_dict,
+                                                      qualtrics_dict=self.qualtrics_dict)
             f.writelines(content_list)
             f.close()
         else:
