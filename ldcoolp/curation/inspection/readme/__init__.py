@@ -45,7 +45,7 @@ class ReadmeClass:
 
     readme_template: jinja2.environment.Template
 
-    readme_dict : dict
+    figshare_dict : dict
       Dictionary containing metadata information to provide to jinja template
 
     Methods
@@ -99,7 +99,7 @@ class ReadmeClass:
         self.readme_file_path = join(self.data_path, 'README.txt')
 
         # Retrieve Figshare metadata for jinja template engine
-        self.readme_dict = self.retrieve_article_metadata()
+        self.figshare_dict = self.retrieve_article_metadata()
 
         # Retrieve list of README files provided by user
         self.README_files = self.get_readme_files()
@@ -239,7 +239,7 @@ class ReadmeClass:
             self.log.info(f"Writing file : {self.readme_file_path}")
             f = open(self.readme_file_path, 'w')
 
-            content_list = self.jinja_template.render(readme_dict=self.readme_dict)
+            content_list = self.jinja_template.render(readme_dict=self.figshare_dict)
             f.writelines(content_list)
             f.close()
         else:
