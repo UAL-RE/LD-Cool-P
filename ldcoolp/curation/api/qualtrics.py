@@ -2,6 +2,9 @@ from os.path import join
 import io
 from os import remove
 
+# base64 encoding/decoding
+import base64
+
 # CSV handling
 import zipfile
 import pandas as pd
@@ -301,5 +304,49 @@ class Qualtrics:
 
         full_url = f"{self.dict['generate_url']}{self.survey_id}?" + \
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
+
+        return full_url
+
+    def generate_readme_url(self, dn):
+        """Generate URL for README tool using Q_EED option"""
+
+        df_curation = dn.curation_dict
+
+        # Preferred citation
+        single_str_citation = df_curation['item']['citation']
+
+        # handle period in author list.  Assume no period in dataset title
+        str_list = list([single_str_citation.split('):')[0] + '). '])
+        str_list += [str_row + '.' for str_row in single_str_citation.split('):')[1].split('. ')]
+
+        citation_list = [content for content in str_list[0:-2]]
+        citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+        citation_list = ' <br> '.join(citation_list)
+
+        # summary
+        figshare_description = df_curation['item']['description']
+
+        query_str_dict = {'article_id': dn.name_dict['article_id'],
+                          'curation_id': dn.name_dict['curation_id'],
+                          'title': dn.name_dict['title'],
+                          'preferred_citation': citation_list,
+                          'license': df_curation['item']['license']['name'],
+                          'summary': figshare_description}
+        # doi
+        if not df_curation['item']['doi']:  # empty case
+            query_str_dict['doi'] = f"https://doi.org/10.25422/azu.data.{dn.name_dict['article_id']}"
+        else:
+            query_str_dict['doi'] = f"https://doi.org/{df_curation['item']['doi']}"
+
+        # links
+        if not df_curation['item']['references']:  # not empty case
+            links = " <br> ".join(df_curation['item']['references'])
+            query_str_dict['links'] = links
+
+        # query_str_encode = str(query_str_dict).encode('base64', 'strict')
+        q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+
+        full_url = f"{self.dict['generate_url']}{self.dict['readme_survey_id']}?" + \
+                   'Q_EED=' + q_eed
 
         return full_url
