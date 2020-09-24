@@ -1,11 +1,14 @@
 ---------------------------------------------
-# {{ readme_dict.title }}
+# {{ figshare_dict.title }}
 
-
-Preferred citation (DataCite format):  
-{% for cite_text in readme_dict.preferred_citation %}
+Preferred citation (DataCite format):
+{% if qualtrics_dict.cite == 'nan' %}
+{% for cite_text in figshare_dict.preferred_citation %}
   {{ cite_text }}
 {%- endfor %}
+{% else %}
+  {{ qualtrics_dict.cite }}
+{% endif %}
 
 {#
  Example (for a journal article):
@@ -22,67 +25,64 @@ Preferred citation (DataCite format):
 #}
 
 Corresponding Author:   
-  {{ readme_dict.firstname }} {{ readme_dict.lastname }}, University of Arizona, {{ readme_dict.email }}
+  {{ figshare_dict.firstname }} {{ figshare_dict.lastname }}, University of Arizona, {{ figshare_dict.email }}
 
 
 License:
-  {{ readme_dict.license }}
+  {{ figshare_dict.license }}
 
 
 DOI:
-  https://doi.org/{{ readme_dict.doi }}
+  https://doi.org/{{ figshare_dict.doi }}
 
 
 ---------------------------------------------
 ## Summary
 
-{{ readme_dict.description }}
+{{ figshare_dict.description }}
+
+{% if qualtrics_dict.summary != 'nan' %}
+    {{ qualtrics_dict.summary }}
+{% endif %}
 
 
 
+{% if qualtrics_dict.files != 'nan' %}
 ---------------------------------------------
 ## Files and Folders
 
-
-#### [Folder 1 Name]: [Description of contents]
-- [file1 or set of related files]: [Purpose, contents, naming convention, etc.]
-- [file2 or set of related files]: [Purpose, contents, naming convention, etc.]
-
-#### [Folder 1 Name]/[Subfolder 1 Name]: [Description of contents]
-- [file1 or set of related files]: [Purpose, contents, naming convention, etc.]
-
-#### [Folder 2 Name]: [Description of contents]
-- [file1 or set of related files]: [Purpose, contents, naming convention, etc.]
-- [file2 or set of related files]: [Purpose, contents, naming convention, etc.]
+{{ qualtrics_dict.files }}
 
 
 
----------------------------------------------
-## Materials & Methods
+{% endif %}
 
-- [Software program 1 w/version number], [URL, DOI, citation, etc.]. [Short description of why it's needed].
-- [Software program 2 w/version number], [URL, DOI, citation, etc.]. [Short description of why it's needed].
-- [Instrument name/model], [manufacturer]. [Short description of why it's needed].
+{% if qualtrics_dict.materials != 'nan' %}
+    ---------------------------------------------
+    ## Materials & Methods
+
+    {{ qualtrics_dict.materials }}
 
 
 
+{% endif %}
+
+{% if qualtrics_dict.contrib != 'nan' %}
 ---------------------------------------------
 ## Contributor Roles
 
 The roles are defined by the CRediT taxonomy http://credit.niso.org/
 
-- [FirstName1 LastName1], [Affiliation]: [role1], [role2], [...]
-- [FirstName2 LastName2], [Affiliation]: [role1], [role2], [...]
-- [FirstName3 LastName3], [Affiliation]: [role3], [role4], [...]
-
+{{ qualtrics_dict.contrib }}
+{% endif %}
 
 
 ---------------------------------------------
 ## Additional Notes
 
-[Add additional notes here]
+{{ qualtrics_dict.notes }}
 
 Links:
-{% for reference in readme_dict.references %}
+{% for reference in figshare_dict.references %}
   {{ reference }}
 {%- endfor %}
