@@ -335,6 +335,7 @@ class Qualtrics:
         query_str_dict = {'article_id': dn.name_dict['article_id'],
                           'curation_id': dn.name_dict['curation_id'],
                           'title': dn.name_dict['title'],
+                          'depositor_name': dn.name_dict['simplify_fullName'],
                           'preferred_citation': citation_list,
                           'license': df_curation['item']['license']['name'],
                           'summary': figshare_description}
