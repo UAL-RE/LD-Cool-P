@@ -229,8 +229,12 @@ class ReadmeClass:
         readme_dict['first_author'] = \
             self.article_dict['item']['authors'][0]['full_name']
 
-        # Retrieve description (single string)
-        readme_dict['description'] = html2text(self.article_dict['item']['description'])
+        # Retrieve description (single string), strip vertical white space
+        description = self.article_dict['item']['description'].replace('<div>', '')
+        description = description.replace('</div>', '')
+        if description[-2:] == "\n\n":
+            description = description[:-2]
+        readme_dict['description'] = html2text(description)
 
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
