@@ -2,27 +2,17 @@
 # {{ figshare_dict.title }}
 
 Preferred citation (DataCite format):
+
 {% if qualtrics_dict.cite == 'nan' %}
 {% for cite_text in figshare_dict.preferred_citation %}
   {{ cite_text }}
-{%- endfor %}
+{% endfor %}
 {% else %}
-  {{ qualtrics_dict.cite }}
+{% for cite_text in qualtrics_dict.cite %}
+  {{ cite_text }}
+{% endfor %}
 {% endif %}
 
-{#
- Example (for a journal article):
-  LastName1, FirstName1; LastName2, FirstName2; LastName3, FirstName3; etc. (YYYY).
-  "[Title of Article]".
-  Journal name, and journal information (e.g., volume, issue, page numbers)
-  [DOI link to publication]
-
- Example (for ReDATA DOI):
-  LastName1, FirstName1; LastName2, FirstName2; LastName3, FirstName3; etc. (YYYY).
-  "[Title of Your Dataset Here]".
-  University of Arizona Research Data Repository.
-  [Item Type]. https://doi.org/10.25422/azu.data.[DOI_NUMBER]
-#}
 
 Corresponding Author:   
   {{ figshare_dict.firstname }} {{ figshare_dict.lastname }}, University of Arizona, {{ figshare_dict.email }}
@@ -36,14 +26,15 @@ DOI:
   https://doi.org/{{ figshare_dict.doi }}
 
 
+
 ---------------------------------------------
 ## Summary
 
 {{ figshare_dict.description }}
+{%- if qualtrics_dict.summary != 'nan' %}
 
-{% if qualtrics_dict.summary != 'nan' %}
-    {{ qualtrics_dict.summary }}
-{% endif %}
+{{ qualtrics_dict.summary }}
+{%- endif %}
 
 
 
@@ -54,14 +45,13 @@ DOI:
 {{ qualtrics_dict.files }}
 
 
-
 {% endif %}
 
 {% if qualtrics_dict.materials != 'nan' %}
-    ---------------------------------------------
-    ## Materials & Methods
+---------------------------------------------
+## Materials & Methods
 
-    {{ qualtrics_dict.materials }}
+{{ qualtrics_dict.materials }}
 
 
 
@@ -77,6 +67,7 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 {% endif %}
 
 
+
 ---------------------------------------------
 ## Additional Notes
 
@@ -84,5 +75,5 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 
 Links:
 {% for reference in figshare_dict.references %}
-  {{ reference }}
-{%- endfor %}
+  - {{ reference }}
+{% endfor %}
