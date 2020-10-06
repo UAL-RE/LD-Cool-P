@@ -180,7 +180,7 @@ class ReadmeClass:
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
         file_loader = FileSystemLoader(self.data_path)
-        env = Environment(loader=file_loader)
+        env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
         jinja_template = env.get_template(self.readme_template)
         return jinja_template
