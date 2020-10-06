@@ -362,8 +362,6 @@ class Qualtrics:
         """Get Response ID based on a article_id,curation_id search"""
 
         qualtrics_df = self.get_survey_responses(self.readme_survey_id)
-        print(qualtrics_df['article_id'])
-        print(qualtrics_df['curation_id'])
 
         # First perform search via article_id or curation_id
         self.log.info("Attempting to identify using article_id or curation_id ...")
@@ -413,6 +411,10 @@ class Qualtrics:
                 for key in qualtrics_dict.keys():
                     if isinstance(qualtrics_dict[key], float):
                         qualtrics_dict[key] = str(qualtrics_dict[key])
+
+                # Separate cite
+                if qualtrics_dict['cite'] != 'nan':
+                    qualtrics_dict['cite'] = qualtrics_dict['cite'].split('\n')
 
                 return qualtrics_dict
             except ValueError:
