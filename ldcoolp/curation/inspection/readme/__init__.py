@@ -213,6 +213,7 @@ class ReadmeClass:
             else:
                 readme_dict['doi'] = doi_string
         else:
+            # DOI reserved before submission or in a previous step of the workflow
             readme_dict['doi'] = f"{self.article_dict['item']['doi']}"
 
         readme_dict['lastname'] = self.dn.name_dict['surName']
