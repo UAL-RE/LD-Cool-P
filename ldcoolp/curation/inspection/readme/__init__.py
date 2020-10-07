@@ -206,9 +206,14 @@ class ReadmeClass:
             # Reserve DOI
             doi_string = self.dn.fs_admin.reserve_doi(self.article_id)
 
-            readme_dict['doi'] = doi_string
+            if not doi_string:  # If not reserving DOI, note this in README file
+                fs_prefix = "10.0166/FK2.stagefigshare" if self.dn.fs_admin.dict['stage'] \
+                    else "10.25422/azu.data"
+                readme_dict['doi'] = f"{fs_prefix}.{self.article_id} [DOI NOT MINTED!]"
+            else:
+                readme_dict['doi'] = doi_string
         else:
-            readme_dict['doi'] = f"10.25422/azu.data.{self.article_id} [DOI NOT MINTED!]"
+            readme_dict['doi'] = f"{self.article_dict['item']['doi']}"
 
         readme_dict['lastname'] = self.dn.name_dict['surName']
         readme_dict['firstname'] = self.dn.name_dict['firstName']
