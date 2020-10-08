@@ -80,5 +80,5 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 Links:
 {% for reference in figshare_dict.references %}
   - {{ reference }}
-{% endfor %}
+{% endfor -%}
 {% endif %}
