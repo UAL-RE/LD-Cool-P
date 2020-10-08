@@ -1,88 +1,104 @@
 ---------------------------------------------
-# {{ readme_dict.title }}
+# {{ figshare_dict.title }}
 
+Preferred citation (DataCite format):
 
-Preferred citation (DataCite format):  
-{% for cite_text in readme_dict.preferred_citation %}
+{% if qualtrics_dict.cite == 'nan' %}
+{% for cite_text in figshare_dict.preferred_citation %}
   {{ cite_text }}
-{%- endfor %}
+{% endfor %}
+{% else %}
+{% for cite_text in qualtrics_dict.cite %}
+  {{ cite_text }}
+{% endfor %}
+{% endif %}
 
-{#
- Example (for a journal article):
-  LastName1, FirstName1; LastName2, FirstName2; LastName3, FirstName3; etc. (YYYY).
-  "[Title of Article]".
-  Journal name, and journal information (e.g., volume, issue, page numbers)
-  [DOI link to publication]
-
- Example (for ReDATA DOI):
-  LastName1, FirstName1; LastName2, FirstName2; LastName3, FirstName3; etc. (YYYY).
-  "[Title of Your Dataset Here]".
-  University of Arizona Research Data Repository.
-  [Item Type]. https://doi.org/10.25422/azu.data.[DOI_NUMBER]
-#}
 
 Corresponding Author:   
-  {{ readme_dict.firstname }} {{ readme_dict.lastname }}, University of Arizona, {{ readme_dict.email }}
+  {{ figshare_dict.firstname }} {{ figshare_dict.lastname }}, University of Arizona, {{ figshare_dict.email }}
 
 
 License:
-  {{ readme_dict.license }}
+  {{ figshare_dict.license }}
 
 
 DOI:
-  https://doi.org/{{ readme_dict.doi }}
+  https://doi.org/{{ figshare_dict.doi }}
+
 
 
 ---------------------------------------------
 ## Summary
 
-{{ readme_dict.description }}
+{{ figshare_dict.description }}
+{% if qualtrics_dict.summary != 'nan' %}
+
+{{ qualtrics_dict.summary }}
+{% endif %}
+{% if ( (qualtrics_dict.files != 'nan') or
+        (qualtrics_dict.materials != 'nan') or
+        (qualtrics_dict.contrib != 'nan') or
+        (qualtrics_dict.notes != 'nan') or
+        (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
+{% if qualtrics_dict.files != 'nan' %}
 ---------------------------------------------
 ## Files and Folders
 
-
-#### [Folder 1 Name]: [Description of contents]
-- [file1 or set of related files]: [Purpose, contents, naming convention, etc.]
-- [file2 or set of related files]: [Purpose, contents, naming convention, etc.]
-
-#### [Folder 1 Name]/[Subfolder 1 Name]: [Description of contents]
-- [file1 or set of related files]: [Purpose, contents, naming convention, etc.]
-
-#### [Folder 2 Name]: [Description of contents]
-- [file1 or set of related files]: [Purpose, contents, naming convention, etc.]
-- [file2 or set of related files]: [Purpose, contents, naming convention, etc.]
+{{ qualtrics_dict.files }}
+{% endif %}
+{% if ( (qualtrics_dict.materials != 'nan') or
+        (qualtrics_dict.contrib != 'nan') or
+        (qualtrics_dict.notes != 'nan') or
+        (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
+{% if qualtrics_dict.materials != 'nan' %}
 ---------------------------------------------
 ## Materials & Methods
 
-- [Software program 1 w/version number], [URL, DOI, citation, etc.]. [Short description of why it's needed].
-- [Software program 2 w/version number], [URL, DOI, citation, etc.]. [Short description of why it's needed].
-- [Instrument name/model], [manufacturer]. [Short description of why it's needed].
+{{ qualtrics_dict.materials }}
+{% endif %}
+{% if ( (qualtrics_dict.contrib != 'nan') or
+        (qualtrics_dict.notes != 'nan') or
+        (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
+{% if qualtrics_dict.contrib != 'nan' %}
 ---------------------------------------------
 ## Contributor Roles
 
 The roles are defined by the CRediT taxonomy http://credit.niso.org/
 
-- [FirstName1 LastName1], [Affiliation]: [role1], [role2], [...]
-- [FirstName2 LastName2], [Affiliation]: [role1], [role2], [...]
-- [FirstName3 LastName3], [Affiliation]: [role3], [role4], [...]
+{% for contrib in qualtrics_dict.contrib %}
+  - {{ contrib }}
+{% endfor -%}
+{% endif %}
+{% if ( (qualtrics_dict.notes != 'nan') or
+        (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
+{% if qualtrics_dict.notes != 'nan' or figshare_dict.references != [] %}
 ---------------------------------------------
 ## Additional Notes
 
-[Add additional notes here]
+{% endif %}
+{% if qualtrics_dict.notes != 'nan' %}
+{{ qualtrics_dict.notes }}
 
+{% endif %}
+{% if figshare_dict.references != [] %}
 Links:
-{% for reference in readme_dict.references %}
-  {{ reference }}
-{%- endfor %}
+{% for reference in figshare_dict.references %}
+  - {{ reference }}
+{% endfor -%}
+{% endif %}
