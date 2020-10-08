@@ -142,7 +142,7 @@ class DepositorName:
         else:
             new_vers = self.curation_dict['version'] + 1
 
-        folderName += f"_{self.article_id}_v{new_vers}"
+        folderName += f"_{self.article_id}/v{new_vers}"
 
         if self.verbose:
             self.log.info(f"depository_name : {folderName}")
