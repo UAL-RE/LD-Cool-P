@@ -47,8 +47,11 @@ class ReadmeClass:
 
     readme_template: jinja2.environment.Template
 
-    figshare_dict : dict
-      Dictionary containing metadata information to provide to jinja template
+    figshare_readme_dict : dict
+      Contains metadata information to provide to jinja template
+
+    qualtrics_readme_dict : dict
+      Contains metadata information to provide to jinja template
 
     Methods
     -------
@@ -104,10 +107,10 @@ class ReadmeClass:
         self.readme_file_path = join(self.data_path, 'README.txt')
 
         # Retrieve Figshare metadata for jinja template engine
-        self.figshare_dict = self.retrieve_article_metadata()
+        self.figshare_readme_dict = self.retrieve_article_metadata()
 
         # Retrieve Qualtrics README information for jinja template engine
-        self.qualtrics_dict = self.retrieve_qualtrics_readme()
+        self.qualtrics_readme_dict = self.retrieve_qualtrics_readme()
 
         # Retrieve list of README files provided by user
         self.README_files = self.get_readme_files()
@@ -253,9 +256,9 @@ class ReadmeClass:
 
         q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
 
-        qualtrics_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
+        readme_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
 
-        return qualtrics_dict
+        return readme_dict
 
     def construct(self):
         """Create README.txt file with jinja2 README template and populate with metadata information"""
@@ -267,8 +270,8 @@ class ReadmeClass:
             self.log.info(f"Writing file : {self.readme_file_path}")
             f = open(self.readme_file_path, 'w')
 
-            content_list = self.jinja_template.render(figshare_dict=self.figshare_dict,
-                                                      qualtrics_dict=self.qualtrics_dict)
+            content_list = self.jinja_template.render(figshare_dict=self.figshare_readme_dict,
+                                                      qualtrics_dict=self.qualtrics_readme_dict)
             f.writelines(content_list)
             f.close()
         else:
