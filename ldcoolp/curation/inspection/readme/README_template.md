@@ -35,9 +35,15 @@ DOI:
 
 {{ qualtrics_dict.summary }}
 {% endif %}
+{% if ( (qualtrics_dict.files != 'nan') or
+        (qualtrics_dict.materials != 'nan') or
+        (qualtrics_dict.contrib != 'nan') or
+        (qualtrics_dict.notes != 'nan') or
+        (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
 {% if qualtrics_dict.files != 'nan' %}
 ---------------------------------------------
 ## Files and Folders
