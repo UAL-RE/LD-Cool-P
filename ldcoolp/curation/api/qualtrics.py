@@ -415,12 +415,13 @@ class Qualtrics:
                     if isinstance(qualtrics_dict[key], float):
                         qualtrics_dict[key] = str(qualtrics_dict[key])
 
-                # Separate cite
-                if qualtrics_dict['cite'] != 'nan':
-                    qualtrics_dict['cite'] = qualtrics_dict['cite'].split('\n')
+                # Separate cite, contrib for list style
+                for field in ['cite', 'contrib']:
+                    if qualtrics_dict[field] != 'nan':
+                        qualtrics_dict[field] = qualtrics_dict[field].split('\n')
 
-                # Separate files
-                for field in ['files', 'materials', 'contrib']:
+                # Markdown files, materials
+                for field in ['files', 'materials']:
                     if qualtrics_dict[field] != 'nan':
                         qualtrics_dict[field] = html2text(qualtrics_dict[field])
                     # Strip extra white space from html2text

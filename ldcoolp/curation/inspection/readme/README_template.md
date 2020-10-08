@@ -77,7 +77,9 @@ DOI:
 
 The roles are defined by the CRediT taxonomy http://credit.niso.org/
 
-{{ qualtrics_dict.contrib }}
+{% for contrib in qualtrics_dict.contrib %}
+  - {{ contrib }}
+{% endfor -%}
 {% endif %}
 {% if ( (qualtrics_dict.notes != 'nan') or
         (figshare_dict.references != []) ) %}
