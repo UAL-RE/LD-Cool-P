@@ -5,6 +5,9 @@ from os import remove
 # base64 encoding/decoding
 import base64
 
+# Text handling for README
+from html2text import html2text
+
 # CSV handling
 import zipfile
 import pandas as pd
@@ -415,6 +418,13 @@ class Qualtrics:
                 # Separate cite
                 if qualtrics_dict['cite'] != 'nan':
                     qualtrics_dict['cite'] = qualtrics_dict['cite'].split('\n')
+
+                # Separate files
+                if qualtrics_dict['files'] != 'nan':
+                    qualtrics_dict['files'] = html2text(qualtrics_dict['files'])
+                # Strip extra white space from html2text
+                if qualtrics_dict['files'][-2:] == "\n\n":
+                    qualtrics_dict['files'] = qualtrics_dict['files'][:-2]
 
                 return qualtrics_dict
             except ValueError:
