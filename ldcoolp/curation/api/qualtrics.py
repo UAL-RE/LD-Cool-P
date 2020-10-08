@@ -420,11 +420,12 @@ class Qualtrics:
                     qualtrics_dict['cite'] = qualtrics_dict['cite'].split('\n')
 
                 # Separate files
-                if qualtrics_dict['files'] != 'nan':
-                    qualtrics_dict['files'] = html2text(qualtrics_dict['files'])
-                # Strip extra white space from html2text
-                if qualtrics_dict['files'][-2:] == "\n\n":
-                    qualtrics_dict['files'] = qualtrics_dict['files'][:-2]
+                for field in ['files', 'materials', 'contrib']:
+                    if qualtrics_dict[field] != 'nan':
+                        qualtrics_dict[field] = html2text(qualtrics_dict[field])
+                    # Strip extra white space from html2text
+                    if qualtrics_dict[field][-2:] == "\n\n":
+                        qualtrics_dict[field] = qualtrics_dict[field][:-2]
 
                 return qualtrics_dict
             except ValueError:
