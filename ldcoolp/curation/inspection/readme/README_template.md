@@ -31,10 +31,10 @@ DOI:
 ## Summary
 
 {{ figshare_dict.description }}
-{%- if qualtrics_dict.summary != 'nan' %}
+{% if qualtrics_dict.summary != 'nan' %}
 
 {{ qualtrics_dict.summary }}
-{%- endif %}
+{% endif %}
 
 
 
@@ -45,8 +45,8 @@ DOI:
 {{ qualtrics_dict.files }}
 
 
-{% endif %}
 
+{% endif %}
 {% if qualtrics_dict.materials != 'nan' %}
 ---------------------------------------------
 ## Materials & Methods
@@ -56,7 +56,6 @@ DOI:
 
 
 {% endif %}
-
 {% if qualtrics_dict.contrib != 'nan' %}
 ---------------------------------------------
 ## Contributor Roles
@@ -64,16 +63,22 @@ DOI:
 The roles are defined by the CRediT taxonomy http://credit.niso.org/
 
 {{ qualtrics_dict.contrib }}
+
+
+
 {% endif %}
-
-
-
+{% if qualtrics_dict.notes != 'nan' or figshare_dict.references != [] %}
 ---------------------------------------------
 ## Additional Notes
 
+{% endif %}
+{% if qualtrics_dict.notes != 'nan' %}
 {{ qualtrics_dict.notes }}
 
+{% endif %}
+{% if figshare_dict.references != [] %}
 Links:
 {% for reference in figshare_dict.references %}
   - {{ reference }}
 {% endfor %}
+{% endif %}
