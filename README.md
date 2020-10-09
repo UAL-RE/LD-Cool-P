@@ -199,6 +199,10 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
+v0.15.0:
+ * Implementation of Qualtrics README file #98
+ * Folder re-structuring for versioning #100
+
 v0.14.0 - 0.14.1:
  * Full stdout and file logging #83
  * Configuration handling using dictionary structure #87, #93
