@@ -2,6 +2,12 @@ from os.path import join
 import io
 from os import remove
 
+# base64 encoding/decoding
+import base64
+
+# Text handling for README
+from html2text import html2text
+
 # CSV handling
 import zipfile
 import pandas as pd
@@ -30,6 +36,10 @@ url_safe = '/ {},:"?=@%'
 
 # Column order for markdown print-out of Qualtrics table
 cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
+
+readme_cols_order = ['ResponseId', 'article_id', 'curation_id']
+
+readme_custom_content = ['cite', 'summary', 'files', 'materials', 'contrib', 'notes']
 
 
 class Qualtrics:
@@ -77,7 +87,7 @@ class Qualtrics:
       List all surveys for a user in a dictionary form:
       See: https://api.qualtrics.com/docs/managing-surveys#list-surveys
 
-    get_survey_responses()
+    get_survey_responses(survey_id)
       Retrieve pandas DataFrame containing responses for a survey
       See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
 
@@ -107,6 +117,8 @@ class Qualtrics:
         self.survey_id = self.dict['survey_id']
         self.file_format = 'csv'
 
+        self.readme_survey_id = self.dict['readme_survey_id']
+
         # Logging
         self.file_logging = False
         if isinstance(log, type(None)):
@@ -131,12 +143,12 @@ class Qualtrics:
 
         return survey_dict
 
-    def get_survey_responses(self, verbose=False):
+    def get_survey_responses(self, survey_id, verbose=False):
         """Retrieve pandas DataFrame containing responses for a survey"""
 
         progress_status = "inProgress"
 
-        download_url = self.endpoint(f"surveys/{self.survey_id}/export-responses")
+        download_url = self.endpoint(f"surveys/{survey_id}/export-responses")
 
         # Create Data Export
         download_payload = {"format": self.file_format}
@@ -189,7 +201,7 @@ class Qualtrics:
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
 
-        qualtrics_df = self.get_survey_responses()
+        qualtrics_df = self.get_survey_responses(self.survey_id)
 
         # First perform search via article_id or curation_id
         self.log.info("Attempting to identify using article_id or curation_id ...")
@@ -303,3 +315,122 @@ class Qualtrics:
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
 
         return full_url
+
+    def generate_readme_url(self, dn):
+        """Generate URL for README tool using Q_EED option"""
+
+        df_curation = dn.curation_dict
+
+        # Preferred citation
+        single_str_citation = df_curation['item']['citation']
+
+        # handle period in author list.  Assume no period in dataset title
+        str_list = list([single_str_citation.split('):')[0] + '). '])
+        str_list += [str_row + '.' for str_row in single_str_citation.split('):')[1].split('. ')]
+
+        citation_list = [content for content in str_list[0:-2]]
+        citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+        citation_list = ' <br> '.join(citation_list)
+
+        # summary
+        figshare_description = df_curation['item']['description']
+
+        query_str_dict = {'article_id': dn.name_dict['article_id'],
+                          'curation_id': dn.name_dict['curation_id'],
+                          'title': dn.name_dict['title'],
+                          'depositor_name': dn.name_dict['simplify_fullName'],
+                          'preferred_citation': citation_list,
+                          'license': df_curation['item']['license']['name'],
+                          'summary': figshare_description}
+        # doi
+        if not df_curation['item']['doi']:  # empty case
+            query_str_dict['doi'] = f"https://doi.org/10.25422/azu.data.{dn.name_dict['article_id']}"
+        else:
+            query_str_dict['doi'] = f"https://doi.org/{df_curation['item']['doi']}"
+
+        # links
+        if not df_curation['item']['references']:  # not empty case
+            links = " <br> ".join(df_curation['item']['references'])
+            query_str_dict['links'] = links
+
+        # query_str_encode = str(query_str_dict).encode('base64', 'strict')
+        q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+
+        full_url = f"{self.dict['generate_url']}{self.readme_survey_id}?" + \
+                   'Q_EED=' + q_eed
+
+        return full_url
+
+    def find_qualtrics_readme(self, dn_dict):
+        """Get Response ID based on a article_id,curation_id search"""
+
+        qualtrics_df = self.get_survey_responses(self.readme_survey_id)
+
+        # First perform search via article_id or curation_id
+        self.log.info("Attempting to identify using article_id or curation_id ...")
+        article_id = str(dn_dict['article_id'])
+        curation_id = str(dn_dict['curation_id'])
+
+        try:
+            response_df = qualtrics_df[(qualtrics_df['article_id'] == article_id) |
+                                       (qualtrics_df['curation_id'] == curation_id)]
+        except KeyError:
+            self.log.warn("article_id and curation_id not in qualtrics survey !")
+            response_df = pd.DataFrame()
+
+        if not response_df.empty:
+            self.log.info("Unique match based on article_id or curation_id !")
+            if response_df.shape[0] != 1:
+                self.log.warn("More than one entries found !!!")
+
+            self.pandas_write_buffer(response_df[readme_cols_order])
+
+        if response_df.empty:
+            self.log.warn("Empty DataFrame")
+            raise ValueError
+        else:
+            if response_df.shape[0] == 1:
+                response_dict = df_to_dict_single(response_df)
+                self.log.info("Only one entry found!")
+                self.log.info(f"Survey completed on {response_dict['date_completed']}")
+                self.log.info(f" ... for {response_dict['article_id']}")
+                return response_dict['ResponseId'], response_df
+            else:
+                self.log.warn("Multiple entries found")
+                response_df = pd.DataFrame()
+                self.pandas_write_buffer(response_df[readme_cols_order])
+
+                raise ValueError
+
+    def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
+        """Opens web browser to navigate to a page with Deposit Agreement Form"""
+
+        if isinstance(ResponseId, type(None)):
+            try:
+                ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
+                self.log.info(f"Qualtrics README ResponseID : {ResponseId}")
+
+                qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
+                for key in qualtrics_dict.keys():
+                    if isinstance(qualtrics_dict[key], float):
+                        qualtrics_dict[key] = str(qualtrics_dict[key])
+
+                # Separate cite, contrib for list style
+                for field in ['cite', 'contrib']:
+                    if qualtrics_dict[field] != 'nan':
+                        qualtrics_dict[field] = qualtrics_dict[field].split('\n')
+
+                # Markdown files, materials
+                for field in ['files', 'materials']:
+                    if qualtrics_dict[field] != 'nan':
+                        qualtrics_dict[field] = html2text(qualtrics_dict[field])
+                    # Strip extra white space from html2text
+                    if qualtrics_dict[field][-2:] == "\n\n":
+                        qualtrics_dict[field] = qualtrics_dict[field][:-2]
+
+                return qualtrics_dict
+            except ValueError:
+                self.log.warn("Error with retrieving ResponseId")
+                self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
+                ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                self.log.info(f"RESPONSE: {ResponseId}")

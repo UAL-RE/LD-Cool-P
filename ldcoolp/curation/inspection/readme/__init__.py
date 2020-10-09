@@ -15,6 +15,8 @@ from ....admin import permissions
 # Read in default configuration settings
 from ....config import config_default_dict
 
+from ...api.qualtrics import Qualtrics
+
 
 class ReadmeClass:
     """
@@ -45,8 +47,11 @@ class ReadmeClass:
 
     readme_template: jinja2.environment.Template
 
-    readme_dict : dict
-      Dictionary containing metadata information to provide to jinja template
+    figshare_readme_dict : dict
+      Contains metadata information to provide to jinja template
+
+    qualtrics_readme_dict : dict
+      Contains metadata information to provide to jinja template
 
     Methods
     -------
@@ -72,7 +77,9 @@ class ReadmeClass:
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn, curation_dict=config_default_dict['curation'], log=None):
+    def __init__(self, dn, config_dict=config_default_dict, log=None):
+        self.config_dict = config_dict
+
         self.dn = dn
         self.folderName = self.dn.folderName
         self.article_id = self.dn.article_id
@@ -83,6 +90,7 @@ class ReadmeClass:
         else:
             self.log = log
 
+        curation_dict = self.config_dict['curation']
         self.root_directory_main = curation_dict[curation_dict['parent_dir']]
         self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
 
@@ -99,7 +107,10 @@ class ReadmeClass:
         self.readme_file_path = join(self.data_path, 'README.txt')
 
         # Retrieve Figshare metadata for jinja template engine
-        self.readme_dict = self.retrieve_article_metadata()
+        self.figshare_readme_dict = self.retrieve_article_metadata()
+
+        # Retrieve Qualtrics README information for jinja template engine
+        self.qualtrics_readme_dict = self.retrieve_qualtrics_readme()
 
         # Retrieve list of README files provided by user
         self.README_files = self.get_readme_files()
@@ -172,7 +183,7 @@ class ReadmeClass:
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
         file_loader = FileSystemLoader(self.data_path)
-        env = Environment(loader=file_loader)
+        env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
         jinja_template = env.get_template(self.readme_template)
         return jinja_template
@@ -227,11 +238,25 @@ class ReadmeClass:
         readme_dict['first_author'] = \
             self.article_dict['item']['authors'][0]['full_name']
 
-        # Retrieve description (single string)
-        readme_dict['description'] = html2text(self.article_dict['item']['description'])
+        # Retrieve description (single string), strip vertical white space
+        description = self.article_dict['item']['description'].replace('<div>', '')
+        description = description.replace('</div>', '')
+        readme_dict['description'] = html2text(description)
+        # Strip extra white space from html2text
+        if readme_dict['description'][-2:] == "\n\n":
+            readme_dict['description'] = readme_dict['description'][:-2]
 
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
+
+        return readme_dict
+
+    def retrieve_qualtrics_readme(self):
+        """Retrieve README custom information from Qualtrics form"""
+
+        q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
+
+        readme_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
 
         return readme_dict
 
@@ -245,7 +270,8 @@ class ReadmeClass:
             self.log.info(f"Writing file : {self.readme_file_path}")
             f = open(self.readme_file_path, 'w')
 
-            content_list = self.jinja_template.render(readme_dict=self.readme_dict)
+            content_list = self.jinja_template.render(figshare_dict=self.figshare_readme_dict,
+                                                      qualtrics_dict=self.qualtrics_readme_dict)
             f.writelines(content_list)
             f.close()
         else:

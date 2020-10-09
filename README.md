@@ -24,17 +24,16 @@ It follows a workflow that was developed by members of the
 The software has a number of backend features, such as:
  1. Retrieving private datasets from the [Figshare API](https://docs.figshare.com)
     that are undergoing curatorial review
- 2. Identifying whether a README.txt file is present in the ReDATA deposit.
-    If such a file does not exists, it will provide ReDATA curators a
-    copy of the [README.txt template](https://osf.io/sj8xv/download).
-    Ultimately, it will perform an inspection to ensure that the README.txt
-    adheres to a defined format and populates metadata information based on
-    information submitted to ReDATA
+ 2. Constructing a README.txt file based on information from the deposit's
+    metadata and information provided by the researchers using a Qualtrics
+    form that walks the users through additional information
  3. Retrieving a [Deposit Agreement Form](https://bit.ly/ReDATA_DepositAgreement)
     from Qualtrics, which is a requirement for all ReDATA deposits
  4. Retrieving a copy of [Curatorial Review Report template (MS-Word)](https://bit.ly/ReDATA_CurationTemplate)
     for ReDATA curators to complete.
- 5. Supporting ReDATA curators with access and workflow management through
+ 5. Creating a hierarchical folder structure the supports library preservation
+    and archive
+ 6. Supporting ReDATA curators with access and workflow management through
     standard UNIX commands
 
 These backend services ingest the datasets and accompanying files (described above)
@@ -199,6 +198,10 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
+
+v0.15.0:
+ * Implementation of Qualtrics README file #98
+ * Folder re-structuring for versioning #100
 
 v0.14.0 - 0.14.1:
  * Full stdout and file logging #83

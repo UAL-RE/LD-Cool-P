@@ -34,7 +34,8 @@ def review_report(depositor_name='', curation_dict=config_default_dict['curation
         log.warn(f"!!!! Folder exists, not creating : {out_path}")
 
     # MS-Word document filename
-    filename = 'ReDATA-DepositReview_{}.docx'.format(depositor_name)
+    simplify_name = depositor_name.replace('/v', '_v')
+    filename = 'ReDATA-DepositReview_{}.docx'.format(simplify_name)
     out_file = join(out_path, filename)
 
     # Write file
