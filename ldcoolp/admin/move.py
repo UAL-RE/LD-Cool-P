@@ -117,13 +117,16 @@ class MoveClass:
             # Get current path
             source_stage = self.get_source_stage(depositor_name, verbose=verbose)
 
-            # Get destination path
-            dest_stage_i = [i+1 for i in range(len(self.stage_list)) if
-                            self.stage_list[i] == source_stage][0]
-            dest_stage = self.stage_list[dest_stage_i]
+            if source_stage == self.stage_list[-1]:
+                self.log.warn(f"Cannot moved to next stage! Currently in {source_stage}")
+            else:
+                # Get destination path
+                dest_stage_i = [i+1 for i in range(len(self.stage_list)) if
+                                self.stage_list[i] == source_stage][0]
+                dest_stage = self.stage_list[dest_stage_i]
 
-            # Move folder
-            self.main(depositor_name, source_stage, dest_stage)
+                # Move folder
+                self.main(depositor_name, source_stage, dest_stage)
         except FileNotFoundError:
             self.log.warn(f"Unable to find source_path for {depositor_name}")
 
@@ -140,13 +143,16 @@ class MoveClass:
             # Get current path
             source_stage = self.get_source_stage(depositor_name, verbose=verbose)
 
-            # Get destination path
-            dest_stage_i = [i-1 for i in range(len(self.stage_list)) if
-                            self.stage_list[i] == source_stage][0]
-            dest_stage = self.stage_list[dest_stage_i]
+            if source_stage == self.stage_list[0]:
+                self.log.warn(f"Cannot moved to next stage! Currently in {source_stage}")
+            else:
+                # Get destination path
+                dest_stage_i = [i-1 for i in range(len(self.stage_list)) if
+                                self.stage_list[i] == source_stage][0]
+                dest_stage = self.stage_list[dest_stage_i]
 
-            # Move folder
-            self.main(depositor_name, source_stage, dest_stage)
+                # Move folder
+                self.main(depositor_name, source_stage, dest_stage)
         except FileNotFoundError:
             self.log.warn(f"Unable to find source_path for {depositor_name}")
 
