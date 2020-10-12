@@ -202,7 +202,8 @@ List is sorted from moderate to minor revisions for reach release.
 v0.15.0 - v0.15.1:
  * Implementation of Qualtrics README file #98
  * Folder re-structuring for versioning #100
- * Script to perform move to next stage or backwards, `perform_move` #105
+ * `perform_move` script to perform move to next curation stage, backwards or
+   to publish #105
 
 v0.14.0 - 0.14.1:
  * Full stdout and file logging #83
