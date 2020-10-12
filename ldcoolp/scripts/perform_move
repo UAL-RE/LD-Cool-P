@@ -85,6 +85,7 @@ if __name__ == '__main__':
     count = 0
     for ii in range(len(articles)):
         dn = DepositorName(articles[ii], fs_admin, log=log)
+        log.info(f"Performing move with --direction {args.direction}")
         if args.direction == 'next':
             mc.move_to_next(dn.folderName)
         if args.direction == 'back':
