@@ -156,6 +156,30 @@ class MoveClass:
         except FileNotFoundError:
             self.log.warn(f"Unable to find source_path for {depositor_name}")
 
+    def move_to_publish(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Perform move from one curation stage to published stage
+
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+        """
+
+        try:
+            # Get current path
+            source_stage = self.get_source_stage(depositor_name, verbose=verbose)
+
+            if source_stage == self.published_folder:
+                self.log.warn(f"Already in {source_stage} !!!")
+            else:
+                # Get destination path
+                dest_stage = self.published_folder
+
+                # Move folder
+                self.main(depositor_name, source_stage, dest_stage)
+        except FileNotFoundError:
+            self.log.warn(f"Unable to find source_path for {depositor_name}")
+
     def reject(self, depositor_name, verbose=True):
         """
         Purpose:
