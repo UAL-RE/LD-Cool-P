@@ -110,7 +110,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.14.1`.
+You should see that the version is `0.15.1`.
 
 ### Configuration Settings
 
@@ -199,9 +199,11 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.15.0:
+v0.15.0 - v0.15.1:
  * Implementation of Qualtrics README file #98
  * Folder re-structuring for versioning #100
+ * `perform_move` script to perform move to next curation stage, backwards or
+   to publish #105
 
 v0.14.0 - 0.14.1:
  * Full stdout and file logging #83

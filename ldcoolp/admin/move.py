@@ -1,4 +1,5 @@
 from os.path import join, dirname, exists
+from os import makedirs, chmod
 import shutil
 from glob import glob
 
@@ -69,7 +70,7 @@ class MoveClass:
             self.log.debug(source_path)
             raise ValueError(err)
         if len(source_path) == 1:
-            source_stage = dirname(source_path[0].replace(join(self.root_directory_main, ''), ''))
+            source_stage = source_path[0].replace(join(self.root_directory_main, ''), '').split('/')[0]
 
             return source_stage
 
@@ -87,12 +88,18 @@ class MoveClass:
 
         # Define paths:
         source_path = join(self.root_directory_main, source_stage, depositor_name)
-        dest_path = join(self.root_directory_main, dest_stage, depositor_name)
+        # Strip out version folder convention for proper move with shutil.move
+        dest_path = dirname(join(self.root_directory_main, dest_stage, depositor_name))
 
         # Move folder
         if exists(source_path):
             self.log.info(f"Moving: {depositor_name} from {source_stage} to ...")
             self.log.info(f" ... {dest_stage} on {self.root_directory_main}")
+            if not exists(dest_path):
+                self.log.info(f"Path does not exist! {dest_path}")
+                self.log.info("Creating...")
+                makedirs(dest_path)
+                chmod(dest_path, 0o777)
             shutil.move(source_path, dest_path)
         else:
             self.log.info(f"WARNING: Unable to find source_path for {depositor_name}")
@@ -110,13 +117,66 @@ class MoveClass:
             # Get current path
             source_stage = self.get_source_stage(depositor_name, verbose=verbose)
 
-            # Get destination path
-            dest_stage_i = [i+1 for i in range(len(self.stage_list)) if
-                            self.stage_list[i] == source_stage][0]
-            dest_stage = self.stage_list[dest_stage_i]
+            if source_stage == self.stage_list[-1]:
+                self.log.warn(f"Cannot moved to next stage! Currently in {source_stage}")
+            else:
+                # Get destination path
+                dest_stage_i = [i+1 for i in range(len(self.stage_list)) if
+                                self.stage_list[i] == source_stage][0]
+                dest_stage = self.stage_list[dest_stage_i]
 
-            # Move folder
-            self.main(depositor_name, source_stage, dest_stage)
+                # Move folder
+                self.main(depositor_name, source_stage, dest_stage)
+        except FileNotFoundError:
+            self.log.warn(f"Unable to find source_path for {depositor_name}")
+
+    def move_back(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Perform move from one curation stage back to previous one
+
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+        """
+
+        try:
+            # Get current path
+            source_stage = self.get_source_stage(depositor_name, verbose=verbose)
+
+            if source_stage == self.stage_list[0]:
+                self.log.warn(f"Cannot moved to next stage! Currently in {source_stage}")
+            else:
+                # Get destination path
+                dest_stage_i = [i-1 for i in range(len(self.stage_list)) if
+                                self.stage_list[i] == source_stage][0]
+                dest_stage = self.stage_list[dest_stage_i]
+
+                # Move folder
+                self.main(depositor_name, source_stage, dest_stage)
+        except FileNotFoundError:
+            self.log.warn(f"Unable to find source_path for {depositor_name}")
+
+    def move_to_publish(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Perform move from one curation stage to published stage
+
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+        """
+
+        try:
+            # Get current path
+            source_stage = self.get_source_stage(depositor_name, verbose=verbose)
+
+            if source_stage == self.published_folder:
+                self.log.warn(f"Already in {source_stage} !!!")
+            else:
+                # Get destination path
+                dest_stage = self.published_folder
+
+                # Move folder
+                self.main(depositor_name, source_stage, dest_stage)
         except FileNotFoundError:
             self.log.warn(f"Unable to find source_path for {depositor_name}")
 
