@@ -87,6 +87,8 @@ if __name__ == '__main__':
         dn = DepositorName(articles[ii], fs_admin, log=log)
         if args.direction == 'next':
             mc.move_to_next(dn.folderName)
+        if args.direction == 'back':
+            mc.move_back(dn.folderName)
 
         count += 1
 
