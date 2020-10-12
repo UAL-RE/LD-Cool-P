@@ -127,6 +127,29 @@ class MoveClass:
         except FileNotFoundError:
             self.log.warn(f"Unable to find source_path for {depositor_name}")
 
+    def move_back(self, depositor_name, verbose=True):
+        """
+        Purpose:
+          Perform move from one curation stage back to previous one
+
+        :param depositor_name: Exact name of the data curation folder with spaces
+        :param verbose: bool that warns source_path does not exist.  Default: True
+        """
+
+        try:
+            # Get current path
+            source_stage = self.get_source_stage(depositor_name, verbose=verbose)
+
+            # Get destination path
+            dest_stage_i = [i-1 for i in range(len(self.stage_list)) if
+                            self.stage_list[i] == source_stage][0]
+            dest_stage = self.stage_list[dest_stage_i]
+
+            # Move folder
+            self.main(depositor_name, source_stage, dest_stage)
+        except FileNotFoundError:
+            self.log.warn(f"Unable to find source_path for {depositor_name}")
+
     def reject(self, depositor_name, verbose=True):
         """
         Purpose:
