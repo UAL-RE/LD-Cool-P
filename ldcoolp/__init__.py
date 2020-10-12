@@ -1,6 +1,6 @@
 from os import path
 
-__version__ = "0.14.1"
+__version__ = "0.15.1"
 
 co_path = path.dirname(__file__)
 
