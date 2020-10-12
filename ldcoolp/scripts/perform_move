@@ -31,14 +31,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Command-line driver for data curation moves.')
     parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
-    parser.add_argument('--direction', required=True, help='Direction to move. Either "next" or "back"')
+    parser.add_argument('--direction', required=True, help='Direction to move. Either "next", "back" or "publish"')
     args = parser.parse_args()
 
     if not exists(args.config):
         raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
 
-    if args.direction not in ['next', 'back']:
-        raise ValueError(f"WARNING!!! --direction flag not properly set. Either next or back")
+    if args.direction not in ['next', 'back', 'publish']:
+        raise ValueError(f"WARNING!!! --direction flag not properly set. Either next, back, or publish")
 
     branch_name = get_active_branch_name(library_root_path)
     git_commit, git_short_commit = get_latest_commit(library_root_path)
@@ -89,6 +89,8 @@ if __name__ == '__main__':
             mc.move_to_next(dn.folderName)
         if args.direction == 'back':
             mc.move_back(dn.folderName)
+        if args.direction == 'publish':
+            mc.move_to_publish(dn.folderName)
 
         count += 1
 
