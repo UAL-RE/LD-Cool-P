@@ -183,6 +183,7 @@ class FigshareInstituteAdmin:
 
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
+
         return accounts_df
 
     def get_account_group_roles(self, account_id):
@@ -192,7 +193,7 @@ class FigshareInstituteAdmin:
         roles = issue_request('GET', url, self.headers)
         return roles
 
-    def get_account_details(self):
+    def get_account_details(self, flag=True):
         """
         Retrieve account details. This includes number of articles, projects,
         collections, group association, and administrative and reviewer flags
@@ -200,6 +201,7 @@ class FigshareInstituteAdmin:
 
         # Retrieve accounts
         accounts_df = self.get_account_list()
+
         n_accounts = accounts_df.shape[0]
 
         # Retrieve groups
@@ -209,8 +211,9 @@ class FigshareInstituteAdmin:
         num_projects = np.zeros(n_accounts, dtype=np.int)
         num_collections = np.zeros(n_accounts, dtype=np.int)
 
-        admin_flag = [''] * n_accounts
-        reviewer_flag = [''] * n_accounts
+        if flag:
+            admin_flag = [''] * n_accounts
+            reviewer_flag = [''] * n_accounts
         group_assoc = ['N/A'] * n_accounts
 
         # Determine group roles for each account
@@ -237,19 +240,21 @@ class FigshareInstituteAdmin:
 
             for key in roles.keys():
                 for t_dict in roles[key]:
-                    if t_dict['id'] == 2:
-                        admin_flag[n] = 'X'
-                    if t_dict['id'] == 49:
-                        reviewer_flag[n] = 'X'
                     if t_dict['id'] == 11:
                         group_assoc[n] = key
+                    if flag:
+                        if t_dict['id'] == 2:
+                            admin_flag[n] = 'X'
+                        if t_dict['id'] == 49:
+                            reviewer_flag[n] = 'X'
 
         accounts_df['Articles'] = num_articles
         accounts_df['Projects'] = num_projects
         accounts_df['Collections'] = num_collections
 
-        accounts_df['Admin'] = admin_flag
-        accounts_df['Reviewer'] = reviewer_flag
+        if flag:
+            accounts_df['Admin'] = admin_flag
+            accounts_df['Reviewer'] = reviewer_flag
 
         for group_id, group_name in zip(groups_df['id'], groups_df['name']):
             self.log.info(f"{group_id} - {group_name}")
