@@ -78,7 +78,7 @@ if __name__ == '__main__':
     if not args.write_file:
         print(accounts_df)
     else:
-        csv_outfile = f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.log"
+        csv_outfile = f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.csv"
         log.info(f"Writing file : {csv_outfile}")
 
         accounts_df.to_csv(csv_outfile)
