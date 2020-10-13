@@ -5,7 +5,8 @@ from os import mkdir, stat
 
 import argparse
 
-from datetime import date
+from datetime import date, datetime
+import pytz
 
 from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
 from ldcoolp.logger import LogClass, get_user_hostname
@@ -16,10 +17,13 @@ from ldcoolp import __version__
 from ldcoolp.git_info import get_active_branch_name, get_latest_commit
 from ldcoolp import __file__ as library_path
 
-today = date.today()
-
 # Config loader
 from ldcoolp.config import dict_load
+
+today = date.today()
+
+tz_AZ = pytz.timezone('US/Arizona')
+now = datetime.now(tz_AZ)
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -74,7 +78,10 @@ if __name__ == '__main__':
     if not args.write_file:
         print(accounts_df)
     else:
-        log.info("Writing file")
+        csv_outfile = f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.log"
+        log.info(f"Writing file : {csv_outfile}")
+
+        accounts_df.to_csv(csv_outfile)
 
     log.info("****************************")
     log.info("Exit 0")
