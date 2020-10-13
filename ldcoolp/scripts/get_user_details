@@ -83,5 +83,13 @@ if __name__ == '__main__':
 
         accounts_df.to_csv(csv_outfile)
 
+    # Change permission to mode=666 (rw for all)
+    status = stat(join(log_dir, logfile))
+    if oct(status.st_mode)[-3:] == '666':
+        log.debug("Permissions set for logfile")
+    else:
+        log.debug("Changing permissions on logfile...")
+        permissions.curation(join(log_dir, logfile), mode=0o666)
+
     log.info("****************************")
     log.info("Exit 0")
