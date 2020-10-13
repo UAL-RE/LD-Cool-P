@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+from os.path import dirname, exists, join
+from os import mkdir, stat
+
+import argparse
+
+from datetime import date
+
+from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
+from ldcoolp.logger import LogClass, get_user_hostname
+from ldcoolp.admin import permissions
+
+# Version and branch info
+from ldcoolp import __version__
+from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from ldcoolp import __file__ as library_path
+
+today = date.today()
+
+# Config loader
+from ldcoolp.config import dict_load
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
+    parser.add_argument('--config', required=True, help='path to configuration file')
+    parser.add_argument('--write_file', action='store_true', help='Write CSV file containing results')
+    args = parser.parse_args()
+
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
+    branch_name = get_active_branch_name(library_root_path)
+    git_commit, git_short_commit = get_latest_commit(library_root_path)
+
+    # Load configuration
+    config_dict = dict_load(args.config)
+
+    curation_dict = config_dict['curation']
+
+    # Define logfile
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'get_user_details'
+    logfile = f"{logfile_prefix}.{today.strftime('%Y-%m-%d')}.log"
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("****************************")
+
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+
+    # Retrieve username, hostname, IP
+    sys_info = get_user_hostname()
+    log.debug(f"username : {sys_info['user']}")
+    log.debug(f"hostname : {sys_info['hostname']}")
+    log.debug(f"IP Addr  : {sys_info['ip']}")
+    log.debug(f"Op. Sys. : {sys_info['os']}")
+
+    fs_admin = FigshareInstituteAdmin(figshare_dict=config_dict['figshare'],
+                                      log=log)
+
+    accounts_df = fs_admin.get_account_details(flag=False, ignore_admin=True)
+
+    log.info(f"Number of users: {len(accounts_df)}")
+    if not args.write_file:
+        print(accounts_df)
+    else:
+        log.info("Writing file")
+
+    log.info("****************************")
+    log.info("Exit 0")
