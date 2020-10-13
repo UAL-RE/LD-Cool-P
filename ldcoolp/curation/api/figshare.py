@@ -173,7 +173,7 @@ class FigshareInstituteAdmin:
         groups_df = pd.DataFrame(groups)
         return groups_df
 
-    def get_account_list(self):
+    def get_account_list(self, ignore_admin=False):
         """Retrieve accounts within institutional instance"""
         url = self.endpoint("accounts")
 
@@ -184,6 +184,14 @@ class FigshareInstituteAdmin:
         accounts_df = pd.DataFrame(accounts)
         accounts_df = accounts_df.drop(columns='institution_id')
 
+        if ignore_admin:
+            self.log.info("Excluding administrative and test accounts")
+
+            drop_index = list(accounts_df[accounts_df['email'] ==
+                                          'data-management@email.arizona.edu'].index)
+            drop_index += list(accounts_df[accounts_df['email'].str.contains('-test@email.arizona.edu')].index)
+
+            accounts_df = accounts_df.drop(drop_index)
         return accounts_df
 
     def get_account_group_roles(self, account_id):
@@ -193,14 +201,14 @@ class FigshareInstituteAdmin:
         roles = issue_request('GET', url, self.headers)
         return roles
 
-    def get_account_details(self, flag=True):
+    def get_account_details(self, flag=True, ignore_admin=False):
         """
         Retrieve account details. This includes number of articles, projects,
         collections, group association, and administrative and reviewer flags
         """
 
         # Retrieve accounts
-        accounts_df = self.get_account_list()
+        accounts_df = self.get_account_list(ignore_admin=ignore_admin)
 
         n_accounts = accounts_df.shape[0]
 
