@@ -191,7 +191,7 @@ class FigshareInstituteAdmin:
                                           'data-management@email.arizona.edu'].index)
             drop_index += list(accounts_df[accounts_df['email'].str.contains('-test@email.arizona.edu')].index)
 
-            accounts_df = accounts_df.drop(drop_index)
+            accounts_df = accounts_df.drop(drop_index).reset_index(drop=True)
         return accounts_df
 
     def get_account_group_roles(self, account_id):
