@@ -32,17 +32,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
     parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--write_file', action='store_true', help='Write CSV file containing results')
-    parser.add_argument('--path', help='Full path to write CSV file')
+    parser.add_argument('--path', required=True, help='Full path to write CSV file')
     parser.add_argument('--simple', action='store_true',
                         help='Generate a basic list without detailed information')
     args = parser.parse_args()
 
     if not exists(args.config):
         raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
-
-    if args.write_file:
-        if not exists(args.path):
-            raise FileNotFoundError(f"WARNING!!! Path not found: {args.path}")
 
     branch_name = get_active_branch_name(library_root_path)
     git_commit, git_short_commit = get_latest_commit(library_root_path)
@@ -52,10 +48,11 @@ if __name__ == '__main__':
 
     curation_dict = config_dict['curation']
 
-    # Define logfile
-    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+    csv_dir = join(args.path, 'user_data')
+    if not exists(csv_dir):
+        mkdir(csv_dir)
 
-    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    log_dir = join(args.path, curation_dict['log_dir'])
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'get_user_details'
@@ -86,12 +83,12 @@ if __name__ == '__main__':
         if not args.write_file:
             print(accounts_df)
         else:
-            csv_outfile = join(args.path,
-                               f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.csv")
+            csv_outfile = join(csv_dir, f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.csv")
 
             log.info(f"Writing file : {csv_outfile}")
 
             accounts_df.to_csv(csv_outfile, index=False)
+            permissions.curation(csv_outfile, mode=0o666)
     else:
         accounts_df = fs_admin.get_account_list(ignore_admin=True)
 
