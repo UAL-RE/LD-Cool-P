@@ -14,6 +14,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          - ref: ${{ github.ref }}
+      - name: Get tag info
+        # See: https://github.com/actions/virtual-environments/issues/1717
+        # See: https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+        id: get_tag
+        shell: bash
+        run: |
+          echo "SUBJECT=$(/usr/bin/git tag -l $TAG_VERSION --format='%(subject)')" >> $TAG_SUBJECT
+          echo SUBJECT=$TAG_SUBJECT
+          echo "TAG_BODY=$(/usr/bin/git tag -l $TAG_VERSION --format='%(body)')" >> $TAG_BODY
+          echo BODY=$TAG_BODY
+        env:
+          TAG_VERSION: ${{ github.ref }}
+        #run: |
+        #  echo ::set-env name=TAG_MESSAGE::$(git tag -l --format='%(subject)' ${{ github.ref }})
+        #  echo TAG_MESSAGE=$TAG_MESSAGE
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -24,6 +41,8 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           # Use tag message for body of release
-          body: ${{ github.event.head_commit.message }}
+          body: |
+            ${{ env.TAG_SUBJECT }}
+            ${{ env.TAG_BODY }}
           draft: false
           prerelease: false
