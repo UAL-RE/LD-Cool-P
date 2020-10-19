@@ -209,7 +209,7 @@ v0.15.0 - v0.15.5:
    to publish #105
  * `get_user_details` script to retrieve user information from Figshare API #107
  * GitHub Action to create releases with tagged version #111
- * Minor: Remove empty parent folders after `move.main` call
+ * Minor: Remove empty parent folders after `MoveClass.main()` call
 
 v0.14.0 - 0.14.1:
  * Full stdout and file logging #83
