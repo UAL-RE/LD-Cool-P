@@ -1,5 +1,5 @@
 from os.path import join, dirname, exists
-from os import makedirs, chmod
+from os import makedirs, chmod, listdir, rmdir
 import shutil
 from glob import glob
 
@@ -101,6 +101,15 @@ class MoveClass:
                 makedirs(dest_path)
                 chmod(dest_path, 0o777)
             shutil.move(source_path, dest_path)
+
+            # Remove source_path parent folder if empty
+            parent_dir = dirname(source_path)
+            if len(listdir(parent_dir)) == 0:
+                self.log.debug(f"Empty directory : {parent_dir}")
+                self.log.debug(f"Deleting parent directory for source : {parent_dir}")
+                rmdir(parent_dir)
+            else:
+                self.log.debug(f"Non-empty directory. Unable to remove : {parent_dir}")
         else:
             self.log.info(f"WARNING: Unable to find source_path for {depositor_name}")
 
