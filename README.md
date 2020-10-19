@@ -194,6 +194,9 @@ and retrieve the Qualtrics URL to provide to an author:
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
 [tags on this repository](https://github.com/ualibraries/LD_Cool_P/tags).
 
+Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
+following a `git tag` version.
+
 ## Changelog
 
 A list of released features and their issue number(s).
