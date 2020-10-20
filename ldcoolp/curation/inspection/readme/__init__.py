@@ -1,5 +1,6 @@
 from os.path import exists, join, dirname, basename
-from os import walk
+from os import walk, stat
+from datetime import datetime
 import shutil
 from glob import glob
 
@@ -73,11 +74,15 @@ class ReadmeClass:
     construct()
       Create README.txt file with jinja2 README template and populate with metadata information
 
+    update_readme()
+      Update README.txt file for changes in figshare or Qualtrics dictionary
+
     main()
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn, config_dict=config_default_dict, log=None):
+    def __init__(self, dn, config_dict=config_default_dict, update=False,
+                 log=None):
         self.config_dict = config_dict
 
         self.dn = dn
@@ -92,7 +97,12 @@ class ReadmeClass:
 
         curation_dict = self.config_dict['curation']
         self.root_directory_main = curation_dict[curation_dict['parent_dir']]
-        self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
+        if not update:
+            # Use 1.ToDo
+            self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
+        else:
+            # Use 2.UnderReview. Need to use admin.move module to find current path
+            self.root_directory = join(self.root_directory_main, curation_dict['folder_underreview'])
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
@@ -279,6 +289,32 @@ class ReadmeClass:
 
         # Set permission for rwx
         permissions.curation(self.readme_file_path)
+
+    def update(self):
+        """Update README.txt file for changes in figshare or Qualtrics dictionary"""
+
+        # Retrieve new README.txt file first
+        content_list = self.jinja_template.render(figshare_dict=self.figshare_readme_dict,
+                                                  qualtrics_dict=self.qualtrics_readme_dict)
+        if exists(self.readme_file_path):
+            f = open(self.readme_file_path, 'r')
+            readme_old = ''.join(f.readlines())
+
+            if content_list == readme_old:
+                self.log.warn("README.txt did not change")
+                self.log.info("Not replacing file")
+            else:
+                self.log.info("README.txt changed. Updating!")
+                st = stat(self.readme_file_path)
+                mod_time_str = datetime.fromtimestamp(st.st_mtime).strftime('%Y-%m-%d_%H:%M:%S')
+                backup_copy_filename = self.readme_file_path.replace('.txt', f'_{mod_time_str}.txt')
+                self.log.info(f"Saving previous copy as : {basename(backup_copy_filename)}")
+                shutil.copyfile(self.readme_file_path, backup_copy_filename)
+
+                self.log.info(f"Writing updated README.txt file : {self.readme_file_path}")
+                f = open(self.readme_file_path, 'w')
+                f.writelines(content_list)
+                f.close()
 
     def main(self):
         """Main function for README file construction"""
