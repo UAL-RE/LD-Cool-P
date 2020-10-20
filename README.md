@@ -171,28 +171,31 @@ The above script will perform the prerequisite steps of:
 Another command-line approach is using the python script called `prereq_script`:
 
 ```
-(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/prereq_script --article_id 12345678
+(curation) $ ./ldcoolp/scripts/prereq_script --article_id 12345678
 ```
 
-Additional python scripts are available to retrieve the list of pending curation and their `article_id`:
+Additional python scripts are available to
 
-```
-(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/get_curation_list \
-               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini
-```
+1. Retrieve the list of pending curation and their `article_id`:
 
-retrieve the Qualtrics URL to provide to an author:
+    ```
+    (curation) $ ./ldcoolp/scripts/get_curation_list \
+                 --config ldcoolp/config/default.ini
+    ```
 
-```
-(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/generate_qualtrics_link \
-               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini --article_id 12345678
-```
+2. Retrieve the Qualtrics URLs to provide to an author/depositor:
 
-Update the README.txt file for changes to metadata information:
+    ```
+    (curation) $ ./ldcoolp/scripts/generate_qualtrics_link \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    ```
 
-```
-(curation) $ ldcoolp/scripts/update_readme --config ldcoolp/config/default.ini --article_id 12345678
-```
+3. Update the README.txt file for changes to metadata information:
+
+    ```
+    (curation) $ ./ldcoolp/scripts/update_readme \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    ```
 
 
 ## Versioning
