@@ -202,6 +202,10 @@ following a `git tag` version.
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
+v0.16.0 (pre-release):
+ * `update` method for `ReadmeClass` to enable updating README.txt file #73
+ * `update_readme` script to enable easy revision #73
+
 v0.15.0 - v0.15.5:
  * Implementation of Qualtrics README file #98
  * Folder re-structuring for versioning #100
