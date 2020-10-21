@@ -171,22 +171,31 @@ The above script will perform the prerequisite steps of:
 Another command-line approach is using the python script called `prereq_script`:
 
 ```
-(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/prereq_script --article_id 12345678
+(curation) $ ./ldcoolp/scripts/prereq_script --article_id 12345678
 ```
 
-Additional python scripts are available to retrieve the list of pending curation and their `article_id`:
+Additional python scripts are available to
 
-```
-(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/get_curation_list \
-               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini
-```
+1. Retrieve the list of pending curation and their `article_id`:
 
-and retrieve the Qualtrics URL to provide to an author:
+    ```
+    (curation) $ ./ldcoolp/scripts/get_curation_list \
+                 --config ldcoolp/config/default.ini
+    ```
 
-```
-(curation) $ python /path/to/parent/folder/LD-Cool-P/ldcoolp/scripts/generate_qualtrics_link \
-               --config /path/to/parent/folder/LD-Cool-P/ldcoolp/config/default.ini --article_id 12345678
-```
+2. Retrieve the Qualtrics URLs to provide to an author/depositor:
+
+    ```
+    (curation) $ ./ldcoolp/scripts/generate_qualtrics_link \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    ```
+
+3. Update the README.txt file for changes to metadata information:
+
+    ```
+    (curation) $ ./ldcoolp/scripts/update_readme \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    ```
 
 
 ## Versioning
@@ -201,6 +210,10 @@ following a `git tag` version.
 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
+
+v0.16.0 (pre-release):
+ * `update` method for `ReadmeClass` to enable updating README.txt file #73
+ * `update_readme` script to enable easy revision #73
 
 v0.15.0 - v0.15.5:
  * Implementation of Qualtrics README file #98
