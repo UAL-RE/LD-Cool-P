@@ -137,9 +137,7 @@ Additional settings to change are `figshare` `stage` flag, and `curation` `sourc
 Since the configuration settings will continue to evolve, we refer users to the
 documented information provided.
 
-These configurations are read in through the `config` sub-package.  All scripts
-have a `--config` option to specify which `config` file is used. This is used
-throughout.
+These configurations are read in through the `config` sub-package.
 
 
 ### Testing Installation
@@ -215,6 +213,8 @@ List is sorted from moderate to minor revisions for reach release.
 v0.16.0:
  * `update` method for `ReadmeClass` to enable updating README.txt file #73
  * `update_readme` script to enable easy revision #73
+ * Scripts are executable #110
+ * Minor: GitHub Actions body default #111
 
 v0.15.0 - v0.15.5:
  * Implementation of Qualtrics README file #98
