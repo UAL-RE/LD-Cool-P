@@ -7,7 +7,9 @@ import argparse
 
 from datetime import date
 
-from ldcoolp.curation import main
+from ldcoolp.curation.inspection import readme
+from ldcoolp.curation.depositor_name import DepositorName
+from ldcoolp.curation.api import figshare
 from ldcoolp.logger import LogClass, get_user_hostname
 from ldcoolp.admin import permissions
 
@@ -26,12 +28,9 @@ library_root_path = dirname(dirname(library_path))  # Retrieve parent directory 
 
 if __name__ == '__main__':
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Command-line driver for LD-Cool-P prerequisite set-up.')
+    parser = argparse.ArgumentParser(description='Command-line driver to update README file data curation.')
     parser.add_argument('--config', required=True, help='path to configuration file')
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
-    parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
-    parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
-    # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
     if not exists(args.config):
@@ -41,11 +40,10 @@ if __name__ == '__main__':
     git_commit, git_short_commit = get_latest_commit(library_root_path)
 
     banner_message = f"""
-    This is the command-line tool that automates data retrieval, and curatorial review set-up. It:
-    1. Perform folder management for each deposit
-    2. Retrieves the dataset
-    3. Download a copy of the curatorial review process
-    4. Attempt to retrieve the Qualtrics deposit agreement or provide you with the link
+    This is the command-line tool to update the README.txt file. It:
+    1. Will retrieve figshare and Qualtrics metadata information
+    2. Save the previous README.txt
+    3. Re-generate a README.txt
 
     LD-Cool-P branch: {branch_name}
     LD-Cool-P version: {__version__}
@@ -66,8 +64,8 @@ if __name__ == '__main__':
     log_dir = join(root_directory_main, curation_dict['log_dir'])
     if not exists(log_dir):
         mkdir(log_dir)
-    logfile_prefix = 'prereq_script'
-    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+    logfile_prefix = 'update_readme'
+    logfile = f"{logfile_prefix}.{today.strftime('%Y-%m-%d')}.log"
 
     log = LogClass(log_dir, logfile).get_logger()
 
@@ -90,14 +88,19 @@ if __name__ == '__main__':
 
     log.info(f"Number of Deposits: {num_articles}")
 
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=config_dict['figshare'])
+
     # Loop over each article
     count = 0
     for ii in range(len(articles)):
-        log.info(f"Retrieving: {articles[ii]} ...")  # ... {ii+1} / {num_articles}")
+        log.info(f"Updating README.txt for : {articles[ii]} ...")
+
+        dn = DepositorName(articles[ii], fs_admin, log=log)
 
         # Run pre-req steps
-        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser,
-                      log=log, config_dict=config_dict)
+        rc = readme.ReadmeClass(dn, config_dict=config_dict, update=True, log=log)
+        rc.update()
+
         count += 1
 
         log.info(f"Completed: {articles[ii]} ...")
