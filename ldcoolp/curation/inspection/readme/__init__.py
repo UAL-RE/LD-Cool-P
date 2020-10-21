@@ -74,7 +74,7 @@ class ReadmeClass:
     construct()
       Create README.txt file with jinja2 README template and populate with metadata information
 
-    update_readme()
+    update()
       Update README.txt file for changes in figshare or Qualtrics dictionary
 
     main()
