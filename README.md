@@ -170,7 +170,8 @@ The above script will perform the prerequisite steps of:
 Another command-line approach is using the python script called `prereq_script`:
 
 ```
-(curation) $ ./ldcoolp/scripts/prereq_script --article_id 12345678
+(curation) $ ./ldcoolp/scripts/prereq_script \
+             --config ldcoolp/config/default.ini --article_id 12345678
 ```
 
 Additional python scripts are available to
