@@ -137,8 +137,9 @@ Additional settings to change are `figshare` `stage` flag, and `curation` `sourc
 Since the configuration settings will continue to evolve, we refer users to the
 documented information provided.
 
-In the forthcoming v0.12.0 release, these configurations are read in through the `config` sub-package.
-Any LD-Cool-P code that requires pre-configuration will utilize the `config` sub-package.
+These configurations are read in through the `config` sub-package.  All scripts
+have a `--config` option to specify which `config` file is used. This is used
+throughout.
 
 
 ### Testing Installation
