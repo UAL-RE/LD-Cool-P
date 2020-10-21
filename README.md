@@ -110,7 +110,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.15.5`.
+You should see that the version is `0.16.0`.
 
 ### Configuration Settings
 
@@ -137,8 +137,7 @@ Additional settings to change are `figshare` `stage` flag, and `curation` `sourc
 Since the configuration settings will continue to evolve, we refer users to the
 documented information provided.
 
-In the forthcoming v0.12.0 release, these configurations are read in through the `config` sub-package.
-Any LD-Cool-P code that requires pre-configuration will utilize the `config` sub-package.
+These configurations are read in through the `config` sub-package.
 
 
 ### Testing Installation
@@ -171,7 +170,8 @@ The above script will perform the prerequisite steps of:
 Another command-line approach is using the python script called `prereq_script`:
 
 ```
-(curation) $ ./ldcoolp/scripts/prereq_script --article_id 12345678
+(curation) $ ./ldcoolp/scripts/prereq_script \
+             --config ldcoolp/config/default.ini --article_id 12345678
 ```
 
 Additional python scripts are available to
@@ -197,6 +197,16 @@ Additional python scripts are available to
                  --config ldcoolp/config/default.ini --article_id 12345678
     ```
 
+4. Move between curation stages (either `next`, `back`, or to `publish`):
+
+    ```
+    (curation) $ ./ldcoolp/scripts/perform_move --direction next \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    (curation) $ ./ldcoolp/scripts/perform_move --direction back \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    (curation) $ ./ldcoolp/scripts/perform_move --direction publish \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    ```
 
 ## Versioning
 
@@ -211,9 +221,11 @@ following a `git tag` version.
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.16.0 (pre-release):
+v0.16.0:
  * `update` method for `ReadmeClass` to enable updating README.txt file #73
  * `update_readme` script to enable easy revision #73
+ * Scripts are executable #110
+ * Minor: GitHub Actions body default #111
 
 v0.15.0 - v0.15.5:
  * Implementation of Qualtrics README file #98
