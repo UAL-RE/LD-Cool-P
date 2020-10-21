@@ -197,6 +197,16 @@ Additional python scripts are available to
                  --config ldcoolp/config/default.ini --article_id 12345678
     ```
 
+4. Move between curation stages (either `next`, `back`, or to `publish`):
+
+    ```
+    (curation) $ ./ldcoolp/scripts/perform_move --direction next \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    (curation) $ ./ldcoolp/scripts/perform_move --direction back \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    (curation) $ ./ldcoolp/scripts/perform_move --direction publish \
+                 --config ldcoolp/config/default.ini --article_id 12345678
+    ```
 
 ## Versioning
 
