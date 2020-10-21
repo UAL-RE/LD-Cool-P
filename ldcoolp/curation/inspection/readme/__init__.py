@@ -11,7 +11,7 @@ from html2text import html2text
 # Logging
 from ldcoolp.logger import log_stdout
 
-from ....admin import permissions
+from ....admin import permissions, move
 
 # Read in default configuration settings
 from ....config import config_default_dict
@@ -102,7 +102,9 @@ class ReadmeClass:
             self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
         else:
             # Use 2.UnderReview. Need to use admin.move module to find current path
-            self.root_directory = join(self.root_directory_main, curation_dict['folder_underreview'])
+            mc = move.MoveClass(curation_dict=curation_dict)
+            current_stage = mc.get_source_stage(self.folderName)
+            self.root_directory = join(self.root_directory_main, current_stage)
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
