@@ -51,8 +51,12 @@ if __name__ == '__main__':
     banner_message = f"""
     This is the command-line tool that maps the old folder names to the new ones.
 
-    Note that it is not perfect as the old names have changed over time.
-    Thus, user intervention is required.  However, the new name is correct
+    Notes:
+     [1] This script is not perfect as the old names have changed over time.
+         Thus, user intervention is required.  However, the new name is correct
+
+     [2] It only works for _v1 case. Complicated cases with multiple versions
+         require stricter handling
 
     LD-Cool-P branch: {branch_name}
     LD-Cool-P version: {__version__}
@@ -102,6 +106,7 @@ if __name__ == '__main__':
         log.info(f"Working on : {stage}")
         sh_cmd.append(f"# {stage}")
 
+        log.info("Retrieving _v1 paths")
         folders = glob(join(curation_directory_main, stage, '*_v1'))
         for folder in folders:
             out_folder = folder.replace('_v1', '')
@@ -122,6 +127,7 @@ if __name__ == '__main__':
                     sh_cmd.append(f'mv $out_folder/{curation_dict[organize_folder]} $out_folder/v1')
 
         script_outfile = join(curation_directory_main, f'{logfile_prefix}_{stage}.sh')
+        log.info(f"Writing: {script_outfile}")
         f = open(script_outfile, 'w')
         f.writelines([cmd+'\n' for cmd in sh_cmd])
         f.close()
