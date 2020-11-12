@@ -126,6 +126,8 @@ if __name__ == '__main__':
                 if exists(orig_path):
                     sh_cmd.append(f'sudo mv $out_folder/{curation_dict[organize_folder]} $out_folder/v1')
 
+            sh_cmd.append('')
+
         script_outfile = join(curation_directory_main, f'{logfile_prefix}_{stage}.sh')
         log.info(f"Writing: {script_outfile}")
         f = open(script_outfile, 'w')
