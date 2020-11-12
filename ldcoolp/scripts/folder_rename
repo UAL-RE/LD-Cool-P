@@ -9,7 +9,7 @@ from ldcoolp.curation.depositor_name import DepositorName
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.get_branch_name import get_active_branch_name
+from ldcoolp.git_info import get_active_branch_name
 from ldcoolp import __file__ as library_path
 
 # Read in configuration file
