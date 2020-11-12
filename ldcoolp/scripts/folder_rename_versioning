@@ -105,30 +105,26 @@ if __name__ == '__main__':
         folders = glob(join(curation_directory_main, stage, '*_v1'))
         for folder in folders:
             out_folder = folder.replace('_v1', '')
-            sh_cmd.append(f'mv {folder} {out_folder}')
+            sh_cmd.append(f"orig_folder='{folder}'")
+            sh_cmd.append(f"out_folder='{out_folder}'")
+            sh_cmd.append(f'mv $orig_folder $out_folder')
 
             v1_folder = join(out_folder, 'v1')
             if not exists(v1_folder):
-                sh_cmd.append(f'mkdir {v1_folder}')
+                sh_cmd.append(f'mkdir $out_folder/v1')
 
             for organize_folder in organize_folders:
                 # This is for temporary exists check
                 orig_path = join(folder, curation_dict[organize_folder])
 
                 pwd_path = join(out_folder, curation_dict[organize_folder])
-                new_path = join(v1_folder, curation_dict[organize_folder])
-
                 if exists(orig_path):
-                    sh_cmd.append(f'mv {pwd_path} {new_path}')
+                    sh_cmd.append(f'mv $out_folder/{curation_dict[organize_folder]} $out_folder/v1')
 
-    log.info("INFO: LIST OF COMMANDS")
-    for cmd0 in sh_cmd:
-        log.info(cmd0)
-
-    script_outfile = join(curation_directory_main, logfile_prefix+'.sh')
-    f = open(script_outfile, 'w')
-    f.writelines([cmd+'\n' for cmd in sh_cmd])
-    f.close()
+        script_outfile = join(curation_directory_main, f'{logfile_prefix}_{stage}.sh')
+        f = open(script_outfile, 'w')
+        f.writelines([cmd+'\n' for cmd in sh_cmd])
+        f.close()
 
     log.info("****************************")
     log.info("STATUS: Exit 0")
