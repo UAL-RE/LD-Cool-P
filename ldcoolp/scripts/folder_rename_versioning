@@ -94,8 +94,6 @@ if __name__ == '__main__':
     log.debug(f"IP Addr  : {sys_info['ip']}")
     log.debug(f"Op. Sys. : {sys_info['os']}")
 
-    sh_cmd = list()
-
     # Loop over each stage
     stages = args.stage.split(',')
     curation_directory_main = curation_dict[curation_dict['parent_dir']]
@@ -103,6 +101,8 @@ if __name__ == '__main__':
     organize_folders = ['folder_copy_data', 'folder_data', 'folder_ual_rdm']
 
     for stage in stages:
+        sh_cmd = list()
+
         log.info(f"Working on : {stage}")
         sh_cmd.append(f"# {stage}")
 
@@ -112,11 +112,11 @@ if __name__ == '__main__':
             out_folder = folder.replace('_v1', '')
             sh_cmd.append(f"orig_folder='{folder}'")
             sh_cmd.append(f"out_folder='{out_folder}'")
-            sh_cmd.append(f'mv $orig_folder $out_folder')
+            sh_cmd.append(f'sudo mv $orig_folder $out_folder')
 
             v1_folder = join(out_folder, 'v1')
             if not exists(v1_folder):
-                sh_cmd.append(f'mkdir $out_folder/v1')
+                sh_cmd.append(f'sudo mkdir $out_folder/v1')
 
             for organize_folder in organize_folders:
                 # This is for temporary exists check
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
                 pwd_path = join(out_folder, curation_dict[organize_folder])
                 if exists(orig_path):
-                    sh_cmd.append(f'mv $out_folder/{curation_dict[organize_folder]} $out_folder/v1')
+                    sh_cmd.append(f'sudo mv $out_folder/{curation_dict[organize_folder]} $out_folder/v1')
 
         script_outfile = join(curation_directory_main, f'{logfile_prefix}_{stage}.sh')
         log.info(f"Writing: {script_outfile}")
