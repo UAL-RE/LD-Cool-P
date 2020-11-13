@@ -317,6 +317,13 @@ class ReadmeClass:
                 f = open(self.readme_file_path, 'w')
                 f.writelines(content_list)
                 f.close()
+        else:
+            self.log.info("README.txt does not exist. Creating new one")
+
+            self.log.info(f"Writing README.txt file : {self.readme_file_path}")
+            f = open(self.readme_file_path, 'w')
+            f.writelines(content_list)
+            f.close()
 
     def main(self):
         """Main function for README file construction"""
