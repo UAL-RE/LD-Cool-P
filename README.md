@@ -221,8 +221,8 @@ following a `git tag` version.
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.16.0:
- * `update` method for `ReadmeClass` to enable updating README.txt file #73
+v0.16.0 - v0.16.1:
+ * `update` method for `ReadmeClass` to enable updating README.txt file #73, #122
  * `update_readme` script to enable easy revision #73
  * Scripts are executable #110
  * Minor: GitHub Actions body default #111
