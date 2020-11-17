@@ -1,7 +1,11 @@
 from pathlib import Path
+from os.path import dirname, basename
+
+# Get git root
+git_root = dirname(__file__.replace(f'/{basename(__file__)}', ''))
 
 
-def get_active_branch_name(input_path="."):
+def get_active_branch_name(input_path=git_root):
 
     head_dir = Path(input_path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
@@ -12,7 +16,7 @@ def get_active_branch_name(input_path="."):
             return line.partition("refs/heads/")[2]
 
 
-def get_latest_commit(input_path="."):
+def get_latest_commit(input_path=git_root):
 
     head_dir = Path(input_path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
