@@ -15,7 +15,7 @@ def get_active_branch_name(input_path=git_root):
             if line[0:4] == "ref:":
                 return line.partition("refs/heads/")[2]
             else:
-                return f"HEAD detached : {content}"
+                return f"HEAD detached : {content[0]}"
     else:
         return '.git structure does not exist'
 
@@ -33,7 +33,7 @@ def get_latest_commit(input_path=git_root):
                 with head_path.open('r') as g:
                     commit = g.read().splitlines()
             else:
-                commit = content[0]
+                commit = content
         return commit[0], commit[0][:7]  # full and short hash
     else:
         return '.git structure does not exist', ''
