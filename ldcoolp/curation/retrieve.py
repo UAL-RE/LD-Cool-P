@@ -2,6 +2,7 @@ import os
 from os.path import exists
 
 from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
+from urllib.error import HTTPError
 
 from ldcoolp.admin import permissions
 
@@ -9,7 +10,8 @@ from ldcoolp.admin import permissions
 from ldcoolp.logger import log_stdout
 
 
-def private_file_retrieve(url, filename=None, token=None, url_open=False):
+def private_file_retrieve(url, filename=None, token=None, url_open=False,
+                          log=None):
     """
     Purpose:
       Custom Request to privately retrieve a file with a token.
@@ -20,14 +22,22 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False):
     :param filename: Full filename for file to be written (str)
     :param token: API token (str)
     :param url_open: Boolean to indicate whether to use urlopen. Default: False
+    :param log: logger.LogClass object. Default is stdout via python logging
     """
+
+    if isinstance(log, type(None)):
+        log = log_stdout()
 
     if not url_open:
         if token:
             opener = build_opener()
             opener.addheaders = [('Authorization', f'token {token}')]
             install_opener(opener)
-        urlretrieve(url, filename)
+        try:
+            urlretrieve(url, filename)
+        except HTTPError as error:
+            log.warning(f"Caught an HTTPError: {error}")
+            raise
     else:
         req = Request(url)
         if token:
@@ -83,8 +93,13 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
         log.info(f"URL: {file_dict['download_url']}")
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
-            private_file_retrieve(file_dict['download_url'], filename=filename,
-                                  token=fs.token, url_open=url_open)
+            try:
+                private_file_retrieve(file_dict['download_url'],
+                                      filename=filename, token=fs.token,
+                                      url_open=url_open, log=log)
+            except HTTPError:
+                log.warning(f"Unable to retrieve {filename}")
+                log.warning("This is a bug with Figshare API")
         else:
             log.info("File exists! Not overwriting!")
 
