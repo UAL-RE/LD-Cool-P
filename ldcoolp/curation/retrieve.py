@@ -79,7 +79,8 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
     log.info(f"Total number of files: {n_files}")
 
     for n, file_dict in zip(range(n_files), file_list):
-        log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']}")
+        log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']} ({file_dict['size']})")
+        log.info(f"URL: {file_dict['download_url']}")
         filename = os.path.join(dir_path, file_dict['name'])
         if not exists(filename):
             private_file_retrieve(file_dict['download_url'], filename=filename,
