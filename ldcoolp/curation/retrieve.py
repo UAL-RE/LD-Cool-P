@@ -33,6 +33,10 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False,
             opener = build_opener()
             opener.addheaders = [('Authorization', f'token {token}')]
             install_opener(opener)
+        else:
+            opener = build_opener()
+            install_opener(opener)
+
         try:
             urlretrieve(url, filename)
         except HTTPError as error:
@@ -98,8 +102,14 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                                       filename=filename, token=fs.token,
                                       url_open=url_open, log=log)
             except HTTPError:
-                log.warning(f"Unable to retrieve {filename}")
-                log.warning("This is a bug with Figshare API")
+                log.info(f"File might be public: {filename}")
+                log.info("Attempting retrieval without token")
+                try:
+                    private_file_retrieve(file_dict['download_url'],
+                                          filename=filename,
+                                          url_open=url_open, log=log)
+                except HTTPError:
+                    log.warning(f"Failed to retrieve: {filename}")
         else:
             log.info("File exists! Not overwriting!")
 
