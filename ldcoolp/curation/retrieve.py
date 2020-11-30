@@ -103,7 +103,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                                       url_open=url_open, log=log)
                 log.info("Success!")
             except HTTPError:
-                log.info(f"File might be public: {filename}")
+                log.info(f"URL might be public: {file_dict['download_url']}")
                 log.info("Attempting retrieval without token")
                 try:
                     private_file_retrieve(file_dict['download_url'],
