@@ -101,6 +101,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                 private_file_retrieve(file_dict['download_url'],
                                       filename=filename, token=fs.token,
                                       url_open=url_open, log=log)
+                log.info("Success!")
             except HTTPError:
                 log.info(f"File might be public: {filename}")
                 log.info("Attempting retrieval without token")
@@ -108,6 +109,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                     private_file_retrieve(file_dict['download_url'],
                                           filename=filename,
                                           url_open=url_open, log=log)
+                    log.info("Success!")
                 except HTTPError:
                     log.warning(f"Failed to retrieve: {filename}")
         else:
