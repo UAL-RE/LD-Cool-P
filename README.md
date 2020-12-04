@@ -1,6 +1,8 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
 [![Build Status](https://travis-ci.com/ualibraries/LD_Cool_P.svg?branch=feature/travis_ci)](https://travis-ci.com/ualibraries/LD_Cool_P)
+
+[![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg?branch=feature/gh_actions_build_test)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
 ![GitHub top language](https://img.shields.io/github/languages/top/ualibraries/LD_Cool_P)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/ualibraries/LD_Cool_P)
 ![GitHub](https://img.shields.io/github/license/ualibraries/LD_Cool_P?color=blue)
@@ -13,6 +15,7 @@
     - [Testing Installation](#testing-installation)
 - [Execution](#execution)
 - [Versioning](#versioning)
+- [Continuous Integration](#continuous-integration)
 - [Changelog](#changelog)
 - [Authors](#authors)
 - [License](#license)
@@ -220,6 +223,19 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
 following a `git tag` version.
+
+## Continuous Integration
+
+Initially we started using [Travis CI](https://travis-ci.com); however, due
+to the change in
+[pricing for open-source repositories](https://travis-ci.community/t/org-com-migration-unexpectedly-comes-with-a-plan-change-for-oss-what-exactly-is-the-new-deal/10567),
+we decided to use
+[GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions).
+Currently, there are two GitHub Action workflows:
+1. A "Create release" workflow, [`create-release.yml`](.github/workflows/create-release.yml)
+   for new releases when a tag is pushed
+2. A "Python package" workflow, [`python-package.yml`](.github/workflows/python-package.yml)
+   for builds and tests
 
 ## Changelog
 
