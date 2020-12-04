@@ -6,24 +6,22 @@ labels: enhancement
 assignees: ''
 
 ---
+<!--Fields in **bold** are REQUIRED, fields in *italics* are OPTIONAL -->
 
-**Summary (REQUIRED)**
-<!--A clear and concise description of what the enhancement is and its scope.
-Consider including the expected behavior of new features here.-->
+**Summary**
+<!--A clear and concise description of what the enhancement is and its scope,
+including what motivated it.-->
 
-**Motivation (REQUIRED)**
-<!--Describe why the enhancement is needed.-->
+**Objectives**
+<!--List the indicators of success including the expected behavior.-->
 
-**Objectives (REQUIRED)**
-<!--List the indicators of success.-->
-
-**Proposal (REQUIRED)**
+**Proposal**
 <!--An actual plan of action of how the enhancement will be implemented.-->
 
-**Testing notes (Optional)**
+*Testing notes*
 <!--This is strongly suggested for new features.-->
 
-**Additional notes (Optional)**
+*Additional notes*
 <!--Add any notes about the enhancement here.-->
 
 <!--Branch info-->
