@@ -6,7 +6,7 @@ from glob import glob
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
-from html2text import html2text
+import html2text
 
 # Logging
 from ldcoolp.logger import log_stdout
@@ -17,6 +17,11 @@ from ....admin import permissions, move
 from ....config import config_default_dict
 
 from ...api.qualtrics import Qualtrics
+
+# Start html parser for retrieve_article_metadata() method
+parser = html2text.HTML2Text()
+parser.body_width = 0  #  No line wrapping
+parser.unicode_snob = True  # Enforce unicode
 
 
 class ReadmeClass:
@@ -253,7 +258,7 @@ class ReadmeClass:
         # Retrieve description (single string), strip vertical white space
         description = self.article_dict['item']['description'].replace('<div>', '')
         description = description.replace('</div>', '')
-        readme_dict['description'] = html2text(description)
+        readme_dict['description'] = parser.handle(description)
         # Strip extra white space from html2text
         if readme_dict['description'][-2:] == "\n\n":
             readme_dict['description'] = readme_dict['description'][:-2]
