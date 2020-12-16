@@ -25,4 +25,4 @@ including what motivated it.-->
 <!--Add any notes about the enhancement here.-->
 
 <!--Branch info-->
-**Implemented in**: TBD <!--`feature/feature_name` or `hotfix/v?.?.?` #(PR No) --> 
+**Implemented in**: TBD <!--`feature/feature_name` #(PR No) --> 
