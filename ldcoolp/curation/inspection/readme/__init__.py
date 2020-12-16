@@ -95,25 +95,26 @@ class ReadmeClass:
         else:
             self.log = log
 
-        curation_dict = self.config_dict['curation']
-        self.root_directory_main = curation_dict[curation_dict['parent_dir']]
+        self.curation_dict = self.config_dict['curation']
+        self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
         if not update:
             # Use 1.ToDo
-            self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
+            self.root_directory = join(self.root_directory_main,
+                                       self.curation_dict['folder_todo'])
         else:
             # Use 2.UnderReview. Need to use admin.move module to find current path
-            mc = move.MoveClass(curation_dict=curation_dict)
+            mc = move.MoveClass(curation_dict=self.curation_dict)
             current_stage = mc.get_source_stage(self.folderName)
             self.root_directory = join(self.root_directory_main, current_stage)
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
-        self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
+        self.data_path = join(self.folder_path, self.curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
-                                       curation_dict['folder_data'])  # ORIGINAL_DATA
+                                       self.curation_dict['folder_data'])  # ORIGINAL_DATA
 
         # README template
-        self.readme_template = curation_dict['readme_template']
+        self.readme_template = self.curation_dict['readme_template']
 
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
@@ -253,7 +254,16 @@ class ReadmeClass:
         # Retrieve description (single string), strip vertical white space
         description = self.article_dict['item']['description'].replace('<div>', '')
         description = description.replace('</div>', '')
-        readme_dict['description'] = html2text(description)
+
+        # Strip ReDATA footer
+        if self.curation_dict['footer'] in description:
+            self.log.info("Stripping footer")
+            strip_text = description.partition(self.curation_dict['footer'])
+            readme_dict['description'] = html2text(strip_text[0])
+        else:
+            self.log.info("No footer to strip")
+            readme_dict['description'] = html2text(description)
+
         # Strip extra white space from html2text
         if readme_dict['description'][-2:] == "\n\n":
             readme_dict['description'] = readme_dict['description'][:-2]
