@@ -259,9 +259,11 @@ class ReadmeClass:
         description = self.article_dict['item']['description'].replace('<div>', '')
         description = description.replace('</div>', '')
         readme_dict['description'] = parser.handle(description)
-        # Strip extra white space from html2text
-        if readme_dict['description'][-2:] == "\n\n":
-            readme_dict['description'] = readme_dict['description'][:-2]
+
+        # Clean whitespace around readme_dict keys
+        for k, v in readme_dict.items():
+            if isinstance(v, str):
+                readme_dict[k] = readme_dict[k].strip()
 
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
@@ -275,6 +277,10 @@ class ReadmeClass:
 
         readme_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
 
+        # Clean whitespace around readme_dict keys
+        for k, v in readme_dict.items():
+            if isinstance(v, str):
+                readme_dict[k] = readme_dict[k].strip()
         return readme_dict
 
     def construct(self):
