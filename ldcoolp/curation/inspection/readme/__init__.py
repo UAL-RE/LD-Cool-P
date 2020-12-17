@@ -20,6 +20,7 @@ from ...api.qualtrics import Qualtrics
 
 # Start html parser for retrieve_article_metadata() method
 parser = html2text.HTML2Text()
+parser.body_width = 0  #  No line wrapping
 parser.unicode_snob = True  # Enforce unicode
 
 
