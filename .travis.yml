@@ -1,0 +1,25 @@
+os: linux
+dist: bionic
+language: python
+jobs:
+  include:
+    - name: Python 3.7 on Bionic
+      python: 3.7
+
+# command to install dependencies
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install -U pytest pytest-cov
+
+install:
+  - python setup.py develop
+
+before_script:
+  - pwd
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+
+script:
+  - echo $BRANCH
+  - pytest --cov-report term-missing --cov-config=.coveragerc --cov=ldcoolp tests
+  - export persist_path=$(pwd)

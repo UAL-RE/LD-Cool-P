@@ -49,7 +49,6 @@ DOI:
 ## Files and Folders
 
 {{ qualtrics_dict.files }}
-{% endif %}
 {% if ( (qualtrics_dict.materials != 'nan') or
         (qualtrics_dict.contrib != 'nan') or
         (qualtrics_dict.notes != 'nan') or
@@ -58,18 +57,19 @@ DOI:
 
 
 {% endif %}
+{% endif %}
 {% if qualtrics_dict.materials != 'nan' %}
 ---------------------------------------------
 ## Materials & Methods
 
 {{ qualtrics_dict.materials }}
-{% endif %}
 {% if ( (qualtrics_dict.contrib != 'nan') or
         (qualtrics_dict.notes != 'nan') or
         (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
 {% endif %}
 {% if qualtrics_dict.contrib != 'nan' %}
 ---------------------------------------------
@@ -80,12 +80,12 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 {% for contrib in qualtrics_dict.contrib %}
   - {{ contrib }}
 {% endfor -%}
-{% endif %}
 {% if ( (qualtrics_dict.notes != 'nan') or
         (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
 {% endif %}
 {% if qualtrics_dict.notes != 'nan' or figshare_dict.references != [] %}
 ---------------------------------------------

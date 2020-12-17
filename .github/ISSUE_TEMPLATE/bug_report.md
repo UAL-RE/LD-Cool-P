@@ -2,7 +2,7 @@
 name: Bug report
 about: Provide specifics about a bug and provide outputted content with any errors
 title: 'Bug: ____(provide a descriptive name)'
-labels: bug
+labels: bug, p1
 assignees: ''
 
 ---
