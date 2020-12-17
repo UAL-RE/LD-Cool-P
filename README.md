@@ -1,8 +1,6 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
-[![Build Status](https://travis-ci.com/ualibraries/LD_Cool_P.svg?branch=feature/travis_ci)](https://travis-ci.com/ualibraries/LD_Cool_P)
-
-[![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg?branch=feature/gh_actions_build_test)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
+[![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
 ![GitHub top language](https://img.shields.io/github/languages/top/ualibraries/LD_Cool_P)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/ualibraries/LD_Cool_P)
 ![GitHub](https://img.shields.io/github/license/ualibraries/LD_Cool_P?color=blue)
@@ -118,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.16.4`.
+You should see that the version is `0.17.0`.
 
 ### Configuration Settings
 
@@ -241,6 +239,14 @@ Currently, there are two GitHub Action workflows:
 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
+
+v0.17.0:
+ * Include Travis CI configuration (disabled see #136) #129
+ * Include GitHub Actions for Python CI build and testing #136
+ * Add script for curation folder rename #120
+ * Fix `jinja2` bug with whitespace in README #117
+ * Project management with priority labels #134
+ * Minor adjustments to issue templates #134
 
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131
