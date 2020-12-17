@@ -1,6 +1,6 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
-[![Build Status](https://travis-ci.com/ualibraries/LD_Cool_P.svg?branch=feature/travis_ci)](https://travis-ci.com/ualibraries/LD_Cool_P)
+[![Build Status](https://travis-ci.com/ualibraries/LD_Cool_P.svg?branch=main)](https://travis-ci.com/ualibraries/LD_Cool_P)
 
 [![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg?branch=feature/gh_actions_build_test)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
 ![GitHub top language](https://img.shields.io/github/languages/top/ualibraries/LD_Cool_P)
