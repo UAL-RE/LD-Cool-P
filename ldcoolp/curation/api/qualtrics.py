@@ -423,10 +423,7 @@ class Qualtrics:
                 # Markdown files, materials
                 for field in ['files', 'materials']:
                     if qualtrics_dict[field] != 'nan':
-                        qualtrics_dict[field] = html2text(qualtrics_dict[field])
-                    # Strip extra white space from html2text
-                    if qualtrics_dict[field][-2:] == "\n\n":
-                        qualtrics_dict[field] = qualtrics_dict[field][:-2]
+                        qualtrics_dict[field] = qualtrics_dict[field]
 
                 return qualtrics_dict
             except ValueError:
