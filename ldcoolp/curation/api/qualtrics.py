@@ -5,8 +5,8 @@ from os import remove
 # base64 encoding/decoding
 import base64
 
-# Text handling for README
-from html2text import html2text
+# Text handling for README - not using starting in v0.17.1
+# from html2text import html2text
 
 # CSV handling
 import zipfile
