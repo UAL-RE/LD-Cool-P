@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.0`.
+You should see that the version is `0.17.1`.
 
 ### Configuration Settings
 
@@ -239,6 +239,9 @@ Currently, there are two GitHub Action workflows:
 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
+
+v0.17.1:
+ * Fix involving `html2text` (stop using) for Qualtrics README form's files and materials section #145
 
 v0.17.0:
  * Include Travis CI configuration (disabled see #136) #129

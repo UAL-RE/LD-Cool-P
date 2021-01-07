@@ -5,8 +5,8 @@ from os import remove
 # base64 encoding/decoding
 import base64
 
-# Text handling for README
-from html2text import html2text
+# Text handling for README - not using starting in v0.17.1
+# from html2text import html2text
 
 # CSV handling
 import zipfile
@@ -423,10 +423,7 @@ class Qualtrics:
                 # Markdown files, materials
                 for field in ['files', 'materials']:
                     if qualtrics_dict[field] != 'nan':
-                        qualtrics_dict[field] = html2text(qualtrics_dict[field])
-                    # Strip extra white space from html2text
-                    if qualtrics_dict[field][-2:] == "\n\n":
-                        qualtrics_dict[field] = qualtrics_dict[field][:-2]
+                        qualtrics_dict[field] = qualtrics_dict[field]
 
                 return qualtrics_dict
             except ValueError:
