@@ -423,7 +423,9 @@ class Qualtrics:
                 # Markdown files, materials
                 for field in ['files', 'materials']:
                     if qualtrics_dict[field] != 'nan':
-                        qualtrics_dict[field] = qualtrics_dict[field]
+                        if qualtrics_dict[field][0] == "'":
+                            qualtrics_dict[field] = qualtrics_dict[field][1:]
+                            self.log.debug(f"Removing extra single quote in {field} entry")
 
                 return qualtrics_dict
             except ValueError:
