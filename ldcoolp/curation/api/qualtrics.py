@@ -15,7 +15,7 @@ import pandas as pd
 # URL handling
 import requests
 import json
-from urllib.parse import quote, urlencode
+from urllib.parse import quote
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
@@ -311,8 +311,10 @@ class Qualtrics:
                           'curation_id': dn_dict['curation_id'],
                           'Q_PopulateResponse': json_txt}
 
+        q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+
         full_url = f"{self.dict['generate_url']}{self.survey_id}?" + \
-                   urlencode(query_str_dict, safe=url_safe, quote_via=quote)
+                   f"Q_EED={q_eed}"
 
         return full_url
 
