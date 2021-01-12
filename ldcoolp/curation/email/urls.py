@@ -1,6 +1,9 @@
 import requests
 from requests.exceptions import HTTPError
 
+from urllib.parse import quote, urlencode
+from ..api.qualtrics import url_safe
+
 from ...logger import log_stdout
 
 
@@ -19,11 +22,14 @@ def tiny_url(url, alias=None, log=None):
         log = log_stdout()
 
     endpoint = "http://tinyurl.com/api-create.php"
-    params = {'url': url}
-    if alias is not None:
-        params['alias'] = alias
+    get_url = f"{endpoint}?" + \
+              urlencode({'url': url}, safe=url_safe, quote_via=quote)
 
-    response = requests.get(endpoint, params=params)
+    params = dict()
+    if alias is not None:
+        params = {'alias': alias}
+
+    response = requests.get(get_url, params=params)
 
     try:
         response.raise_for_status()
