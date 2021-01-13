@@ -7,13 +7,13 @@ from ..api.qualtrics import url_safe
 from ...logger import log_stdout
 
 
-def tiny_url(url, alias=None, log=None):
+def tiny_url(url: str, alias=None, log=None) -> str:
     """
     Purpose:
       Generate a TinyURL
 
-    :param url: HTTP URL
-    :param alias: Alias if desired
+    :param url: str. HTTP URL
+    :param alias: str. Alias if desired
     :param log: LogClass or logger object
 
     :return: response_data: str containing the shortened TinyURL
