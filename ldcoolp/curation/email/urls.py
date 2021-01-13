@@ -22,8 +22,8 @@ def tiny_url(url, alias=None, log=None):
         log = log_stdout()
 
     endpoint = "http://tinyurl.com/api-create.php"
-    get_url = f"{endpoint}?" + \
-              urlencode({'url': url}, safe=url_safe, quote_via=quote)
+    encoded_url = urlencode({'url': url}, safe=url_safe, quote_via=quote)
+    get_url = f"{endpoint}?{encoded_url}"
 
     params = dict()
     if alias is not None:
@@ -31,12 +31,20 @@ def tiny_url(url, alias=None, log=None):
 
     expected_url = f"https://tinyurl.com/{alias}"
 
-    # Note that if the input URL changes, the code currently does not
-    # recognize that.
     expected_response = requests.get(expected_url)
     if expected_response.status_code == 200:
         log.info(f"TinyURL link already exists!")
-        response_data = expected_url
+
+        expected_request_url = f"{url}&alias={alias}"
+        if expected_response.url != expected_request_url:
+            log.warning(f"Input URL changed!")
+            log.debug(f"Previous URL: {expected_response.url}")
+            log.debug(f"New URL: {expected_request_url}")
+            log.warning(f"Creating new TinyURL")
+            response = requests.get(get_url)
+            response_data = response.text
+        else:
+            response_data = expected_url
     else:
         log.info(f"TinyURL link does not exist. Creating!")
         # GET still works if the TinyURL alias exists, but points to the same URL
