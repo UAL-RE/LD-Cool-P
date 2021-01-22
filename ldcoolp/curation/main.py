@@ -57,10 +57,15 @@ class PrerequisiteWorkflow:
         self.fs_admin = FigshareInstituteAdmin(figshare_dict=self.figshare_dict, log=self.log)
 
         self.dn = DepositorName(self.article_id, self.fs_admin, log=self.log)
-        self.data_directory = join(self.dn.folderName, self.curation_dict['folder_data'])
 
+        # Sub-folders for data curation workflow
+        self.data_directory = join(self.dn.folderName,
+                                   self.curation_dict['folder_data'])
         self.copy_data_directory = join(self.dn.folderName,
                                         self.curation_dict['folder_copy_data'])
+        self.metadata_directory = join(self.dn.folderName,
+                                       self.curation_dict['folder_metadata'])
+
         self.url_open = url_open
 
         # Check if dataset has been retrieved
@@ -81,17 +86,15 @@ class PrerequisiteWorkflow:
 
     def make_folders(self):
         # Create and set permissions to rwx
-        full_data_path = join(self.root_directory, self.data_directory)
-        if not exists(full_data_path):
-            self.log.info(f"Creating folder : {full_data_path}")
-            makedirs(full_data_path)
-            chmod(full_data_path, 0o777)
-
-        full_copy_data_path = join(self.root_directory, self.copy_data_directory)
-        if not exists(full_copy_data_path):
-            self.log.info(f"Creating folder : {full_copy_data_path}")
-            makedirs(full_copy_data_path)
-            chmod(full_copy_data_path, 0o777)
+        sub_dirs = [self.data_directory,
+                    self.copy_data_directory,
+                    self.metadata_directory]
+        for sub_dir in sub_dirs:
+            full_data_path = join(self.root_directory, sub_dir)
+            if not exists(full_data_path):
+                self.log.info(f"Creating folder : {full_data_path}")
+                makedirs(full_data_path)
+                chmod(full_data_path, 0o777)
 
     def download_data(self):
         if self.new_set:
