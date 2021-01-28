@@ -101,6 +101,7 @@ class PrerequisiteWorkflow:
             download_files(self.article_id, self.fs,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
+                           metadata_directory=self.metadata_directory,
                            log=self.log, url_open=self.url_open)
 
     def download_report(self):
