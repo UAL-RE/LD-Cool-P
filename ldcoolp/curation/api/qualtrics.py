@@ -405,7 +405,7 @@ class Qualtrics:
                 raise ValueError
 
     def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
-        """Opens web browser to navigate to a page with Deposit Agreement Form"""
+        """Retrieve response to Qualtrics README form"""
 
         if isinstance(ResponseId, type(None)):
             try:
