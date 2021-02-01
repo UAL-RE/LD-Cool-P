@@ -13,6 +13,9 @@ from ldcoolp.curation.reports import review_report
 from ldcoolp.curation.depositor_name import DepositorName
 from ldcoolp.curation.inspection.readme import ReadmeClass
 
+# Metadata
+from .metadata import save_metadata
+
 # API
 from figshare.figshare import Figshare
 from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
@@ -77,6 +80,7 @@ class PrerequisiteWorkflow:
             self.new_set = True
             # Create folders
             self.make_folders()
+            self.write_curation_metadata()
 
     def reserve_doi(self):
         # Mint DOI if this has not been done
@@ -95,6 +99,14 @@ class PrerequisiteWorkflow:
                 self.log.info(f"Creating folder : {full_data_path}")
                 makedirs(full_data_path)
                 chmod(full_data_path, 0o777)
+
+    def write_curation_metadata(self):
+        """Write metadata from Figshare curation response"""
+        out_file_prefix = f"curation_original_{self.article_id}"
+        save_metadata(self.dn.curation_dict, out_file_prefix,
+                      root_directory=self.root_directory,
+                      metadata_directory=self.metadata_directory,
+                      save_csv=False, log=self.log)
 
     def download_data(self):
         if self.new_set:
