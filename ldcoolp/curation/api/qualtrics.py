@@ -378,17 +378,12 @@ class Qualtrics:
             self.log.warn("article_id and curation_id not in qualtrics survey !")
             response_df = pd.DataFrame()
 
-        if not response_df.empty:
-            self.log.info("Unique match based on article_id or curation_id !")
-            if response_df.shape[0] != 1:
-                self.log.warn("More than one entries found !!!")
-
-            self.pandas_write_buffer(response_df[readme_cols_order])
-
         if response_df.empty:
             self.log.warn("Empty DataFrame")
             raise ValueError
         else:
+            self.log.info("Unique match based on article_id or curation_id !")
+            self.pandas_write_buffer(response_df[readme_cols_order])
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
                 self.log.info("Only one entry found!")
@@ -397,9 +392,6 @@ class Qualtrics:
                 return response_dict['ResponseId'], response_df
             else:
                 self.log.warn("Multiple entries found")
-                response_df = pd.DataFrame()
-                self.pandas_write_buffer(response_df[readme_cols_order])
-
                 raise ValueError
 
     def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
