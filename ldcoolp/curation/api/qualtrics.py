@@ -397,7 +397,6 @@ class Qualtrics:
                 return response_dict['ResponseId'], response_df
             else:
                 self.log.warn("Multiple entries found")
-                response_df = pd.DataFrame()
                 self.pandas_write_buffer(response_df[readme_cols_order])
 
                 raise ValueError
