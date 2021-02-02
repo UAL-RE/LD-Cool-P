@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.2`.
+You should see that the version is `0.17.3`.
 
 ### Configuration Settings
 
@@ -249,7 +249,8 @@ v0.17.0 - v0.17.2:
  * Minor adjustments to issue templates #134
  * Fix involving `html2text` (stop using) for Qualtrics README form's files and materials section #145
  * Fix to handle extraneous single quote from Qualtrics API data #147
-
+ * Minor: Fix Qualtrics bug with multiple responses #150
+ 
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131
  * Handle public file(s) in curation step #32, #127
