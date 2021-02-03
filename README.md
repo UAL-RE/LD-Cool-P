@@ -65,7 +65,7 @@ You will need the following to have a working copy of this software. See
 2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
 3. [`pandas`](https://pandas.pydata.org/) ([1.2.1](https://pandas.pydata.org/pandas-docs/version/1.2.1/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
-5. [`numpy`](https://numpy.org/) ([1.17.4](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4))
+5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html)).17.4))
 6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([2.11.2](https://jinja.palletsprojects.com/en/2.11.x/))
 7. [`tabulate`](https://github.com/astanin/python-tabulate) (0.8.3)
 8. [`html2text`](https://pypi.org/project/html2text/) ([2020.1.16](https://pypi.org/project/html2text/2020.1.16/))
