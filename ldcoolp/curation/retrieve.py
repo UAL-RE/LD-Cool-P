@@ -96,7 +96,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
 
     log.info(f"Total number of files: {n_files}")
 
-    out_file_prefix = "file_list_original"
+    out_file_prefix = f"file_list_original_{article_id}"
     save_metadata(file_list, out_file_prefix, root_directory=root_directory,
                   metadata_directory=metadata_directory, save_csv=True,
                   log=log)
