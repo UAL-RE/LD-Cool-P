@@ -15,7 +15,7 @@ import pandas as pd
 # URL handling
 import requests
 import json
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
@@ -311,10 +311,10 @@ class Qualtrics:
                           'curation_id': dn_dict['curation_id'],
                           'Q_PopulateResponse': json_txt}
 
-        q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+        # q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
 
         full_url = f"{self.dict['generate_url']}{self.survey_id}?" + \
-                   f"Q_EED={q_eed}"
+                   urlencode(query_str_dict, safe=url_safe, quote_via=quote)
 
         return full_url
 
@@ -397,7 +397,7 @@ class Qualtrics:
                 raise ValueError
 
     def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
-        """Opens web browser to navigate to a page with Deposit Agreement Form"""
+        """Retrieve response to Qualtrics README form"""
 
         if isinstance(ResponseId, type(None)):
             try:
