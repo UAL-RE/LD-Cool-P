@@ -272,7 +272,7 @@ class Qualtrics:
                 self.log.info("Only one entry found!")
                 self.log.info(f"Survey completed on {response_dict['Date Completed']}")
                 self.log.info(f" ... for {response_dict['Q7']}")
-                return response_dict['ResponseId']
+                return response_dict['ResponseId'], response_dict['SurveyID']
             else:
                 self.log.warn("Multiple entries found")
 
@@ -285,15 +285,19 @@ class Qualtrics:
 
         if isinstance(ResponseId, type(None)):
             try:
-                ResponseId = self.find_deposit_agreement(dn_dict)
+                ResponseId, SurveyId = self.find_deposit_agreement(dn_dict)
                 self.log.info(f"Qualtrics ResponseID : {ResponseId}")
+                self.log.info(f"Qualtrics SurveyID : {SurveyId}")
             except ValueError:
-                self.log.warn("Error with retrieving ResponseId")
+                self.log.warn("Error with retrieving ResponseId and SurveyId")
                 self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
                 ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
                 self.log.info(f"RESPONSE: {ResponseId}")
+                self.log.info("PROMPT: If you wish, you can manually enter SurveyId to retrieve.")
+                SurveyId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                self.log.info(f"RESPONSE: {SurveyId}")
 
-                if ResponseId == '':
+                if ResponseId == '' or SurveyId == '':
                     custom_url = self.generate_url(dn_dict)
                     self.log.info("CUSTOM URL BELOW : ")
                     self.log.info(custom_url)
@@ -307,7 +311,7 @@ class Qualtrics:
             else:
                 self.log.info("CLI: Not opening a browser!")
 
-            full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={self.survey_id}"
+            full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={SurveyId}"
 
             if browser:
                 webbrowser.open(full_url, new=2)
