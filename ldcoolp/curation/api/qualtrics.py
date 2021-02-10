@@ -1,6 +1,7 @@
 from os.path import join
 import io
 from os import remove
+from functools import reduce
 
 # base64 encoding/decoding
 import base64
@@ -187,6 +188,27 @@ class Qualtrics:
 
         return response_df
 
+    def merge_survey(self) -> pd.DataFrame:
+        """
+        Constructed a merge pandas dataframe of all Qualtrics survey
+
+        :return: Merged pandas DataFrame
+        """
+
+        df_list = []
+        for survey_id in self.survey_id:
+            self.log.debug(f"Reading: {survey_id}")
+            temp_df = self.get_survey_responses(survey_id)
+            df_list.append(temp_df[2:])
+
+        df_col = reduce(pd.Index.union, (df.columns for df in df_list))
+
+        merged_df = pd.DataFrame()
+        for df in df_list:
+            temp_df = df.reindex(columns=df_col, fill_value=0)
+            merged_df = merged_df.append([temp_df], ignore_index=True)
+        return merged_df
+
     def pandas_write_buffer(self, df):
         """Write pandas content via to_markdown() to logfile"""
 
@@ -201,7 +223,7 @@ class Qualtrics:
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
 
-        qualtrics_df = self.get_survey_responses(self.survey_id)
+        merged_df = self.merge_survey()
 
         # First perform search via article_id or curation_id
         self.log.info("Attempting to identify using article_id or curation_id ...")
@@ -209,8 +231,8 @@ class Qualtrics:
         curation_id = str(dn_dict['curation_id'])
 
         try:
-            response_df = qualtrics_df[(qualtrics_df['article_id'] == article_id) |
-                                       (qualtrics_df['curation_id'] == curation_id)]
+            response_df = merged_df[(merged_df['article_id'] == article_id) |
+                                    (merged_df['curation_id'] == curation_id)]
         except KeyError:
             self.log.warn("article_id and curation_id not in qualtrics survey !")
             response_df = pd.DataFrame()
@@ -225,9 +247,9 @@ class Qualtrics:
             self.log.info("Unable to identify based on article_id or curation_id ...")
             self.log.info("Attempting to identify with name ...")
 
-            response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
-                                       (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName']) |
-                                       (qualtrics_df['Q4_2'] == dn_dict['depositor_email'])]
+            response_df = merged_df[(merged_df['Q4_1'] == dn_dict['fullName']) |
+                                    (merged_df['Q4_1'] == dn_dict['simplify_fullName']) |
+                                    (merged_df['Q4_2'] == dn_dict['depositor_email'])]
 
             # Identify corresponding author cases if different from depositor name
             if not dn_dict['self_deposit'] and not response_df.empty:
