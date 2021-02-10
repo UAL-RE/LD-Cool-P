@@ -323,8 +323,28 @@ class Qualtrics:
         """
 
         populate_response_dict = dict()
-        populate_response_dict['QID4'] = {"1": dn_dict['fullName'],
-                                          "2": dn_dict['depositor_email']}
+
+        use_survey_id = self.survey_id[0]
+        if 'survey_2_email' in self.dict:
+            # Specific for Space Grant. Q4_1,2,3 is populated through embedded
+            # data so not needed here
+            if dn_dict['depositor_email'] == self.dict['survey_2_email']:
+                self.log.info("Using different deposit agreement")
+                use_survey_id = self.survey_id[1]
+
+                authors = dn_dict['authors']
+                populate_response_dict['QID4'] = {"1": authors[0]}
+                populate_response_dict['QID11'] = {"1": authors[1]}
+            else:
+                self.log.info("Using Main survey_id")
+
+                use_survey_id = self.survey_id[0]
+
+                populate_response_dict['QID4'] = {
+                    "1": dn_dict['fullName'],
+                    "2": dn_dict['depositor_email']
+                }
+
         populate_response_dict['QID7'] = dn_dict['title']
 
         json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
@@ -335,7 +355,7 @@ class Qualtrics:
 
         # q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
 
-        full_url = f"{self.dict['generate_url']}{self.survey_id}?" + \
+        full_url = f"{self.dict['generate_url']}{use_survey_id}?" + \
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
 
         return full_url
