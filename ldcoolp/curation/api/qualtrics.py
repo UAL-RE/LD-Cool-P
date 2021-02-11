@@ -329,25 +329,29 @@ class Qualtrics:
         populate_response_dict = dict()
 
         use_survey_id = self.survey_id[0]
+        use_survey_shortname = 'Main'  # Default settings
+        if 'survey_shortname' in self.dict:
+            use_survey_shortname = self.dict['survey_shortname'][0]
+
         if 'survey_2_email' in self.dict:
             # Specific for Space Grant. Q4_1,2,3 is populated through embedded
             # data so not needed here
             if dn_dict['depositor_email'] == self.dict['survey_2_email']:
-                self.log.info("Using different deposit agreement")
                 use_survey_id = self.survey_id[1]
+                use_survey_shortname = self.dict['survey_shortname'][1]
 
                 authors = dn_dict['authors']
                 populate_response_dict['QID4'] = {"1": authors[0]}
                 populate_response_dict['QID11'] = {"1": authors[1]}
             else:
-                self.log.info("Using Main survey_id")
-
                 use_survey_id = self.survey_id[0]
 
                 populate_response_dict['QID4'] = {
                     "1": dn_dict['fullName'],
                     "2": dn_dict['depositor_email']
                 }
+
+        self.log.info(f"Using {use_survey_shortname} deposit agreement")
 
         populate_response_dict['QID7'] = dn_dict['title']
 
