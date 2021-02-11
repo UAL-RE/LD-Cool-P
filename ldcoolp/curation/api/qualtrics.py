@@ -36,9 +36,9 @@ from ...config import config_default_dict
 url_safe = '/ {},:"?=@%'
 
 # Column order for markdown print-out of Qualtrics table
-cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
+cols_order = ['ResponseId', 'SurveyID', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
 
-readme_cols_order = ['ResponseId', 'article_id', 'curation_id']
+readme_cols_order = ['ResponseId', 'SurveyID', 'article_id', 'curation_id']
 
 readme_custom_content = ['cite', 'summary', 'files', 'materials', 'contrib', 'notes']
 
