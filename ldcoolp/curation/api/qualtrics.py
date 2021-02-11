@@ -280,6 +280,9 @@ class Qualtrics:
                 self.log.info("Only one entry found!")
                 self.log.info(f"Survey completed on {response_dict['Date Completed']}")
                 self.log.info(f" ... for {response_dict['Q7']}")
+                survey_shortname = \
+                    self.lookup_survey_shortname(response_dict['SurveyID'])
+                self.log.info(f"Survey name: {survey_shortname}")
                 return response_dict['ResponseId'], response_dict['SurveyID']
             else:
                 self.log.warn("Multiple entries found")
