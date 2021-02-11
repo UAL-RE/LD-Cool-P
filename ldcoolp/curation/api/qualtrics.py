@@ -220,6 +220,14 @@ class Qualtrics:
                 print(buffer.getvalue(), file=f)
         buffer.close()
 
+    def lookup_survey_shortname(self, lookup_survey_id):
+        """Return survey shortname"""
+        dict0 = dict(zip(self.survey_id, self.dict['survey_shortname']))
+        try:
+            return dict0[lookup_survey_id]
+        except KeyError:
+            self.log.warn("survey_id not found among list")
+
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
 
@@ -329,16 +337,11 @@ class Qualtrics:
         populate_response_dict = dict()
 
         use_survey_id = self.survey_id[0]
-        use_survey_shortname = 'Main'  # Default settings
-        if 'survey_shortname' in self.dict:
-            use_survey_shortname = self.dict['survey_shortname'][0]
-
         if 'survey_2_email' in self.dict:
             # Specific for Space Grant. Q4_1,2,3 is populated through embedded
             # data so not needed here
             if dn_dict['depositor_email'] == self.dict['survey_2_email']:
                 use_survey_id = self.survey_id[1]
-                use_survey_shortname = self.dict['survey_shortname'][1]
 
                 authors = dn_dict['authors']
                 populate_response_dict['QID4'] = {"1": authors[0]}
@@ -351,6 +354,7 @@ class Qualtrics:
                     "2": dn_dict['depositor_email']
                 }
 
+        use_survey_shortname = self.lookup_survey_shortname(use_survey_id)
         self.log.info(f"Using {use_survey_shortname} deposit agreement")
 
         populate_response_dict['QID7'] = dn_dict['title']
