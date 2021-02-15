@@ -278,6 +278,7 @@ class Qualtrics:
         else:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
+                self.pandas_write_buffer(response_df[cols_order])
                 self.log.info("Only one entry found!")
                 self.log.info(f"Survey completed on {response_dict['Date Completed']}")
                 self.log.info(f" ... for {response_dict['Q7']}")
