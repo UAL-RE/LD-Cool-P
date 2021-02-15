@@ -342,6 +342,12 @@ class Qualtrics:
 
         populate_response_dict = dict()  # init
 
+        def _std_populate_response_dict():
+            populate_response_dict['QID4'] = {
+                "1": dn_dict['fullName'],
+                "2": dn_dict['depositor_email']
+            }
+
         use_survey_id = self.survey_id[0]
         if 'survey_2_email' in self.dict:
             # Specific for Space Grant. Q4_1,2,3 is populated through embedded
@@ -355,12 +361,11 @@ class Qualtrics:
             else:
                 use_survey_id = self.survey_id[0]
 
-                populate_response_dict['QID4'] = {
-                    "1": dn_dict['fullName'],
-                    "2": dn_dict['depositor_email']
-                }
+                _std_populate_response_dict()
         else:
             self.log.debug("No survey_2_email settings")
+
+            _std_populate_response_dict()
 
         return use_survey_id, populate_response_dict
 
