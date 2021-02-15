@@ -1,3 +1,4 @@
+from typing import Tuple
 from os.path import join
 import io
 from os import remove
@@ -330,14 +331,16 @@ class Qualtrics:
                 self.log.info("Here's the URL : ")
                 self.log.info(full_url)
 
-    def generate_url(self, dn_dict):
+    def survey_specific(self, dn_dict: dict) -> Tuple[str, dict]:
         """
-        Purpose:
-          Generate URL with Q_PopulateResponse, and article and curation ID
-          query strings based on Figshare metadata
+        Handles survey specifics for Qualtrics Deposit Agreement form
+        Used by generate_url method
+
+        :param dn_dict: DepositorName dictionary
+        :return: survey_id and dict for Qualtrics links
         """
 
-        populate_response_dict = dict()
+        populate_response_dict = dict()  # init
 
         use_survey_id = self.survey_id[0]
         if 'survey_2_email' in self.dict:
@@ -358,6 +361,17 @@ class Qualtrics:
                 }
         else:
             self.log.debug("No survey_2_email settings")
+
+        return use_survey_id, populate_response_dict
+
+    def generate_url(self, dn_dict):
+        """
+        Purpose:
+          Generate URL with Q_PopulateResponse, and article and curation ID
+          query strings based on Figshare metadata
+        """
+
+        use_survey_id, populate_response_dict = self.survey_specific(dn_dict)
 
         use_survey_shortname = self.lookup_survey_shortname(use_survey_id)
         self.log.info(f"Using {use_survey_shortname} deposit agreement")
