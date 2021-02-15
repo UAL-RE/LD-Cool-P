@@ -356,6 +356,8 @@ class Qualtrics:
                     "1": dn_dict['fullName'],
                     "2": dn_dict['depositor_email']
                 }
+        else:
+            self.log.debug("No survey_2_email settings")
 
         use_survey_shortname = self.lookup_survey_shortname(use_survey_id)
         self.log.info(f"Using {use_survey_shortname} deposit agreement")
