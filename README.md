@@ -241,10 +241,10 @@ A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
 v0.17.0 - v0.17.4:
- * New pull request templates #161
  * Include Travis CI configuration (disabled see #136) #129
  * Include GitHub Actions for Python CI build and testing #136
  * Add script for curation folder rename #120
+ * Minor: New pull request templates #161
  * Fix `jinja2` bug with whitespace in README #117
  * Project management with priority labels #134
  * Minor adjustments to issue templates #134
