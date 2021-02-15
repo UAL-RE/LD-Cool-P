@@ -343,7 +343,7 @@ class Qualtrics:
         if 'survey_2_email' in self.dict:
             # Specific for Space Grant. Q4_1,2,3 is populated through embedded
             # data so not needed here
-            if dn_dict['depositor_email'] == self.dict['survey_2_email']:
+            if dn_dict['depositor_email'] in self.dict['survey_2_email']:
                 use_survey_id = self.survey_id[1]
 
                 authors = dn_dict['authors']
