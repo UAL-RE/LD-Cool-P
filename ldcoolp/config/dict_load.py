@@ -1,4 +1,5 @@
 import configparser
+import ast
 
 
 def dict_load(config_file):
@@ -23,6 +24,13 @@ def dict_load(config_file):
             if option_input in ['True', 'False']:
                 config_dict[section][option] = config.getboolean(section, option)
             else:
-                config_dict[section][option] = config.get(section, option)
-
+                config_dict[section][option] = option_input
+                # Re-process if value can be interpreted as a list
+                # (allows for multiple values for key)
+                try:
+                    ast_process = ast.literal_eval(option_input)
+                    if isinstance(ast_process, list):
+                        config_dict[section][option] = ast_process
+                except (ValueError, SyntaxError) as e:
+                    pass
     return config_dict
