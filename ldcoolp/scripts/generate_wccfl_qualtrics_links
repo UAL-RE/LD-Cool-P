@@ -5,6 +5,9 @@ from os import mkdir, stat
 
 from urllib.parse import quote, urlencode
 import json
+import requests
+
+import pandas as pd
 
 import argparse
 
@@ -12,7 +15,6 @@ from datetime import date
 
 from ldcoolp.logger import LogClass, get_user_hostname
 from ldcoolp.curation.api import figshare
-from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import df_to_dict_single
 from ldcoolp.admin import permissions
 from ldcoolp.config import dict_load
@@ -35,6 +37,32 @@ wccfl_survey_id = 'SV_9KOrfOnPuXgVIDc'
 account_id = 2641202
 
 
+def get_articles_list(fs_dict, article_id=''):
+    """Get list of private articles under depositor account for WCCFC
+    """
+    if not article_id:
+        url = 'https://api.figshare.com/v2/account/articles'
+    else:
+        url = f'https://api.figshare.com/v2/account/articles/{article_id}'
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'token {fs_dict["api_token"]}'
+    }
+    params = {'impersonate': account_id}
+
+    if not article_id:
+        params['page'] = 1
+        params['page_size'] = 100
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if not article_id:
+        return pd.DataFrame(response.json())
+    else:
+        return response.json()
+
+
 def wccfl_generate_url(qualtrics_dict, dn_dict):
     populate_response_dict = dict()
     for query in ['QID4', 'QID6']:
@@ -49,7 +77,7 @@ def wccfl_generate_url(qualtrics_dict, dn_dict):
     json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
 
     query_str_dict = {'article_id': dn_dict['article_id'],
-                      'curation_id': dn_dict['curation_id'],
+                      # 'curation_id': dn_dict['curation_id'],
                       'Q_PopulateResponse': json_txt}
 
     full_url = f"{qualtrics_dict['generate_url']}{wccfl_survey_id}?" + \
@@ -126,29 +154,27 @@ if __name__ == '__main__':
 
     log.info("Retrieving list now ...")
 
-    curation_df = fs_admin.get_curation_list()
+    articles_df = get_articles_list(fs_dict)
     log.info("Truncating to pending list from Depositor Account ...")
-    pending_df = curation_df.loc[(curation_df['status'] == 'pending') &
-                                 (curation_df['account_id'] == account_id)]
+    pending_df = articles_df.loc[articles_df['published_date'].isna()]
     n_pending = len(pending_df)
     log.info(f"Number of pending: {n_pending}")
 
-    pending_articles = pending_df['article_id'].tolist()
+    pending_articles = pending_df['id'].tolist()
 
     # Qualtrics API
     ###############
     q_dict = config_dict['qualtrics']
-    q = qualtrics.Qualtrics(qualtrics_dict=q_dict, log=log)
 
     for p in range(len(pending_df)):
         row = pending_df.loc[p]
 
-        curation_df = fs_admin.get_curation_details(row['id'])
+        article_dict = get_articles_list(fs_dict, article_id=row['id'])
 
         dn_dict = {
-            'article_id': row['article_id'],
-            'curation_id': row['id'],
-            'title': curation_df['item']['title'],
+            'article_id': row['id'],
+            # 'curation_id': row['id'],
+            'title': article_dict['title'],
             'full_name': 'test',
             'email': 'test@test.edu',
             'affil': 'Test University'
