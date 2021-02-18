@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+
+from os.path import dirname, exists, join
+from os import mkdir, stat
+
+from urllib.parse import quote, urlencode
+import json
+
+import argparse
+
+from datetime import date
+
+from ldcoolp.logger import LogClass, get_user_hostname
+from ldcoolp.curation.api import figshare
+from ldcoolp.curation.api import qualtrics
+from ldcoolp.curation import df_to_dict_single
+from ldcoolp.admin import permissions
+from ldcoolp.config import dict_load
+
+# from ldcoolp.curation.email import urls
+
+# Version and branch info
+from ldcoolp import __version__
+from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from ldcoolp import __file__ as library_path
+
+today = date.today()
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
+
+url_safe = '/ {},:"?=@%'
+
+# Custom settings for script
+wccfl_survey_id = 'SV_9KOrfOnPuXgVIDc'
+account_id = 2641202
+
+
+def wccfl_generate_url(qualtrics_dict, dn_dict):
+    populate_response_dict = dict()
+    for query in ['QID4', 'QID6']:
+        populate_response_dict[query] = {
+            "1": dn_dict['full_name'],
+            "2": dn_dict['email'],
+            "3": dn_dict['affil']
+        }
+
+    populate_response_dict['QID7'] = dn_dict['title']
+
+    json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
+
+    query_str_dict = {'article_id': dn_dict['article_id'],
+                      'curation_id': dn_dict['curation_id'],
+                      'Q_PopulateResponse': json_txt}
+
+    full_url = f"{qualtrics_dict['generate_url']}{wccfl_survey_id}?" + \
+               urlencode(query_str_dict, safe=url_safe, quote_via=quote)
+    return full_url
+
+
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description='Command-line driver for LD-Cool-P retrieval of WCCFL Qualtrics links.')
+    parser.add_argument('--config', required=True,
+                        help='path to configuration file')
+    # parser.add_argument('--csv-file', required=True,
+    #                     help='CSV file containing list of presenters')
+    args = parser.parse_args()
+
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
+    branch_name = get_active_branch_name(library_root_path)
+    git_commit, git_short_commit = get_latest_commit(library_root_path)
+
+    banner_message = f"""
+    This is the command-line tool to generate custom WCCFL Qualtrics URLs for all deposits.
+    LD-Cool-P branch: {branch_name}
+    LD-Cool-P version: {__version__}
+    LD-Cool-P commit hash: {git_short_commit}
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+
+    print(banner_message)
+
+    # Load configuration
+    config_dict = dict_load(args.config)
+
+    # Settings for script
+    config_dict['qualtrics']['survey_id'] = wccfl_survey_id
+
+    curation_dict = config_dict['curation']
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'generate_wccfl_qualtrics_links'
+    logfile = f'{logfile_prefix}.{today.strftime("%Y-%m-%d")}.log'
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("************************************")
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+
+    # Retrieve username, hostname, IP
+    sys_info = get_user_hostname()
+    log.debug(f"username : {sys_info['user']}")
+    log.debug(f"hostname : {sys_info['hostname']}")
+    log.debug(f"IP Addr  : {sys_info['ip']}")
+    log.debug(f"Op. Sys. : {sys_info['os']}")
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
+    # Figshare API
+    ##############
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
+
+    acct_df = fs_admin.get_account_list()
+    acct_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
+
+    log.info("Retrieving list now ...")
+
+    curation_df = fs_admin.get_curation_list()
+    log.info("Truncating to pending list from Depositor Account ...")
+    pending_df = curation_df.loc[(curation_df['status'] == 'pending') &
+                                 (curation_df['account_id'] == account_id)]
+    n_pending = len(pending_df)
+    log.info(f"Number of pending: {n_pending}")
+
+    pending_articles = pending_df['article_id'].tolist()
+
+    # Qualtrics API
+    ###############
+    q_dict = config_dict['qualtrics']
+    q = qualtrics.Qualtrics(qualtrics_dict=q_dict, log=log)
+
+    for p in range(len(pending_df)):
+        row = pending_df.loc[p]
+
+        curation_df = fs_admin.get_curation_details(row['id'])
+
+        dn_dict = {
+            'article_id': row['article_id'],
+            'curation_id': row['id'],
+            'title': curation_df['item']['title'],
+            'full_name': 'test',
+            'email': 'test@test.edu',
+            'affil': 'Test University'
+        }
+
+        full_url = wccfl_generate_url(q_dict, dn_dict)
+        print(full_url)
+
+    # Change permission to mode=666 (rw for all)
+    status = stat(join(log_dir, logfile))
+    if oct(status.st_mode)[-3:] == '666':
+        log.debug("Permissions set for logfile")
+    else:
+        log.debug("Changing permissions on logfile...")
+        permissions.curation(join(log_dir, logfile), mode=0o666)
+
+    log.info("************************************")
+    log.info("Exit 0")
