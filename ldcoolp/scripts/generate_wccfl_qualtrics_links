@@ -19,7 +19,7 @@ from ldcoolp.curation import df_to_dict_single
 from ldcoolp.admin import permissions
 from ldcoolp.config import dict_load
 
-# from ldcoolp.curation.email import urls
+from ldcoolp.curation.email import urls
 
 # Version and branch info
 from ldcoolp import __version__
@@ -49,8 +49,8 @@ def get_articles_list(fs_dict, article_id=''):
         'Content-Type': 'application/json',
         'Authorization': f'token {fs_dict["api_token"]}'
     }
-    params = {'impersonate': account_id}
 
+    params = {'impersonate': account_id}
     if not article_id:
         params['page'] = 1
         params['page_size'] = 100
@@ -181,7 +181,8 @@ if __name__ == '__main__':
         }
 
         full_url = wccfl_generate_url(q_dict, dn_dict)
-        print(full_url)
+        # url_alias = f"wccfl_{row['id']}"
+        # urls.tiny_url(full_url, url_alias, log)
 
     # Change permission to mode=666 (rw for all)
     status = stat(join(log_dir, logfile))
