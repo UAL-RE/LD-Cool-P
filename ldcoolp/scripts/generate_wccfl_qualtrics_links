@@ -67,9 +67,9 @@ def wccfl_generate_url(qualtrics_dict, dn_dict):
     populate_response_dict = dict()
     for query in ['QID4', 'QID6']:
         populate_response_dict[query] = {
-            "1": dn_dict['full_name'],
+            "1": dn_dict['full name'],
             "2": dn_dict['email'],
-            "3": dn_dict['affil']
+            "3": dn_dict['affiliation']
         }
 
     populate_response_dict['QID7'] = dn_dict['title']
@@ -91,12 +91,15 @@ if __name__ == '__main__':
         description='Command-line driver for LD-Cool-P retrieval of WCCFL Qualtrics links.')
     parser.add_argument('--config', required=True,
                         help='path to configuration file')
-    # parser.add_argument('--csv-file', required=True,
-    #                     help='CSV file containing list of presenters')
+    parser.add_argument('--csv-file', required=True,
+                        help='CSV file containing list of presenters')
     args = parser.parse_args()
 
     if not exists(args.config):
         raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
+    if not exists(args.csv_file):
+        raise FileNotFoundError(f"WARNING!!! CSV file not found: {args.csv_file}")
 
     branch_name = get_active_branch_name(library_root_path)
     git_commit, git_short_commit = get_latest_commit(library_root_path)
@@ -144,6 +147,12 @@ if __name__ == '__main__':
     # Configuration information
     log.info(f"Config file: {args.config}")
 
+    # Read in CSV file
+    log.info(f"Reading: {args.csv_file}")
+    df = pd.read_csv(args.csv_file, sep='\t')
+    full_urls = [''] * len(df)
+    short_urls = [''] * len(df)
+
     # Figshare API
     ##############
     fs_dict = config_dict['figshare']
@@ -171,18 +180,30 @@ if __name__ == '__main__':
 
         article_dict = get_articles_list(fs_dict, article_id=row['id'])
 
+        # Match by title
+        match_idx = df.loc[df['title'] == article_dict['title']].index
+        match_df = df.loc[match_idx[0]]
         dn_dict = {
             'article_id': row['id'],
             # 'curation_id': row['id'],
             'title': article_dict['title'],
-            'full_name': 'test',
-            'email': 'test@test.edu',
-            'affil': 'Test University'
         }
+        for key in ['full name', 'email', 'affiliation']:
+            dn_dict[key] = match_df[key]
 
         full_url = wccfl_generate_url(q_dict, dn_dict)
+        full_urls[match_idx[0]] = full_url
+
+        short_urls[match_idx[0]] = f"wccfl_{row['id']}"
         # url_alias = f"wccfl_{row['id']}"
         # urls.tiny_url(full_url, url_alias, log)
+
+    df['short url'] = short_urls
+    df['full url'] = full_urls
+
+    csv_outfile = args.csv_file.replace('.csv', '_links.csv')
+    log.info(f"Writing: {csv_outfile}")
+    df.to_csv(csv_outfile, sep='\t')
 
     # Change permission to mode=666 (rw for all)
     status = stat(join(log_dir, logfile))
