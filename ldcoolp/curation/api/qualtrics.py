@@ -215,8 +215,9 @@ class Qualtrics:
         Return pandas DataFrame for a given ResponseId from survey_id
         """
         qualtrics_df = self.get_survey_responses(survey_id)
-        response_df = qualtrics_df[(qualtrics_df['ResponseID'] == ResponseId)]
-
+        response_df = qualtrics_df[(qualtrics_df['ResponseId'] == ResponseId)]
+        if not response_df.empty:
+            self.log.info(f"Match found with {ResponseId}")
         return response_df
 
     def pandas_write_buffer(self, df):
