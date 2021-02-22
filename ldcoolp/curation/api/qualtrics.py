@@ -210,6 +210,15 @@ class Qualtrics:
             merged_df = merged_df.append([temp_df], ignore_index=True)
         return merged_df
 
+    def get_survey_response(self, survey_id: str, ResponseId: str) -> dict:
+        """
+        Provide survey response for a given ResponseId from survey_id
+        """
+        qualtrics_df = self.get_survey_responses(survey_id)
+        response_df = qualtrics_df[(qualtrics_df['ResponseID'] == ResponseId)]
+
+        return response_df
+
     def pandas_write_buffer(self, df):
         """Write pandas content via to_markdown() to logfile"""
 
@@ -479,8 +488,7 @@ class Qualtrics:
         """Retrieve response to Qualtrics README form"""
 
         if ResponseId:
-            qualtrics_df = self.get_survey_responses(self.readme_survey_id)
-            response_df = qualtrics_df[(qualtrics_df['ResponseID'] == ResponseId)]
+            response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
         else:
             try:
                 ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
@@ -492,8 +500,7 @@ class Qualtrics:
                 self.log.info(f"RESPONSE: {ResponseId}")
 
                 if ResponseId:
-                    qualtrics_df = self.get_survey_responses(self.readme_survey_id)
-                    response_df = qualtrics_df[(qualtrics_df['ResponseID'] == ResponseId)]
+                    response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
                 else:
                     response_df = pd.DataFrame()
 
