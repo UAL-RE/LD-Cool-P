@@ -210,9 +210,9 @@ class Qualtrics:
             merged_df = merged_df.append([temp_df], ignore_index=True)
         return merged_df
 
-    def get_survey_response(self, survey_id: str, ResponseId: str) -> dict:
+    def get_survey_response(self, survey_id: str, ResponseId: str) -> pd.DataFrame:
         """
-        Provide survey response for a given ResponseId from survey_id
+        Return pandas DataFrame for a given ResponseId from survey_id
         """
         qualtrics_df = self.get_survey_responses(survey_id)
         response_df = qualtrics_df[(qualtrics_df['ResponseID'] == ResponseId)]
