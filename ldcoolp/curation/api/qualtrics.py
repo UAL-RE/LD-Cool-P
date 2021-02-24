@@ -485,8 +485,9 @@ class Qualtrics:
                 self.log.warn("Multiple entries found")
                 raise ValueError
 
-    def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId='', browser=True):
+    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True):
         """Retrieve response to Qualtrics README form"""
+        dn_dict = dn.name_dict
 
         if ResponseId:
             response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
@@ -504,6 +505,8 @@ class Qualtrics:
                     response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
                 else:
                     response_df = pd.DataFrame()
+                    readme_url = self.generate_readme_url(dn)
+                    self.log.info(f"README URL: {readme_url}")
 
         if response_df.empty:
             self.log.warn("Empty DataFrame")
