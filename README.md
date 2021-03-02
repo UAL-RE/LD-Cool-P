@@ -251,7 +251,7 @@ v0.17.0 - v0.17.5:
  * Fix involving `html2text` (stop using) for Qualtrics README form's files and materials section #145
  * Fix to handle extraneous single quote from Qualtrics API data #147
  * Minor: Fix Qualtrics bug with multiple responses #150
- * Minor: Update `bug report` template
+ * Minor: Update `bug report` template #169 
  
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131

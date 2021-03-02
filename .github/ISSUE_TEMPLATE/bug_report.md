@@ -17,14 +17,11 @@ assignees: ''
 **Outputted Messages**
 <!-- Provide the full message log if possible or a subset that includes a few lines before the failure -->
 
-**Version information (please complete the following, default in brackets)**
- - LD_Cool-P version: [e.g. `0.17.0`] 
- - `pandas` version: [e.g., 1.0.2]
- - `requests` version: [e.g., 2.22.0]
- - `numpy` version: [e.g., 1.17.4]
- - `tabulate` version: [e.g., 0.8.3]
- - `jinja2` version: [e.g., 2.11.2]
- - `html2text` version: [e.g, 2020.1.16]
+**Version information**
+- LD_Cool-P version: [e.g. `0.17.0`] 
+<!-- Update with tagged version or branch full name-->
+[requirements](https://github.com/ualibraries/LD_Cool_P/blob/v<version>/requirements.txt)
+[requirements](https://github.com/ualibraries/LD_Cool_P/blob/<branch>/requirements.txt)
 
 *Expected behavior*
 <!-- A clear and concise description of what you expected to happen. -->
