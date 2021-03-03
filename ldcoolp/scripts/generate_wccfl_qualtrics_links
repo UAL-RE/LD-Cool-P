@@ -93,6 +93,8 @@ if __name__ == '__main__':
                         help='path to configuration file')
     parser.add_argument('--csv-file', required=True,
                         help='CSV file containing list of presenters')
+    parser.add_argument('--tinyurl', action='store_true',
+                        help='Generate TinyURL to use')
     args = parser.parse_args()
 
     if not exists(args.config):
@@ -194,12 +196,15 @@ if __name__ == '__main__':
         full_url = wccfl_generate_url(q_dict, dn_dict)
         full_urls[match_idx[0]] = full_url
 
-        short_urls[match_idx[0]] = f"wccfl_{row['id']}"
-        # url_alias = f"wccfl_{row['id']}"
-        # urls.tiny_url(full_url, url_alias, log)
+        if args.tiny_url:
+            short_urls[match_idx[0]] = f"wccfl_{row['id']}"
+            url_alias = f"wccfl_{row['id']}"
+            urls.tiny_url(full_url, url_alias, log)
 
-    df['short url'] = short_urls
     df['full url'] = full_urls
+
+    if args.tiny_url:
+        df['short url'] = short_urls
 
     csv_outfile = args.csv_file.replace('.csv', '_links.csv')
     log.info(f"Writing: {csv_outfile}")
