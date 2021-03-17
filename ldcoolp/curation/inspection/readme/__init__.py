@@ -3,6 +3,7 @@ from os import walk, stat
 from datetime import datetime
 import shutil
 from glob import glob
+import re
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
@@ -217,11 +218,12 @@ class ReadmeClass:
         # Retrieve preferred citation. Default: ReDATA in DataCite format
         # This forces a period after the year and ensures multiple rows
         # with the last two row merged for simplicity
+        # v0.17.6 handles periods in author list (e.g., middle name initial)
         single_str_citation = self.article_dict['item']['citation']
-        str_list = [str_row + '.' for str_row in
-                    single_str_citation.replace('):', ').').split('. ')]
-        citation_list = [content for content in str_list[0:-2]]
-        citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+        END_SENT = re.compile('((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
+        citation_list = list(
+            filter(None, END_SENT.split(single_str_citation.replace('):', ').')))
+        )
         readme_dict['preferred_citation'] = citation_list
 
         # Retrieve DOI info. Reserve if it does not exist
