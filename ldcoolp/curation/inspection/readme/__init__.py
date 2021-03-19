@@ -220,10 +220,13 @@ class ReadmeClass:
         # with the last two row merged for simplicity
         # v0.17.6 handles periods in author list (e.g., middle name initial)
         single_str_citation = self.article_dict['item']['citation']
+        pre_processed_str = single_str_citation.replace('):', ').')
+        # Match spaces following group 1, only if followed by group 2
         END_SENT = re.compile('((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
-        citation_list = list(
-            filter(None, END_SENT.split(single_str_citation.replace('):', ').')))
-        )
+        citation_list = []
+        for section in END_SENT.split(pre_processed_str):
+            if section:
+                citation_list.append(match)
         readme_dict['preferred_citation'] = citation_list
 
         # Retrieve DOI info. Reserve if it does not exist
