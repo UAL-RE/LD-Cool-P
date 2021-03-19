@@ -401,27 +401,31 @@ class Qualtrics:
             try:
                 ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
                 self.log.info(f"Qualtrics README ResponseID : {ResponseId}")
-
-                qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
-                for key in qualtrics_dict.keys():
-                    if isinstance(qualtrics_dict[key], float):
-                        qualtrics_dict[key] = str(qualtrics_dict[key])
-
-                # Separate cite, contrib for list style
-                for field in ['cite', 'contrib']:
-                    if qualtrics_dict[field] != 'nan':
-                        qualtrics_dict[field] = qualtrics_dict[field].split('\n')
-
-                # Markdown files, materials
-                for field in ['files', 'materials']:
-                    if qualtrics_dict[field] != 'nan':
-                        if qualtrics_dict[field][0] == "'":
-                            qualtrics_dict[field] = qualtrics_dict[field][1:]
-                            self.log.debug(f"Removing extra single quote in {field} entry")
-
-                return qualtrics_dict
             except ValueError:
                 self.log.warn("Error with retrieving ResponseId")
                 self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
                 ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
                 self.log.info(f"RESPONSE: {ResponseId}")
+
+                if ResponseId:
+                    qualtrics_df = self.get_survey_responses(self.readme_survey_id)
+                    response_df = qualtrics_df[qualtrics_df['ResponseId'] == ResponseId]
+
+            qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
+            for key in qualtrics_dict.keys():
+                if isinstance(qualtrics_dict[key], float):
+                    qualtrics_dict[key] = str(qualtrics_dict[key])
+
+            # Separate cite, contrib for list style
+            for field in ['cite', 'contrib']:
+                if qualtrics_dict[field] != 'nan':
+                    qualtrics_dict[field] = qualtrics_dict[field].split('\n')
+
+            # Markdown files, materials
+            for field in ['files', 'materials']:
+                if qualtrics_dict[field] != 'nan':
+                    if qualtrics_dict[field][0] == "'":
+                        qualtrics_dict[field] = qualtrics_dict[field][1:]
+                        self.log.debug(f"Removing extra single quote in {field} entry")
+
+            return qualtrics_dict
