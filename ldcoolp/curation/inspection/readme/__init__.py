@@ -217,16 +217,14 @@ class ReadmeClass:
 
         # Retrieve preferred citation. Default: ReDATA in DataCite format
         # This forces a period after the year and ensures multiple rows
-        # with the last two row merged for simplicity
-        # v0.17.6 handles periods in author list (e.g., middle name initial)
+        # with the last two rows merged for simplicity
+        # Bug: v0.17.6 handles periods in author list (e.g., initials)
         single_str_citation = self.article_dict['item']['citation']
         pre_processed_str = single_str_citation.replace('):', ').')
         # Match spaces following group 1, only if followed by group 2
         END_SENT = re.compile('((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
-        citation_list = []
-        for section in END_SENT.split(pre_processed_str):
-            if section:
-                citation_list.append(match)
+        # Filter for empty list entry
+        citation_list = list(filter(None, END_SENT.split(pre_processed_str)))
         readme_dict['preferred_citation'] = citation_list
 
         # Retrieve DOI info. Reserve if it does not exist
