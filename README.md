@@ -240,6 +240,9 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
+Unreleased:
+ * Handle missing README form responses for simplified curation sets #172
+
 v0.17.0 - v0.17.4:
  * Include Travis CI configuration (disabled see #136) #129
  * Include GitHub Actions for Python CI build and testing #136
