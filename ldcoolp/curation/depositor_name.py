@@ -23,6 +23,9 @@ class DepositorName:
     curation_dict : dictionary
       dictionary containing detailed curation information
 
+    version_no : int
+      Version of deposit
+
     name_dict : dictionary
       Dictionary containing all possible permutation of depositor name and
       list of authors
@@ -61,6 +64,12 @@ class DepositorName:
         else:
             self.curation_id = curation_id
         self.curation_dict = self.get_curation_dict()
+
+        # Set version number
+        if self.curation_dict['status'] == 'approved':
+            self.version_no = self.curation_dict['version']
+        else:
+            self.version_no = self.curation_dict['version'] + 1
 
         self.name_dict  = self.get_name_dict()
         self.folderName = self.get_folder_name()
@@ -137,12 +146,7 @@ class DepositorName:
             folderName = f"{temp_name}-{first_author}"
 
         # Add article_id and version number
-        if self.curation_dict['status'] == 'approved':
-            new_vers = self.curation_dict['version']
-        else:
-            new_vers = self.curation_dict['version'] + 1
-
-        folderName += f"_{self.article_id}/v{new_vers}"
+        folderName += f"_{self.article_id}/v{self.version_no}"
 
         if self.verbose:
             self.log.info(f"depository_name : {folderName}")
