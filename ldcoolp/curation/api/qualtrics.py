@@ -18,6 +18,8 @@ import pandas as pd
 import requests
 import json
 from urllib.parse import quote, urlencode
+from urllib.request import urlretrieve
+from urllib.error import HTTPError
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
@@ -325,6 +327,24 @@ class Qualtrics:
                 self.log.info("CLI: Not opening a browser!")
 
             full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={SurveyId}"
+
+            # Retrieve PDF via direct URL link
+            pdf_url = 'retrieve'
+            while pdf_url == 'retrieve':
+                pdf_url = input("To retrieve PDF via API, provide PDF URL here. Hit enter to skip : ")
+
+                if not pdf_url:  # Skip PDF retrieval
+                    break
+
+                if 'qualtrics.com' in pdf_url and pdf_url.endswith("format=pdf"):
+                    try:
+                        urlretrieve(pdf_url, f"Deposit_Agreement_{ResponseId}.pdf")
+                        break
+                    except HTTPError:
+                        print("Unable to retrieve PDF")
+                        pdf_url = 'retrieve'
+                else:
+                    pdf_url = 'retrieve'
 
             if browser:
                 webbrowser.open(full_url, new=2)
