@@ -210,6 +210,16 @@ class Qualtrics:
             merged_df = merged_df.append([temp_df], ignore_index=True)
         return merged_df
 
+    def get_survey_response(self, survey_id: str, ResponseId: str) -> pd.DataFrame:
+        """
+        Return pandas DataFrame for a given ResponseId from survey_id
+        """
+        qualtrics_df = self.get_survey_responses(survey_id)
+        response_df = qualtrics_df[(qualtrics_df['ResponseId'] == ResponseId)]
+        if not response_df.empty:
+            self.log.info(f"Match found with {ResponseId}")
+        return response_df
+
     def pandas_write_buffer(self, df):
         """Write pandas content via to_markdown() to logfile"""
 
@@ -475,10 +485,13 @@ class Qualtrics:
                 self.log.warn("Multiple entries found")
                 raise ValueError
 
-    def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
+    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True):
         """Retrieve response to Qualtrics README form"""
+        dn_dict = dn.name_dict
 
-        if isinstance(ResponseId, type(None)):
+        if ResponseId:
+            response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
+        else:
             try:
                 ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
                 self.log.info(f"Qualtrics README ResponseID : {ResponseId}")
@@ -489,9 +502,20 @@ class Qualtrics:
                 self.log.info(f"RESPONSE: {ResponseId}")
 
                 if ResponseId:
-                    qualtrics_df = self.get_survey_responses(self.readme_survey_id)
-                    response_df = qualtrics_df[qualtrics_df['ResponseId'] == ResponseId]
+                    response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
+                else:
+                    response_df = pd.DataFrame()
+                    readme_url = self.generate_readme_url(dn)
+                    self.log.info(f"README URL: {readme_url}")
 
+        if response_df.empty:
+            self.log.warn("Empty DataFrame")
+            self.log.info("Filling with empty content")
+            qualtrics_dict = {}
+            for field in readme_custom_content:
+                qualtrics_dict[field] = 'nan'
+            qualtrics_dict['references'] = []
+        else:
             qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
             for key in qualtrics_dict.keys():
                 if isinstance(qualtrics_dict[key], float):
@@ -509,4 +533,4 @@ class Qualtrics:
                         qualtrics_dict[field] = qualtrics_dict[field][1:]
                         self.log.debug(f"Removing extra single quote in {field} entry")
 
-            return qualtrics_dict
+        return qualtrics_dict

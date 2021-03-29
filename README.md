@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.7`.
+You should see that the version is `0.17.4`.
 
 ### Configuration Settings
 
@@ -239,6 +239,9 @@ Currently, there are two GitHub Action workflows:
 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
+
+Unreleased:
+ * Handle missing README form responses for simplified curation sets #172
 
 v0.17.0 - v0.17.7:
  * Include Travis CI configuration (disabled see #136) #129
