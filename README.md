@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.4`.
+You should see that the version is `0.17.7`.
 
 ### Configuration Settings
 
@@ -242,6 +242,8 @@ List is sorted from moderate to minor revisions for reach release.
 
 Unreleased:
  * Handle missing README form responses for simplified curation sets #172
+ * Feature: Retrieve Deposit Agreement PDF via API #187
+
 
 v0.17.0 - v0.17.7:
  * Include Travis CI configuration (disabled see #136) #129

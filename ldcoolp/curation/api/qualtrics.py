@@ -18,6 +18,8 @@ import pandas as pd
 import requests
 import json
 from urllib.parse import quote, urlencode
+from urllib.request import urlretrieve
+from urllib.error import HTTPError
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
@@ -303,7 +305,8 @@ class Qualtrics:
 
                 raise ValueError
 
-    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, browser=True):
+    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, out_path='',
+                                   browser=True):
         """Opens web browser to navigate to a page with Deposit Agreement Form"""
 
         if isinstance(ResponseId, type(None)):
@@ -335,6 +338,29 @@ class Qualtrics:
                 self.log.info("CLI: Not opening a browser!")
 
             full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={SurveyId}"
+
+            # Retrieve PDF via direct URL link
+            if out_path:
+                pdf_url = 'retrieve'
+                while pdf_url == 'retrieve':
+                    pdf_url = input("To retrieve PDF via API, provide PDF URL here. Hit enter to skip : ")
+
+                    if not pdf_url:  # Skip PDF retrieval
+                        break
+
+                    if 'qualtrics.com' in pdf_url and pdf_url.endswith("format=pdf"):
+                        self.log.info(f"RESPONSE: {pdf_url}")
+                        try:
+                            out_pdf = join(out_path, 'Deposit_Agreement.pdf')
+                            urlretrieve(pdf_url, out_pdf)
+                            break
+                        except HTTPError:
+                            self.log.warning("Unable to retrieve PDF")
+                            pdf_url = 'retrieve'
+                    else:
+                        pdf_url = 'retrieve'
+            else:
+                self.log.warn("No out_path specified. Skipping PDF retrieval")
 
             if browser:
                 webbrowser.open(full_url, new=2)
