@@ -36,7 +36,7 @@ from figshare.figshare import issue_request
 from ...config import config_default_dict
 
 # for quote and urlencode
-url_safe = '/ {},:"?=@%'
+url_safe = '/ {},:"?=@%&'
 
 # Column order for markdown print-out of Qualtrics table
 cols_order = ['ResponseId', 'SurveyID', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
