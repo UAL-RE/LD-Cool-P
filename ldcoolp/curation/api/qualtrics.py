@@ -262,8 +262,6 @@ class Qualtrics:
             self.log.info("Unique match based on article_id or curation_id !")
             if response_df.shape[0] != 1:
                 self.log.warn("More than one entries found !!!")
-
-            self.pandas_write_buffer(response_df[cols_order])
         else:
             self.log.info("Unable to identify based on article_id or curation_id ...")
             self.log.info("Attempting to identify with name ...")
