@@ -309,6 +309,9 @@ class Qualtrics:
                                    browser=True):
         """Opens web browser to navigate to a page with Deposit Agreement Form"""
 
+        self.log.info("")
+        self.log.info("** RETRIEVING DEPOSIT AGREEMENT **")
+
         if isinstance(ResponseId, type(None)):
             try:
                 ResponseId, SurveyId = self.find_deposit_agreement(dn_dict)

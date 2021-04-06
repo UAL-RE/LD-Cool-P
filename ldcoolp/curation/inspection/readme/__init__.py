@@ -331,6 +331,9 @@ class ReadmeClass:
     def main(self):
         """Main function for README file construction"""
 
+        self.log.info("")
+        self.log.info("** STARTING README.txt CONSTRUCTION **")
+
         if self.template_source != 'unknown':
             self.log.info("PROMPT: Do you wish to create a README file?")
             user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")

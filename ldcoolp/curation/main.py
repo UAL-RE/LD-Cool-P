@@ -90,6 +90,9 @@ class PrerequisiteWorkflow:
 
     def make_folders(self):
         # Create and set permissions to rwx
+        self.log.info("")
+        self.log.info("** CREATING ORGANIZATIONAL STRUCTURE **")
+
         sub_dirs = [self.data_directory,
                     self.copy_data_directory,
                     self.metadata_directory]

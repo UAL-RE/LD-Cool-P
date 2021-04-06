@@ -77,6 +77,9 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
     if isinstance(log, type(None)):
         log = log_stdout()
 
+    log.info("")
+    log.info("** DOWNLOADING DATA **")
+
     if root_directory is None:
         root_directory = os.getcwd()
 
