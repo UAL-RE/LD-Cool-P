@@ -109,6 +109,7 @@ class ReadmeClass:
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
+        self.metadata_path = join(self.folder_path, curation_dict['folder_metadata'])  # METADATA
         self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
                                        curation_dict['folder_data'])  # ORIGINAL_DATA
@@ -178,7 +179,7 @@ class ReadmeClass:
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
 
-        dest_file = join(self.data_path, self.readme_template)
+        dest_file = join(self.metadata_path, self.readme_template)
 
         if not exists(dest_file):
             self.log.info(f"Saving {self.template_source} template in DATA ...")
@@ -195,7 +196,7 @@ class ReadmeClass:
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
-        file_loader = FileSystemLoader(self.data_path)
+        file_loader = FileSystemLoader(self.metadata_path)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
         jinja_template = env.get_template(self.readme_template)
