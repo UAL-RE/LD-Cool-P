@@ -269,6 +269,9 @@ class ReadmeClass:
     def retrieve_qualtrics_readme(self):
         """Retrieve README custom information from Qualtrics form"""
 
+        self.log.info("")
+        self.log.info("** IDENTIFYING README FORM RESPONSE **")
+
         q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
 
         readme_dict = q.retrieve_qualtrics_readme(self.dn)
