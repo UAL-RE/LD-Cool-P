@@ -386,24 +386,24 @@ class Qualtrics:
                 "2": dn_dict['depositor_email']
             }
 
-        use_survey_id = self.survey_id[0]
-        if 'survey_2_email' in self.dict:
-            # Specific for Space Grant. Q4_1,2,3 is populated through embedded
-            # data so not needed here
-            if dn_dict['depositor_email'] in self.dict['survey_2_email']:
-                use_survey_id = self.survey_id[1]
+        survey_id_idx = 0
+        if 'survey_email' not in self.dict:
+            self.log.debug("No survey_email settings")
+
+            _std_populate_response_dict()
+        else:
+            if dn_dict['depositor_email'] in self.dict['survey_email']:
+                survey_id_idx = self.dict['survey_email'].index(dn_dict['depositor_email'])
 
                 authors = dn_dict['authors']
                 populate_response_dict['QID4'] = {"1": authors[0]}
-                populate_response_dict['QID11'] = {"1": authors[1]}
+                # This populates Advisor info for Space Grant Deposits
+                if self.dict['survey_shortname'][survey_id_idx] == "Space Grant":
+                    populate_response_dict['QID11'] = {"1": authors[1]}
             else:
-                use_survey_id = self.survey_id[0]
-
                 _std_populate_response_dict()
-        else:
-            self.log.debug("No survey_2_email settings")
 
-            _std_populate_response_dict()
+        use_survey_id = self.survey_id[survey_id_idx]
 
         return use_survey_id, populate_response_dict
 
