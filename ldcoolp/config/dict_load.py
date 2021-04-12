@@ -2,6 +2,34 @@ import configparser
 import ast
 
 
+def qualtrics_check(config_dict: dict):
+    """
+    Perform Qualtrics checks on config file
+
+    :param config_dict: Dictionary containing all LD-Cool-P configuration
+    """
+
+    qualtrics_err = 0
+    qualtrics_err_source = []
+
+    if 'qualtrics' in config_dict:
+        if isinstance(config_dict['qualtrics']['survey_id'], list):
+            ref_size = len(config_dict['qualtrics']['survey_id'])
+            for key in ['survey_shortname', 'survey_email']:
+                if len(config_dict['qualtrics'][key]) != ref_size:
+                    qualtrics_err += 1
+                    qualtrics_err_source.append(key)
+        else:
+            print("Not survey_id in config file")
+    else:
+        print("Not qualtrics settings in config file")
+
+    if qualtrics_err != 0:
+        str_join = ', '.join(qualtrics_err_source)
+        print(f"ERROR: Number of items incorrect in: {str_join}")
+        raise configparser.ParsingError(source=str_join)
+
+
 def dict_load(config_file):
     """
     Purpose:
@@ -33,4 +61,8 @@ def dict_load(config_file):
                         config_dict[section][option] = ast_process
                 except (ValueError, SyntaxError) as e:
                     pass
+
+    # Check Qualtrics input
+    qualtrics_check(config_dict)
+
     return config_dict
