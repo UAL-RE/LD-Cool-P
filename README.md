@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.7`.
+You should see that the version is `1.0.0`.
 
 ### Configuration Settings
 
