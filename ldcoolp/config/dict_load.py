@@ -20,9 +20,9 @@ def qualtrics_check(config_dict: dict):
                     qualtrics_err += 1
                     qualtrics_err_source.append(key)
         else:
-            print("Not survey_id in config file")
+            print("survey_id in not a list")
     else:
-        print("Not qualtrics settings in config file")
+        print("No qualtrics settings in config file")
 
     if qualtrics_err != 0:
         str_join = ', '.join(qualtrics_err_source)
