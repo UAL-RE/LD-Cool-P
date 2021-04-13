@@ -1,4 +1,4 @@
-pandas==1.2.1
+pandas==1.2.3
 requests==2.22.0
 numpy==1.20.0
 tabulate==0.8.3

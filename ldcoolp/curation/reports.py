@@ -18,6 +18,9 @@ def review_report(depositor_name='', curation_dict=config_default_dict['curation
     if isinstance(log, type(None)):
         log = log_stdout()
 
+    log.info("")
+    log.info("** CREATING CURATION REVIEW REPORT **")
+
     root_directory_main = curation_dict[curation_dict['parent_dir']]
     todo_folder = curation_dict['folder_todo']
     folder_ual_rdm = curation_dict['folder_ual_rdm']

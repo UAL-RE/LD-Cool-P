@@ -4,6 +4,7 @@ from os.path import dirname, exists, join
 from os import mkdir, stat
 
 import argparse
+import configparser
 
 from datetime import date
 
@@ -50,7 +51,10 @@ if __name__ == '__main__':
     print(banner_message)
 
     # Load configuration
-    config_dict = dict_load(args.config)
+    try:
+        config_dict = dict_load(args.config)
+    except configparser.ParsingError:
+        exit()
 
     curation_dict = config_dict['curation']
     root_directory_main = curation_dict[curation_dict['log_parent_dir']]
