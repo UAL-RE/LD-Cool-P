@@ -63,7 +63,7 @@ You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (>=v3.7.9)
 2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
-3. [`pandas`](https://pandas.pydata.org/) ([1.2.1](https://pandas.pydata.org/pandas-docs/version/1.2.1/))
+3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
 5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
 6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([2.11.2](https://jinja.palletsprojects.com/en/2.11.x/))
