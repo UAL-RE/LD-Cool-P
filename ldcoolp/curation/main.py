@@ -13,6 +13,9 @@ from ldcoolp.curation.reports import review_report
 from ldcoolp.curation.depositor_name import DepositorName
 from ldcoolp.curation.inspection.readme import ReadmeClass
 
+# Metadata
+from .metadata import save_metadata
+
 # API
 from figshare.figshare import Figshare
 from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
@@ -57,10 +60,15 @@ class PrerequisiteWorkflow:
         self.fs_admin = FigshareInstituteAdmin(figshare_dict=self.figshare_dict, log=self.log)
 
         self.dn = DepositorName(self.article_id, self.fs_admin, log=self.log)
-        self.data_directory = join(self.dn.folderName, self.curation_dict['folder_data'])
 
+        # Sub-folders for data curation workflow
+        self.data_directory = join(self.dn.folderName,
+                                   self.curation_dict['folder_data'])
         self.copy_data_directory = join(self.dn.folderName,
                                         self.curation_dict['folder_copy_data'])
+        self.metadata_directory = join(self.dn.folderName,
+                                       self.curation_dict['folder_metadata'])
+
         self.url_open = url_open
 
         # Check if dataset has been retrieved
@@ -72,6 +80,7 @@ class PrerequisiteWorkflow:
             self.new_set = True
             # Create folders
             self.make_folders()
+            self.write_curation_metadata()
 
     def reserve_doi(self):
         # Mint DOI if this has not been done
@@ -81,23 +90,33 @@ class PrerequisiteWorkflow:
 
     def make_folders(self):
         # Create and set permissions to rwx
-        full_data_path = join(self.root_directory, self.data_directory)
-        if not exists(full_data_path):
-            self.log.info(f"Creating folder : {full_data_path}")
-            makedirs(full_data_path)
-            chmod(full_data_path, 0o777)
+        self.log.info("")
+        self.log.info("** CREATING ORGANIZATIONAL STRUCTURE **")
 
-        full_copy_data_path = join(self.root_directory, self.copy_data_directory)
-        if not exists(full_copy_data_path):
-            self.log.info(f"Creating folder : {full_copy_data_path}")
-            makedirs(full_copy_data_path)
-            chmod(full_copy_data_path, 0o777)
+        sub_dirs = [self.data_directory,
+                    self.copy_data_directory,
+                    self.metadata_directory]
+        for sub_dir in sub_dirs:
+            full_data_path = join(self.root_directory, sub_dir)
+            if not exists(full_data_path):
+                self.log.info(f"Creating folder : {full_data_path}")
+                makedirs(full_data_path)
+                chmod(full_data_path, 0o777)
+
+    def write_curation_metadata(self):
+        """Write metadata from Figshare curation response"""
+        out_file_prefix = f"curation_original_{self.article_id}"
+        save_metadata(self.dn.curation_dict, out_file_prefix,
+                      root_directory=self.root_directory,
+                      metadata_directory=self.metadata_directory,
+                      save_csv=False, log=self.log)
 
     def download_data(self):
         if self.new_set:
             download_files(self.article_id, self.fs,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
+                           metadata_directory=self.metadata_directory,
                            log=self.log, url_open=self.url_open)
 
     def download_report(self):
@@ -147,8 +166,17 @@ def workflow(article_id, url_open=False, browser=True, log=None,
         pw.download_report()
 
         # Download Qualtrics deposit agreement form
+        curation_dict = config_dict['curation']
+        out_path = join(
+            curation_dict[curation_dict['parent_dir']],
+            curation_dict['folder_todo'],
+            pw.dn.folderName,
+            curation_dict['folder_ual_rdm'],
+        )
+        log.debug(f"out_path: {out_path}")
         q = Qualtrics(qualtrics_dict=config_dict['qualtrics'], log=log)
-        q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
+        q.retrieve_deposit_agreement(pw.dn.name_dict, out_path=out_path,
+                                     browser=browser)
 
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict)

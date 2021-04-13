@@ -4,6 +4,7 @@ from os.path import dirname, exists, join
 from os import mkdir, stat
 
 import argparse
+import configparser
 
 from datetime import date
 
@@ -13,6 +14,7 @@ from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
 from ldcoolp.admin import permissions
 from ldcoolp.config import dict_load
+from ldcoolp.curation.email import urls
 
 # Version and branch info
 from ldcoolp import __version__
@@ -49,7 +51,10 @@ if __name__ == '__main__':
     print(banner_message)
 
     # Load configuration
-    config_dict = dict_load(args.config)
+    try:
+        config_dict = dict_load(args.config)
+    except configparser.ParsingError:
+        exit()
 
     curation_dict = config_dict['curation']
     root_directory_main = curation_dict[curation_dict['log_parent_dir']]
@@ -91,9 +96,18 @@ if __name__ == '__main__':
     log.info("URL for Deposit Agreement form: ")
     log.info(full_url)
 
+    alias_prefix = f"{dn.name_dict['simplify_surName']}-" + \
+                   f"{dn.article_id}-{dn.version_no}"
+    da_alias = f"{alias_prefix}-DA"
+    da_tinyurl = urls.tiny_url(full_url, alias=da_alias)
+    log.info(f"TinyURL: {da_tinyurl}")
+
     readme_full_url = q.generate_readme_url(dn)
     log.info("URL for README form: ")
     log.info(readme_full_url)
+    readme_alias = f"{alias_prefix}-README"
+    readme_tinyurl = urls.tiny_url(readme_full_url, alias=readme_alias)
+    log.info(f"TinyURL: {readme_tinyurl}")
 
     # Change permission to mode=666 (rw for all)
     status = stat(join(log_dir, logfile))

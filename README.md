@@ -61,11 +61,11 @@ These instructions will have the code running on your local or virtual machine.
 
 You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
-1. Python (3.7.5)
+1. Python (>=v3.7.9)
 2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
-3. [`pandas`](https://pandas.pydata.org/) ([1.0.2](https://pandas.pydata.org/pandas-docs/version/1.0.2/))
+3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
-5. [`numpy`](https://numpy.org/) ([1.17.4](https://numpy.org/devdocs/release/1.17.4-notes.html/1.17.4))
+5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
 6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([2.11.2](https://jinja.palletsprojects.com/en/2.11.x/))
 7. [`tabulate`](https://github.com/astanin/python-tabulate) (0.8.3)
 8. [`html2text`](https://pypi.org/project/html2text/) ([2020.1.16](https://pypi.org/project/html2text/2020.1.16/))
@@ -74,14 +74,14 @@ You will need the following to have a working copy of this software. See
 
 #### Python and setting up a `conda` environment
 
-First, install a working version of Python (v3.7.5).  We recommend using the
+First, install a working version of Python (>=3.7.9).  We recommend using the
 [Anaconda](https://www.anaconda.com/distribution/) package installer.
 
 After you have Anaconda installed, you will want to create a separate `conda` environment
 and activate it:
 
 ```
-$ (sudo) conda create -n curation python=3.7.5
+$ (sudo) conda create -n curation python=3.7
 $ conda activate curation
 ```
 
@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.7`.
+You should see that the version is `1.0.0`.
 
 ### Configuration Settings
 
@@ -239,6 +239,21 @@ Currently, there are two GitHub Action workflows:
 
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
+
+v1.0.0:
+ * Feature: Handle multiple Qualtrics Deposit Agreement survey,
+   including conference-style submissions (e.g., Space Grant, WCCFL)
+   #137, #193, #194
+ * Feature: Use TinyURL API to construct simplified Qualtrics links #144
+ * Feature: Add METADATA folder in curation #151
+ * Feature: Write JSON files for submitted content (curation metadata, file list) #152
+ * CI: Python 3.9 #155
+ * Bug: Fix missing `pandas_write_buffer` call for Qualtrics match by input name #168
+ * Bug: Handle missing README form responses for simplified curation sets #172
+ * Feature: Retrieve Deposit Agreement PDF via API #187
+ * Feature: README_template.md migrated to METADATA folder #191
+
+**Note**: Backward incompatibility with config file due to #137
 
 v0.17.0 - v0.17.7:
  * Include Travis CI configuration (disabled see #136) #129

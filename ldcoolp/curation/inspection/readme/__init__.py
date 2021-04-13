@@ -109,6 +109,7 @@ class ReadmeClass:
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
+        self.metadata_path = join(self.folder_path, curation_dict['folder_metadata'])  # METADATA
         self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
                                        curation_dict['folder_data'])  # ORIGINAL_DATA
@@ -178,7 +179,7 @@ class ReadmeClass:
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
 
-        dest_file = join(self.data_path, self.readme_template)
+        dest_file = join(self.metadata_path, self.readme_template)
 
         if not exists(dest_file):
             self.log.info(f"Saving {self.template_source} template in DATA ...")
@@ -195,7 +196,7 @@ class ReadmeClass:
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
-        file_loader = FileSystemLoader(self.data_path)
+        file_loader = FileSystemLoader(self.metadata_path)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
         jinja_template = env.get_template(self.readme_template)
@@ -269,9 +270,12 @@ class ReadmeClass:
     def retrieve_qualtrics_readme(self):
         """Retrieve README custom information from Qualtrics form"""
 
+        self.log.info("")
+        self.log.info("** IDENTIFYING README FORM RESPONSE **")
+
         q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
 
-        readme_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
+        readme_dict = q.retrieve_qualtrics_readme(self.dn)
 
         return readme_dict
 
@@ -330,6 +334,9 @@ class ReadmeClass:
 
     def main(self):
         """Main function for README file construction"""
+
+        self.log.info("")
+        self.log.info("** STARTING README.txt CONSTRUCTION **")
 
         if self.template_source != 'unknown':
             self.log.info("PROMPT: Do you wish to create a README file?")

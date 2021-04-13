@@ -1,6 +1,8 @@
+from typing import Tuple
 from os.path import join
 import io
 from os import remove
+from functools import reduce
 
 # base64 encoding/decoding
 import base64
@@ -16,6 +18,8 @@ import pandas as pd
 import requests
 import json
 from urllib.parse import quote, urlencode
+from urllib.request import urlretrieve
+from urllib.error import HTTPError
 import webbrowser
 
 # Convert single-entry DataFrame to dictionary
@@ -32,12 +36,12 @@ from figshare.figshare import issue_request
 from ...config import config_default_dict
 
 # for quote and urlencode
-url_safe = '/ {},:"?=@%'
+url_safe = '/ {},:"?=@%&'
 
 # Column order for markdown print-out of Qualtrics table
-cols_order = ['ResponseId', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
+cols_order = ['ResponseId', 'SurveyID', 'Q4_1', 'Q5', 'Q6_1', 'Q7']
 
-readme_cols_order = ['ResponseId', 'article_id', 'curation_id']
+readme_cols_order = ['ResponseId', 'SurveyID', 'article_id', 'curation_id']
 
 readme_custom_content = ['cite', 'summary', 'files', 'materials', 'contrib', 'notes']
 
@@ -187,6 +191,37 @@ class Qualtrics:
 
         return response_df
 
+    def merge_survey(self) -> pd.DataFrame:
+        """
+        Constructed a merge pandas dataframe of all Qualtrics survey
+
+        :return: Merged pandas DataFrame
+        """
+
+        df_list = []
+        for survey_id in self.survey_id:
+            self.log.debug(f"Reading: {survey_id}")
+            temp_df = self.get_survey_responses(survey_id)
+            df_list.append(temp_df[2:])
+
+        df_col = reduce(pd.Index.union, (df.columns for df in df_list))
+
+        merged_df = pd.DataFrame()
+        for df in df_list:
+            temp_df = df.reindex(columns=df_col, fill_value=0)
+            merged_df = merged_df.append([temp_df], ignore_index=True)
+        return merged_df
+
+    def get_survey_response(self, survey_id: str, ResponseId: str) -> pd.DataFrame:
+        """
+        Return pandas DataFrame for a given ResponseId from survey_id
+        """
+        qualtrics_df = self.get_survey_responses(survey_id)
+        response_df = qualtrics_df[(qualtrics_df['ResponseId'] == ResponseId)]
+        if not response_df.empty:
+            self.log.info(f"Match found with {ResponseId}")
+        return response_df
+
     def pandas_write_buffer(self, df):
         """Write pandas content via to_markdown() to logfile"""
 
@@ -198,10 +233,18 @@ class Qualtrics:
                 print(buffer.getvalue(), file=f)
         buffer.close()
 
+    def lookup_survey_shortname(self, lookup_survey_id):
+        """Return survey shortname"""
+        dict0 = dict(zip(self.survey_id, self.dict['survey_shortname']))
+        try:
+            return dict0[lookup_survey_id]
+        except KeyError:
+            self.log.warn("survey_id not found among list")
+
     def find_deposit_agreement(self, dn_dict):
         """Get Response ID based on a match search for depositor name"""
 
-        qualtrics_df = self.get_survey_responses(self.survey_id)
+        merged_df = self.merge_survey()
 
         # First perform search via article_id or curation_id
         self.log.info("Attempting to identify using article_id or curation_id ...")
@@ -209,8 +252,8 @@ class Qualtrics:
         curation_id = str(dn_dict['curation_id'])
 
         try:
-            response_df = qualtrics_df[(qualtrics_df['article_id'] == article_id) |
-                                       (qualtrics_df['curation_id'] == curation_id)]
+            response_df = merged_df[(merged_df['article_id'] == article_id) |
+                                    (merged_df['curation_id'] == curation_id)]
         except KeyError:
             self.log.warn("article_id and curation_id not in qualtrics survey !")
             response_df = pd.DataFrame()
@@ -219,15 +262,13 @@ class Qualtrics:
             self.log.info("Unique match based on article_id or curation_id !")
             if response_df.shape[0] != 1:
                 self.log.warn("More than one entries found !!!")
-
-            self.pandas_write_buffer(response_df[cols_order])
         else:
             self.log.info("Unable to identify based on article_id or curation_id ...")
             self.log.info("Attempting to identify with name ...")
 
-            response_df = qualtrics_df[(qualtrics_df['Q4_1'] == dn_dict['fullName']) |
-                                       (qualtrics_df['Q4_1'] == dn_dict['simplify_fullName']) |
-                                       (qualtrics_df['Q4_2'] == dn_dict['depositor_email'])]
+            response_df = merged_df[(merged_df['Q4_1'] == dn_dict['fullName']) |
+                                    (merged_df['Q4_1'] == dn_dict['simplify_fullName']) |
+                                    (merged_df['Q4_2'] == dn_dict['depositor_email'])]
 
             # Identify corresponding author cases if different from depositor name
             if not dn_dict['self_deposit'] and not response_df.empty:
@@ -247,10 +288,14 @@ class Qualtrics:
         else:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
+                self.pandas_write_buffer(response_df[cols_order])
                 self.log.info("Only one entry found!")
                 self.log.info(f"Survey completed on {response_dict['Date Completed']}")
                 self.log.info(f" ... for {response_dict['Q7']}")
-                return response_dict['ResponseId']
+                survey_shortname = \
+                    self.lookup_survey_shortname(response_dict['SurveyID'])
+                self.log.info(f"Survey name: {survey_shortname}")
+                return response_dict['ResponseId'], response_dict['SurveyID']
             else:
                 self.log.warn("Multiple entries found")
 
@@ -258,20 +303,28 @@ class Qualtrics:
 
                 raise ValueError
 
-    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, browser=True):
+    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, out_path='',
+                                   browser=True):
         """Opens web browser to navigate to a page with Deposit Agreement Form"""
+
+        self.log.info("")
+        self.log.info("** RETRIEVING DEPOSIT AGREEMENT **")
 
         if isinstance(ResponseId, type(None)):
             try:
-                ResponseId = self.find_deposit_agreement(dn_dict)
+                ResponseId, SurveyId = self.find_deposit_agreement(dn_dict)
                 self.log.info(f"Qualtrics ResponseID : {ResponseId}")
+                self.log.info(f"Qualtrics SurveyID : {SurveyId}")
             except ValueError:
-                self.log.warn("Error with retrieving ResponseId")
+                self.log.warn("Error with retrieving ResponseId and SurveyId")
                 self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
                 ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
                 self.log.info(f"RESPONSE: {ResponseId}")
+                self.log.info("PROMPT: If you wish, you can manually enter SurveyId to retrieve.")
+                SurveyId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                self.log.info(f"RESPONSE: {SurveyId}")
 
-                if ResponseId == '':
+                if ResponseId == '' or SurveyId == '':
                     custom_url = self.generate_url(dn_dict)
                     self.log.info("CUSTOM URL BELOW : ")
                     self.log.info(custom_url)
@@ -285,13 +338,74 @@ class Qualtrics:
             else:
                 self.log.info("CLI: Not opening a browser!")
 
-            full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={self.survey_id}"
+            full_url = f"{self.dict['download_url']}?RID={ResponseId}&SID={SurveyId}"
+
+            # Retrieve PDF via direct URL link
+            if out_path:
+                pdf_url = 'retrieve'
+                while pdf_url == 'retrieve':
+                    pdf_url = input("To retrieve PDF via API, provide PDF URL here. Hit enter to skip : ")
+
+                    if not pdf_url:  # Skip PDF retrieval
+                        break
+
+                    if 'qualtrics.com' in pdf_url and pdf_url.endswith("format=pdf"):
+                        self.log.info(f"RESPONSE: {pdf_url}")
+                        try:
+                            out_pdf = join(out_path, 'Deposit_Agreement.pdf')
+                            urlretrieve(pdf_url, out_pdf)
+                            break
+                        except HTTPError:
+                            self.log.warning("Unable to retrieve PDF")
+                            pdf_url = 'retrieve'
+                    else:
+                        pdf_url = 'retrieve'
+            else:
+                self.log.warn("No out_path specified. Skipping PDF retrieval")
 
             if browser:
                 webbrowser.open(full_url, new=2)
             else:
                 self.log.info("Here's the URL : ")
                 self.log.info(full_url)
+
+    def survey_specific(self, dn_dict: dict) -> Tuple[str, dict]:
+        """
+        Handles survey specifics for Qualtrics Deposit Agreement form
+        Used by generate_url method
+
+        :param dn_dict: DepositorName dictionary
+        :return: survey_id and dict for Qualtrics links
+        """
+
+        populate_response_dict = dict()  # init
+
+        def _std_populate_response_dict():
+            populate_response_dict['QID4'] = {
+                "1": dn_dict['fullName'],
+                "2": dn_dict['depositor_email']
+            }
+
+        survey_id_idx = 0
+        if 'survey_email' not in self.dict:
+            self.log.debug("No survey_email settings")
+
+            _std_populate_response_dict()
+        else:
+            if dn_dict['depositor_email'] in self.dict['survey_email']:
+                survey_id_idx = self.dict['survey_email'].index(dn_dict['depositor_email'])
+
+                authors = dn_dict['authors']
+                populate_response_dict['QID4'] = {"1": authors[0]}
+                # This populates Advisor info for Space Grant Deposits
+                if self.dict['survey_shortname'][survey_id_idx] == "Space Grant":
+                    populate_response_dict['QID11'] = {"1": authors[1]}
+            else:
+                _std_populate_response_dict()
+
+        use_survey_id = self.survey_id[survey_id_idx]
+
+        return use_survey_id, populate_response_dict
 
     def generate_url(self, dn_dict):
         """
@@ -300,9 +414,11 @@ class Qualtrics:
           query strings based on Figshare metadata
         """
 
-        populate_response_dict = dict()
-        populate_response_dict['QID4'] = {"1": dn_dict['fullName'],
-                                          "2": dn_dict['depositor_email']}
+        use_survey_id, populate_response_dict = self.survey_specific(dn_dict)
+
+        use_survey_shortname = self.lookup_survey_shortname(use_survey_id)
+        self.log.info(f"Using {use_survey_shortname} deposit agreement")
+
         populate_response_dict['QID7'] = dn_dict['title']
 
         json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
@@ -311,7 +427,9 @@ class Qualtrics:
                           'curation_id': dn_dict['curation_id'],
                           'Q_PopulateResponse': json_txt}
 
-        full_url = f"{self.dict['generate_url']}{self.survey_id}?" + \
+        # q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+
+        full_url = f"{self.dict['generate_url']}{use_survey_id}?" + \
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
 
         return full_url
@@ -394,10 +512,13 @@ class Qualtrics:
                 self.log.warn("Multiple entries found")
                 raise ValueError
 
-    def retrieve_qualtrics_readme(self, dn_dict=None, ResponseId=None, browser=True):
-        """Opens web browser to navigate to a page with Deposit Agreement Form"""
+    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True):
+        """Retrieve response to Qualtrics README form"""
+        dn_dict = dn.name_dict
 
-        if isinstance(ResponseId, type(None)):
+        if ResponseId:
+            response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
+        else:
             try:
                 ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
                 self.log.info(f"Qualtrics README ResponseID : {ResponseId}")
@@ -408,9 +529,20 @@ class Qualtrics:
                 self.log.info(f"RESPONSE: {ResponseId}")
 
                 if ResponseId:
-                    qualtrics_df = self.get_survey_responses(self.readme_survey_id)
-                    response_df = qualtrics_df[qualtrics_df['ResponseId'] == ResponseId]
+                    response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
+                else:
+                    response_df = pd.DataFrame()
+                    readme_url = self.generate_readme_url(dn)
+                    self.log.info(f"README URL: {readme_url}")
 
+        if response_df.empty:
+            self.log.warn("Empty DataFrame")
+            self.log.info("Filling with empty content")
+            qualtrics_dict = {}
+            for field in readme_custom_content:
+                qualtrics_dict[field] = 'nan'
+            qualtrics_dict['references'] = []
+        else:
             qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
             for key in qualtrics_dict.keys():
                 if isinstance(qualtrics_dict[key], float):
@@ -428,4 +560,4 @@ class Qualtrics:
                         qualtrics_dict[field] = qualtrics_dict[field][1:]
                         self.log.debug(f"Removing extra single quote in {field} entry")
 
-            return qualtrics_dict
+        return qualtrics_dict

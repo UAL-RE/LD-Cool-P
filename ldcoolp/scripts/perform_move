@@ -4,6 +4,7 @@ from os.path import dirname, exists, join
 from os import mkdir, stat
 
 import argparse
+import configparser
 
 from datetime import date
 
@@ -44,7 +45,10 @@ if __name__ == '__main__':
     git_commit, git_short_commit = get_latest_commit(library_root_path)
 
     # Load configuration
-    config_dict = dict_load(args.config)
+    try:
+        config_dict = dict_load(args.config)
+    except configparser.ParsingError:
+        exit()
 
     curation_dict = config_dict['curation']
 
