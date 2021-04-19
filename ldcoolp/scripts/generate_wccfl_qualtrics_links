@@ -7,6 +7,8 @@ from urllib.parse import quote, urlencode
 import json
 import requests
 
+import csv
+
 import pandas as pd
 
 import argparse
@@ -208,7 +210,7 @@ if __name__ == '__main__':
 
     csv_outfile = args.csv_file.replace('.csv', '_links.csv')
     log.info(f"Writing: {csv_outfile}")
-    df.to_csv(csv_outfile, sep='\t')
+    df.to_csv(csv_outfile, sep='\t', quoting=csv.QUOTE_NONE)
 
     # Change permission to mode=666 (rw for all)
     status = stat(join(log_dir, logfile))
