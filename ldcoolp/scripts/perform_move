@@ -16,7 +16,7 @@ from ldcoolp.admin import permissions
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
 # Config loader
@@ -41,8 +41,7 @@ if __name__ == '__main__':
     if args.direction not in ['next', 'back', 'publish']:
         raise ValueError(f"WARNING!!! --direction flag not properly set. Either next, back, or publish")
 
-    branch_name = get_active_branch_name(library_root_path)
-    git_commit, git_short_commit = get_latest_commit(library_root_path)
+    gi = GitInfo(library_root_path)
 
     # Load configuration
     try:
@@ -65,9 +64,9 @@ if __name__ == '__main__':
 
     log.info("****************************")
 
-    log.debug(f"LD-Cool-P branch: {branch_name}")
-    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
-    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+    log.debug(f"LD-Cool-P branch: {gi.branch}")
+    log.debug(f"LD-Cool-P version: {__version__} ({gi.short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {gi.commit}")
 
     # Retrieve username, hostname, IP
     sys_info = get_user_hostname()

@@ -18,7 +18,7 @@ from ldcoolp.curation.email import urls
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
 today = date.today()
@@ -36,14 +36,13 @@ if __name__ == '__main__':
     if not exists(args.config):
         raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
 
-    branch_name = get_active_branch_name(library_root_path)
-    git_commit, git_short_commit = get_latest_commit(library_root_path)
+    gi = GitInfo(library_root_path)
 
     banner_message = f"""
     This is the command-line tool to generate custom Qualtrics URL for a deposit.
-    LD-Cool-P branch: {branch_name}
+    LD-Cool-P branch: {gi.branch}
     LD-Cool-P version: {__version__}
-    LD-Cool-P commit hash: {git_short_commit}
+    LD-Cool-P commit hash: {gi.short_commit}
     Created by Chun Ly
     Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
     """
@@ -74,9 +73,9 @@ if __name__ == '__main__':
     q = qualtrics.Qualtrics(qualtrics_dict=q_dict, log=log)
 
     log.info("************************************")
-    log.debug(f"LD-Cool-P branch: {branch_name}")
-    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
-    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+    log.debug(f"LD-Cool-P branch: {gi.branch}")
+    log.debug(f"LD-Cool-P version: {__version__} ({gi.short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {gi.commit}")
 
     # Retrieve username, hostname, IP
     sys_info = get_user_hostname()
