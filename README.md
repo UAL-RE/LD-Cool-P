@@ -240,7 +240,7 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v1.0.0:
+v1.0.0 - v1.0.1:
  * Feature: Handle multiple Qualtrics Deposit Agreement survey,
    including conference-style submissions (e.g., Space Grant, WCCFL)
    #137, #193, #194
@@ -252,6 +252,7 @@ v1.0.0:
  * Bug: Handle missing README form responses for simplified curation sets #172
  * Feature: Retrieve Deposit Agreement PDF via API #187
  * Feature: README_template.md migrated to METADATA folder #191
+ * Chore: Refactor code to use `redata-commons` #197
 
 **Note**: Backward incompatibility with config file due to #137
 
