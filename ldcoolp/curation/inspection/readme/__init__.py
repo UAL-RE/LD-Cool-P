@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 from html2text import html2text
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 from ....admin import permissions, move
 

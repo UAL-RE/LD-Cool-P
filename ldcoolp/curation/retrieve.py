@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 from ldcoolp.admin import permissions
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 # Metadata
 from .metadata import save_metadata

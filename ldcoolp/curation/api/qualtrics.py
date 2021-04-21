@@ -26,7 +26,7 @@ import webbrowser
 from ldcoolp.curation import df_to_dict_single
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 import logging
 
 # API
