@@ -12,7 +12,7 @@ from ldcoolp.curation import main
 from redata.commons import logger
 
 # Version and branch info
-from ldcoolp import __version__
+from ldcoolp import __version__, CODE_NAME
 from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
@@ -46,9 +46,9 @@ if __name__ == '__main__':
     3. Download a copy of the curatorial review process
     4. Attempt to retrieve the Qualtrics deposit agreement or provide you with the link
 
-    LD-Cool-P branch: {gi.branch}
-    LD-Cool-P version: {__version__}
-    LD-Cool-P commit hash: {gi.short_commit}
+    {CODE_NAME} branch: {gi.branch}
+    {CODE_NAME} version: {__version__}
+    {CODE_NAME} commit hash: {gi.short_commit}
     Created by Chun Ly
     Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
     """
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     log_filename = logger.get_log_file(log.handlers[-1])
 
     lc = logger.LogCommons(log, logfile_prefix, gi,
-                           code_name='LD-Cool-P', version=__version__)
+                           code_name=CODE_NAME, version=__version__)
 
     lc.script_start()
 

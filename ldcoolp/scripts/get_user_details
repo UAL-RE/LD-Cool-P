@@ -14,7 +14,7 @@ from redata.commons import logger
 from ldcoolp.admin import permissions
 
 # Version and branch info
-from ldcoolp import __version__
+from ldcoolp import __version__, CODE_NAME
 from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     log_filename = logger.get_log_file(log.handlers[-1])
 
     lc = logger.LogCommons(log, logfile_prefix, gi,
-                           code_name='LD-Cool-P', version=__version__)
+                           code_name=CODE_NAME, version=__version__)
 
     lc.script_start()
 
