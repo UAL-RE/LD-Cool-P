@@ -2,6 +2,8 @@ from os import path
 
 __version__ = "1.0.0"
 
+CODE_NAME = "LD-Cool-P"
+
 co_path = path.dirname(__file__)
 
 ##############################################
@@ -12,4 +14,3 @@ co_path = path.dirname(__file__)
 config_dir       = path.join(co_path, 'config/')
 main_config_file = 'default.ini'
 config_file      = path.join(config_dir, main_config_file)  # Contains full path to main configuration file
-CODE_NAME = "LD-Cool-P"
