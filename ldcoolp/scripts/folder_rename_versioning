@@ -10,7 +10,7 @@ from glob import glob
 
 from datetime import date
 
-from ldcoolp.logger import LogClass, get_user_hostname
+from redata.commons import logger
 from ldcoolp.config import dict_load
 
 # Version and branch info
@@ -82,22 +82,15 @@ if __name__ == '__main__':
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'folder_rename_versioning'
-    logfile = f"{logfile_prefix}.{today.strftime('%Y-%m-%d')}.log"
+    log = logger.log_setup(log_dir, logfile_prefix)
 
-    log = LogClass(log_dir, logfile).get_logger()
+    lc = logger.LogCommons(log, logfile_prefix, gi,
+                           code_name="LD-Cool-P", version=__version__)
 
-    log.info("****************************")
-
-    log.debug(f"LD-Cool-P branch: {gi.branch}")
-    log.debug(f"LD-Cool-P version: {__version__} ({gi.short_commit})")
-    log.debug(f"LD-Cool-P commit hash: {gi.commit}")
+    lc.script_start()
 
     # Retrieve username, hostname, IP
-    sys_info = get_user_hostname()
-    log.debug(f"username : {sys_info['user']}")
-    log.debug(f"hostname : {sys_info['hostname']}")
-    log.debug(f"IP Addr  : {sys_info['ip']}")
-    log.debug(f"Op. Sys. : {sys_info['os']}")
+    lc.script_sys_info()
 
     # Loop over each stage
     stages = args.stage.split(',')
@@ -139,5 +132,6 @@ if __name__ == '__main__':
         f.writelines([cmd+'\n' for cmd in sh_cmd])
         f.close()
 
-    log.info("****************************")
-    log.info("STATUS: Exit 0")
+    lc.log_permission()
+
+    lc.script_end()
