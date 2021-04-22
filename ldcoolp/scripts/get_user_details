@@ -60,7 +60,6 @@ if __name__ == '__main__':
         mkdir(log_dir)
     logfile_prefix = 'get_user_details'
     log = logger.log_setup(log_dir, logfile_prefix)
-    log_filename = logger.get_log_file(log.handlers[-1])
 
     lc = logger.LogCommons(log, logfile_prefix, gi,
                            code_name=CODE_NAME, version=__version__)
