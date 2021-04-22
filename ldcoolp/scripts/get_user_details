@@ -70,6 +70,9 @@ if __name__ == '__main__':
     # Retrieve username, hostname, IP
     lc.script_sys_info()
 
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
     fs_admin = FigshareInstituteAdmin(figshare_dict=config_dict['figshare'],
                                       log=log)
 

@@ -92,6 +92,9 @@ if __name__ == '__main__':
     # Retrieve username, hostname, IP
     lc.script_sys_info()
 
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
     # Loop over each stage
     stages = args.stage.split(',')
     curation_directory_main = curation_dict[curation_dict['parent_dir']]

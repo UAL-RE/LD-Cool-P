@@ -78,6 +78,9 @@ if __name__ == '__main__':
     # Retrieve username, hostname, IP
     lc.script_sys_info()
 
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
     # Separate comma-separated list of articles
     articles = args.article_id.split(',')
     num_articles = len(articles)
