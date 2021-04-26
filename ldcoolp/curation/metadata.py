@@ -5,7 +5,7 @@ import json
 
 import pandas as pd
 
-from ..logger import log_stdout
+from redata.commons.logger import log_stdout
 
 
 def save_metadata(json_response: Union[list, dict],

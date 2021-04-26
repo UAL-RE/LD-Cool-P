@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from os.path import dirname, exists, join
-from os import mkdir, stat
+from os import mkdir
 
 import argparse
 import configparser
@@ -11,12 +11,11 @@ from datetime import date
 from ldcoolp.admin.move import MoveClass
 from ldcoolp.curation.depositor_name import DepositorName
 from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
-from ldcoolp.logger import LogClass, get_user_hostname
-from ldcoolp.admin import permissions
+from redata.commons import logger
 
 # Version and branch info
-from ldcoolp import __version__
-from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from ldcoolp import __version__, CODE_NAME
+from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
 # Config loader
@@ -41,8 +40,7 @@ if __name__ == '__main__':
     if args.direction not in ['next', 'back', 'publish']:
         raise ValueError(f"WARNING!!! --direction flag not properly set. Either next, back, or publish")
 
-    branch_name = get_active_branch_name(library_root_path)
-    git_commit, git_short_commit = get_latest_commit(library_root_path)
+    gi = GitInfo(library_root_path)
 
     # Load configuration
     try:
@@ -59,22 +57,18 @@ if __name__ == '__main__':
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'perform_move'
-    logfile = f"{logfile_prefix}.{today.strftime('%Y-%m-%d')}.log"
+    log = logger.log_setup(log_dir, logfile_prefix)
 
-    log = LogClass(log_dir, logfile).get_logger()
+    lc = logger.LogCommons(log, logfile_prefix, gi,
+                           code_name=CODE_NAME, version=__version__)
 
-    log.info("****************************")
-
-    log.debug(f"LD-Cool-P branch: {branch_name}")
-    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
-    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+    lc.script_start()
 
     # Retrieve username, hostname, IP
-    sys_info = get_user_hostname()
-    log.debug(f"username : {sys_info['user']}")
-    log.debug(f"hostname : {sys_info['hostname']}")
-    log.debug(f"IP Addr  : {sys_info['ip']}")
-    log.debug(f"Op. Sys. : {sys_info['os']}")
+    lc.script_sys_info()
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
 
     # Separate comma-separated list of articles
     articles = args.article_id.split(',')
@@ -103,12 +97,6 @@ if __name__ == '__main__':
         log.info(f"Completed: {count} / {num_articles}")
 
     # Change permission to mode=666 (rw for all)
-    status = stat(join(log_dir, logfile))
-    if oct(status.st_mode)[-3:] == '666':
-        log.debug("Permissions set for logfile")
-    else:
-        log.debug("Changing permissions on logfile...")
-        permissions.curation(join(log_dir, logfile), mode=0o666)
+    lc.log_permission()
 
-    log.info("****************************")
-    log.info("Exit 0")
+    lc.script_end()

@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 from html2text import html2text
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 from ....admin import permissions, move
 
@@ -140,7 +140,7 @@ class ReadmeClass:
             self.jinja_template = self.import_template()
         except SystemError:
             self.template_source = 'unknown'
-            self.log.warn("More than one README files found!")
+            self.log.warning("More than one README files found!")
 
     def get_readme_files(self):
         """Return list of README files in the ORIGINAL_DATA path"""

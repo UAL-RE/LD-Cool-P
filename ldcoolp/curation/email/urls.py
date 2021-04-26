@@ -4,7 +4,7 @@ from requests.exceptions import HTTPError
 from urllib.parse import quote, urlencode
 from ..api.qualtrics import url_safe
 
-from ...logger import log_stdout
+from redata.commons.logger import log_stdout
 
 
 def tiny_url(url: str, alias=None, log=None) -> str:

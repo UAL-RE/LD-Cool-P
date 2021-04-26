@@ -9,7 +9,7 @@ from ldcoolp.curation.depositor_name import DepositorName
 
 # Version and branch info
 from ldcoolp import __version__
-from ldcoolp.git_info import get_active_branch_name
+from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
 # Read in configuration file
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     parser.add_argument('--config', required=True, help='full path to configuration file')
     args = parser.parse_args()
 
-    branch_name = get_active_branch_name(library_root_path)
+    gi = GitInfo(library_root_path)
 
     banner_message = f"""
     This is the command-line tool that maps the old folder names to the new ones.
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     Note that it is not perfect as the old names have changed over time.
     Thus, user intervention is required.  However, the new name is correct
 
-    LD-Cool-P branch: {branch_name}
+    LD-Cool-P branch: {gi.branch}
     LD-Cool-P version: {__version__}
     Created by Chun Ly
     Bug/Suggestions? Submit a GitHub bug report here: https://github.com/ualibraries/LD_Cool_P/issues/choose

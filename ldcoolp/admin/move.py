@@ -4,7 +4,7 @@ import shutil
 from glob import glob
 
 # Logging
-from ..logger import log_stdout
+from redata.commons.logger import log_stdout
 
 # Read in default configuration settings
 from ..config import config_default_dict

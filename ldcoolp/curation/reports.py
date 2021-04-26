@@ -4,7 +4,7 @@ from os import makedirs
 from urllib.request import urlretrieve
 
 from ldcoolp.admin import permissions
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 from ..config import config_default_dict
 

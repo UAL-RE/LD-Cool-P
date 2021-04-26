@@ -2,7 +2,7 @@ from os.path import join, exists
 from os import makedirs, chmod
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 # Admin
 from ldcoolp.admin import move
