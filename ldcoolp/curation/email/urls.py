@@ -4,7 +4,7 @@ from requests.exceptions import HTTPError
 from urllib.parse import quote, urlencode
 from ..api.qualtrics import url_safe
 
-from ...logger import log_stdout
+from redata.commons.logger import log_stdout
 
 
 def tiny_url(url: str, alias=None, log=None) -> str:
@@ -23,7 +23,9 @@ def tiny_url(url: str, alias=None, log=None) -> str:
 
     endpoint = "http://tinyurl.com/api-create.php"
     encoded_url = urlencode({'url': url}, safe=url_safe, quote_via=quote)
+    log.debug(f"encoded_url: {encoded_url}")
     get_url = f"{endpoint}?{encoded_url}"
+    log.debug(f"get_url : {get_url}")
 
     params = dict()
     if alias is not None:

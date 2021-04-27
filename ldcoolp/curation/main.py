@@ -2,7 +2,7 @@ from os.path import join, exists
 from os import makedirs, chmod
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 # Admin
 from ldcoolp.admin import move
@@ -90,6 +90,9 @@ class PrerequisiteWorkflow:
 
     def make_folders(self):
         # Create and set permissions to rwx
+        self.log.info("")
+        self.log.info("** CREATING ORGANIZATIONAL STRUCTURE **")
+
         sub_dirs = [self.data_directory,
                     self.copy_data_directory,
                     self.metadata_directory]
@@ -163,8 +166,17 @@ def workflow(article_id, url_open=False, browser=True, log=None,
         pw.download_report()
 
         # Download Qualtrics deposit agreement form
+        curation_dict = config_dict['curation']
+        out_path = join(
+            curation_dict[curation_dict['parent_dir']],
+            curation_dict['folder_todo'],
+            pw.dn.folderName,
+            curation_dict['folder_ual_rdm'],
+        )
+        log.debug(f"out_path: {out_path}")
         q = Qualtrics(qualtrics_dict=config_dict['qualtrics'], log=log)
-        q.retrieve_deposit_agreement(pw.dn.name_dict, browser=browser)
+        q.retrieve_deposit_agreement(pw.dn.name_dict, out_path=out_path,
+                                     browser=browser)
 
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict)

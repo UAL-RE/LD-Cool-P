@@ -5,7 +5,7 @@ import json
 
 import pandas as pd
 
-from ..logger import log_stdout
+from redata.commons.logger import log_stdout
 
 
 def save_metadata(json_response: Union[list, dict],
@@ -30,6 +30,8 @@ def save_metadata(json_response: Union[list, dict],
         log = log_stdout()
 
     log.debug("starting ...")
+    log.info("")
+    log.info("** SAVING CURATION METADATA **")
 
     if not root_directory:
         root_directory = os.getcwd()

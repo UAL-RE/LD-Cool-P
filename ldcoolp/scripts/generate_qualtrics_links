@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 
 from os.path import dirname, exists, join
-from os import mkdir, stat
+from os import mkdir
 
 import argparse
+import configparser
 
 from datetime import date
 
-from ldcoolp.logger import LogClass, get_user_hostname
+from redata.commons import logger
 from ldcoolp.curation.api import figshare
 from ldcoolp.curation.api import qualtrics
 from ldcoolp.curation import depositor_name
-from ldcoolp.admin import permissions
 from ldcoolp.config import dict_load
 from ldcoolp.curation.email import urls
 
 # Version and branch info
-from ldcoolp import __version__
-from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from ldcoolp import __version__, CODE_NAME
+from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
 today = date.today()
@@ -35,14 +35,13 @@ if __name__ == '__main__':
     if not exists(args.config):
         raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
 
-    branch_name = get_active_branch_name(library_root_path)
-    git_commit, git_short_commit = get_latest_commit(library_root_path)
+    gi = GitInfo(library_root_path)
 
     banner_message = f"""
     This is the command-line tool to generate custom Qualtrics URL for a deposit.
-    LD-Cool-P branch: {branch_name}
-    LD-Cool-P version: {__version__}
-    LD-Cool-P commit hash: {git_short_commit}
+    {CODE_NAME} branch: {gi.branch}
+    {CODE_NAME} version: {__version__}
+    {CODE_NAME} commit hash: {gi.short_commit}
     Created by Chun Ly
     Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
     """
@@ -50,7 +49,10 @@ if __name__ == '__main__':
     print(banner_message)
 
     # Load configuration
-    config_dict = dict_load(args.config)
+    try:
+        config_dict = dict_load(args.config)
+    except configparser.ParsingError:
+        exit()
 
     curation_dict = config_dict['curation']
     root_directory_main = curation_dict[curation_dict['log_parent_dir']]
@@ -59,32 +61,26 @@ if __name__ == '__main__':
     if not exists(log_dir):
         mkdir(log_dir)
     logfile_prefix = 'generate_qualtrics_link'
-    logfile = "{}.{}.log".format(logfile_prefix, today.strftime("%Y-%m-%d"))
+    log = logger.log_setup(log_dir, logfile_prefix)
 
-    log = LogClass(log_dir, logfile).get_logger()
+    lc = logger.LogCommons(log, logfile_prefix, gi,
+                           code_name=CODE_NAME, version=__version__)
+
+    lc.script_start()
+
+    # Retrieve username, hostname, IP
+    lc.script_sys_info()
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
+    log.info(f"Retrieving Deposit Agreement URL for {args.article_id} ...")
 
     fs_dict = config_dict['figshare']
     fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
 
     q_dict = config_dict['qualtrics']
     q = qualtrics.Qualtrics(qualtrics_dict=q_dict, log=log)
-
-    log.info("************************************")
-    log.debug(f"LD-Cool-P branch: {branch_name}")
-    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
-    log.debug(f"LD-Cool-P commit hash: {git_commit}")
-
-    # Retrieve username, hostname, IP
-    sys_info = get_user_hostname()
-    log.debug(f"username : {sys_info['user']}")
-    log.debug(f"hostname : {sys_info['hostname']}")
-    log.debug(f"IP Addr  : {sys_info['ip']}")
-    log.debug(f"Op. Sys. : {sys_info['os']}")
-
-    # Configuration information
-    log.info(f"Config file: {args.config}")
-
-    log.info(f"Retrieving Deposit Agreement URL for {args.article_id} ...")
 
     dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
 
@@ -106,12 +102,6 @@ if __name__ == '__main__':
     log.info(f"TinyURL: {readme_tinyurl}")
 
     # Change permission to mode=666 (rw for all)
-    status = stat(join(log_dir, logfile))
-    if oct(status.st_mode)[-3:] == '666':
-        log.debug("Permissions set for logfile")
-    else:
-        log.debug("Changing permissions on logfile...")
-        permissions.curation(join(log_dir, logfile), mode=0o666)
+    lc.log_permission()
 
-    log.info("************************************")
-    log.info("Exit 0")
+    lc.script_end()

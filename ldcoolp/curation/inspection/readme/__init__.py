@@ -3,13 +3,14 @@ from os import walk, stat
 from datetime import datetime
 import shutil
 from glob import glob
+import re
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
 from html2text import html2text
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 from ....admin import permissions, move
 
@@ -108,6 +109,7 @@ class ReadmeClass:
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
+        self.metadata_path = join(self.folder_path, curation_dict['folder_metadata'])  # METADATA
         self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
                                        curation_dict['folder_data'])  # ORIGINAL_DATA
@@ -138,7 +140,7 @@ class ReadmeClass:
             self.jinja_template = self.import_template()
         except SystemError:
             self.template_source = 'unknown'
-            self.log.warn("More than one README files found!")
+            self.log.warning("More than one README files found!")
 
     def get_readme_files(self):
         """Return list of README files in the ORIGINAL_DATA path"""
@@ -177,7 +179,7 @@ class ReadmeClass:
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
 
-        dest_file = join(self.data_path, self.readme_template)
+        dest_file = join(self.metadata_path, self.readme_template)
 
         if not exists(dest_file):
             self.log.info(f"Saving {self.template_source} template in DATA ...")
@@ -194,7 +196,7 @@ class ReadmeClass:
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
-        file_loader = FileSystemLoader(self.data_path)
+        file_loader = FileSystemLoader(self.metadata_path)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
         jinja_template = env.get_template(self.readme_template)
@@ -216,12 +218,14 @@ class ReadmeClass:
 
         # Retrieve preferred citation. Default: ReDATA in DataCite format
         # This forces a period after the year and ensures multiple rows
-        # with the last two row merged for simplicity
+        # with the last two rows merged for simplicity
+        # Bug: v0.17.6 handles periods in author list (e.g., initials)
         single_str_citation = self.article_dict['item']['citation']
-        str_list = [str_row + '.' for str_row in
-                    single_str_citation.replace('):', ').').split('. ')]
-        citation_list = [content for content in str_list[0:-2]]
-        citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+        pre_processed_str = single_str_citation.replace('):', ').')
+        # Match spaces following group 1, only if followed by group 2
+        END_SENT = re.compile('((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
+        # Filter for empty list entry
+        citation_list = list(filter(None, END_SENT.split(pre_processed_str)))
         readme_dict['preferred_citation'] = citation_list
 
         # Retrieve DOI info. Reserve if it does not exist
@@ -265,6 +269,9 @@ class ReadmeClass:
 
     def retrieve_qualtrics_readme(self):
         """Retrieve README custom information from Qualtrics form"""
+
+        self.log.info("")
+        self.log.info("** IDENTIFYING README FORM RESPONSE **")
 
         q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
 
@@ -327,6 +334,9 @@ class ReadmeClass:
 
     def main(self):
         """Main function for README file construction"""
+
+        self.log.info("")
+        self.log.info("** STARTING README.txt CONSTRUCTION **")
 
         if self.template_source != 'unknown':
             self.log.info("PROMPT: Do you wish to create a README file?")

@@ -4,7 +4,7 @@ from os import makedirs
 from urllib.request import urlretrieve
 
 from ldcoolp.admin import permissions
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 from ..config import config_default_dict
 
@@ -17,6 +17,9 @@ def review_report(depositor_name='', curation_dict=config_default_dict['curation
 
     if isinstance(log, type(None)):
         log = log_stdout()
+
+    log.info("")
+    log.info("** CREATING CURATION REVIEW REPORT **")
 
     root_directory_main = curation_dict[curation_dict['parent_dir']]
     todo_folder = curation_dict['folder_todo']

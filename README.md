@@ -63,7 +63,7 @@ You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (>=v3.7.9)
 2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
-3. [`pandas`](https://pandas.pydata.org/) ([1.2.1](https://pandas.pydata.org/pandas-docs/version/1.2.1/))
+3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
 5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
 6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([2.11.2](https://jinja.palletsprojects.com/en/2.11.x/))
@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `0.17.4`.
+You should see that the version is `1.0.1`.
 
 ### Configuration Settings
 
@@ -241,10 +241,25 @@ A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
 Unreleased:
- * Handle missing README form responses for simplified curation sets #172
- * Script to generate Qualtrics links for WCCFL conference `general_wccfl_qualtrics_links` #171
+ * Enhancement: Simple script for Qualtrics link generation for WCCFL conference #171
 
-v0.17.0 - v0.17.4:
+v1.0.0 - v1.0.1:
+ * Feature: Handle multiple Qualtrics Deposit Agreement survey,
+   including conference-style submissions (e.g., Space Grant, WCCFL)
+   #137, #193, #194
+ * Feature: Use TinyURL API to construct simplified Qualtrics links #144
+ * Feature: Add METADATA folder in curation #151
+ * Feature: Write JSON files for submitted content (curation metadata, file list) #152
+ * CI: Python 3.9 #155
+ * Bug: Fix missing `pandas_write_buffer` call for Qualtrics match by input name #168
+ * Bug: Handle missing README form responses for simplified curation sets #172
+ * Feature: Retrieve Deposit Agreement PDF via API #187
+ * Feature: README_template.md migrated to METADATA folder #191
+ * Chore: Refactor code to use `redata-commons` #197
+
+**Note**: Backward incompatibility with config file due to #137
+
+v0.17.0 - v0.17.7:
  * Include Travis CI configuration (disabled see #136) #129
  * Include GitHub Actions for Python CI build and testing #136
  * Add script for curation folder rename #120
@@ -255,7 +270,10 @@ v0.17.0 - v0.17.4:
  * Fix involving `html2text` (stop using) for Qualtrics README form's files and materials section #145
  * Fix to handle extraneous single quote from Qualtrics API data #147
  * Minor: Fix Qualtrics bug with multiple responses #150
- 
+ * Minor: Update `bug report` template #169 
+ * Bug: Fix handling of period in author list (middle initial, "et al.") for preferred citation #180
+ * Bug: Use manual `ResponseId` for Qualtrics README form for README.txt generation #182
+
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131
  * Handle public file(s) in curation step #32, #127

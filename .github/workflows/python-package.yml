@@ -38,6 +38,6 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install pytest pytest-cov
         python setup.py install
-    - name: Test with pytest
-      run: |
-        pytest --cov-report term-missing --cov-config=.coveragerc --cov=ldcoolp tests
+    #- name: Test with pytest
+    #  run: |
+    #    pytest --cov-report term-missing --cov-config=.coveragerc --cov=ldcoolp tests
