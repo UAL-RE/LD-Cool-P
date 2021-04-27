@@ -240,6 +240,9 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
+Unreleased:
+ * Enhancement: Simple script for Qualtrics link generation for WCCFL conference #171
+
 v1.0.0 - v1.0.1:
  * Feature: Handle multiple Qualtrics Deposit Agreement survey,
    including conference-style submissions (e.g., Space Grant, WCCFL)
