@@ -1,0 +1,224 @@
+#!/usr/bin/env python
+
+from os.path import dirname, exists, join
+from os import mkdir, stat
+
+from urllib.parse import quote, urlencode
+import json
+import requests
+
+import csv
+
+import pandas as pd
+
+import argparse
+
+from datetime import date
+
+from ldcoolp.logger import LogClass, get_user_hostname
+from ldcoolp.curation.api import figshare
+from ldcoolp.curation import df_to_dict_single
+from ldcoolp.admin import permissions
+from ldcoolp.config import dict_load
+
+from ldcoolp.curation.email import urls
+
+# Version and branch info
+from ldcoolp import __version__
+from ldcoolp.git_info import get_active_branch_name, get_latest_commit
+from ldcoolp import __file__ as library_path
+
+today = date.today()
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
+
+url_safe = '/ {},:"?=@%'
+
+# Custom settings for script
+wccfl_survey_id = 'SV_9KOrfOnPuXgVIDc'
+account_id = 2641202
+
+
+def get_articles_list(fs_dict, article_id=''):
+    """Get list of private articles under depositor account for WCCFC
+    """
+    if not article_id:
+        url = 'https://api.figshare.com/v2/account/articles'
+    else:
+        url = f'https://api.figshare.com/v2/account/articles/{article_id}'
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'token {fs_dict["api_token"]}'
+    }
+
+    params = {'impersonate': account_id}
+    if not article_id:
+        params['page'] = 1
+        params['page_size'] = 100
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if not article_id:
+        return pd.DataFrame(response.json())
+    else:
+        return response.json()
+
+
+def wccfl_generate_url(qualtrics_dict, dn_dict):
+    populate_response_dict = dict()
+    for query in ['QID4', 'QID6']:
+        populate_response_dict[query] = {
+            "1": dn_dict['full name'],
+            "2": dn_dict['email'],
+            "3": dn_dict['affiliation']
+        }
+
+    populate_response_dict['QID7'] = dn_dict['title']
+
+    json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
+
+    query_str_dict = {'article_id': dn_dict['article_id'],
+                      # 'curation_id': dn_dict['curation_id'],
+                      'Q_PopulateResponse': json_txt}
+
+    full_url = f"{qualtrics_dict['generate_url']}{wccfl_survey_id}?" + \
+               urlencode(query_str_dict, safe=url_safe, quote_via=quote)
+    return full_url
+
+
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description='Command-line driver for LD-Cool-P retrieval of WCCFL Qualtrics links.')
+    parser.add_argument('--config', required=True,
+                        help='path to configuration file')
+    parser.add_argument('--csv-file', required=True,
+                        help='CSV file containing list of presenters')
+    parser.add_argument('--tiny_url', action='store_true',
+                        help='Generate TinyURL to use')
+    args = parser.parse_args()
+
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
+    if not exists(args.csv_file):
+        raise FileNotFoundError(f"WARNING!!! CSV file not found: {args.csv_file}")
+
+    branch_name = get_active_branch_name(library_root_path)
+    git_commit, git_short_commit = get_latest_commit(library_root_path)
+
+    banner_message = f"""
+    This is the command-line tool to generate custom WCCFL Qualtrics URLs for all deposits.
+    LD-Cool-P branch: {branch_name}
+    LD-Cool-P version: {__version__}
+    LD-Cool-P commit hash: {git_short_commit}
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+
+    print(banner_message)
+
+    # Load configuration
+    config_dict = dict_load(args.config)
+
+    # Settings for script
+    config_dict['qualtrics']['survey_id'] = wccfl_survey_id
+
+    curation_dict = config_dict['curation']
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'generate_wccfl_qualtrics_links'
+    logfile = f'{logfile_prefix}.{today.strftime("%Y-%m-%d")}.log'
+
+    log = LogClass(log_dir, logfile).get_logger()
+
+    log.info("************************************")
+    log.debug(f"LD-Cool-P branch: {branch_name}")
+    log.debug(f"LD-Cool-P version: {__version__} ({git_short_commit})")
+    log.debug(f"LD-Cool-P commit hash: {git_commit}")
+
+    # Retrieve username, hostname, IP
+    sys_info = get_user_hostname()
+    log.debug(f"username : {sys_info['user']}")
+    log.debug(f"hostname : {sys_info['hostname']}")
+    log.debug(f"IP Addr  : {sys_info['ip']}")
+    log.debug(f"Op. Sys. : {sys_info['os']}")
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
+    # Read in CSV file
+    log.info(f"Reading: {args.csv_file}")
+    df = pd.read_csv(args.csv_file, sep='\t')
+    full_urls = [''] * len(df)
+    short_urls = [''] * len(df)
+
+    # Figshare API
+    ##############
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
+
+    acct_df = fs_admin.get_account_list()
+    acct_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
+
+    log.info("Retrieving list now ...")
+
+    articles_df = get_articles_list(fs_dict)
+    log.info("Truncating to pending list from Depositor Account ...")
+    pending_df = articles_df.loc[articles_df['published_date'].isna()]
+    n_pending = len(pending_df)
+    log.info(f"Number of pending: {n_pending}")
+
+    pending_articles = pending_df['id'].tolist()
+
+    # Qualtrics API
+    ###############
+    q_dict = config_dict['qualtrics']
+
+    for p in range(len(pending_df)):
+        row = pending_df.loc[p]
+
+        article_dict = get_articles_list(fs_dict, article_id=row['id'])
+
+        # Match by title
+        match_idx = df.loc[df['title'] == article_dict['title']].index
+        match_df = df.loc[match_idx[0]]
+        dn_dict = {
+            'article_id': row['id'],
+            # 'curation_id': row['id'],
+            'title': article_dict['title'],
+        }
+        for key in ['full name', 'email', 'affiliation']:
+            dn_dict[key] = match_df[key]
+
+        full_url = wccfl_generate_url(q_dict, dn_dict)
+        full_urls[match_idx[0]] = full_url
+
+        if args.tiny_url:
+            short_urls[match_idx[0]] = f"wccfl_{row['id']}"
+            url_alias = f"wccfl_{row['id']}"
+            urls.tiny_url(full_url, url_alias, log)
+
+    df['full url'] = full_urls
+
+    if args.tiny_url:
+        df['short url'] = short_urls
+
+    csv_outfile = args.csv_file.replace('.csv', '_links.csv')
+    log.info(f"Writing: {csv_outfile}")
+    df.to_csv(csv_outfile, sep='\t', quoting=csv.QUOTE_NONE)
+
+    # Change permission to mode=666 (rw for all)
+    status = stat(join(log_dir, logfile))
+    if oct(status.st_mode)[-3:] == '666':
+        log.debug("Permissions set for logfile")
+    else:
+        log.debug("Changing permissions on logfile...")
+        permissions.curation(join(log_dir, logfile), mode=0o666)
+
+    log.info("************************************")
+    log.info("Exit 0")

@@ -242,6 +242,7 @@ List is sorted from moderate to minor revisions for reach release.
 
 Unreleased:
  * Handle missing README form responses for simplified curation sets #172
+ * Script to generate Qualtrics links for WCCFL conference `general_wccfl_qualtrics_links` #171
 
 v0.17.0 - v0.17.4:
  * Include Travis CI configuration (disabled see #136) #129
