@@ -268,7 +268,7 @@ class ReadmeClass:
 
         q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
 
-        readme_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
+        readme_dict = q.retrieve_qualtrics_readme(self.dn)
 
         return readme_dict
 
