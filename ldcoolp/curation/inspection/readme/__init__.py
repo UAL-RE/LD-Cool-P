@@ -187,7 +187,7 @@ class ReadmeClass:
 
         if not update:
             template_dir = join(dirname(__file__), 'templates/')
-            template_list = glob(template_dir + '*.md')
+            template_list = sorted(glob(template_dir + '*.md'))
             if len(template_list) == 0:
                 self.log.warning("Missing templates!!!")
                 raise SystemError
