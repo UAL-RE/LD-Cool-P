@@ -1,5 +1,5 @@
 from os.path import exists, join, dirname, basename
-from os import walk, stat
+from os import walk, stat, symlink
 from datetime import datetime
 import shutil
 from glob import glob
@@ -63,11 +63,14 @@ class ReadmeClass:
     check_for_readme()
       Check if a README file is provided and provide list of README files
 
+    select_template(update)
+      Select README template to use from template repository
+
     save_template()
       Save either default or user-provided templates in DATA path
 
     import_template()
-     Returns a jinja2 template by importing markdown README file (README_template.md)
+      Returns a jinja2 template by importing markdown README file (README_template.md)
 
     retrieve article_metadata()
       Returns a dictionary containing metadata for jinja2 template
@@ -115,7 +118,7 @@ class ReadmeClass:
                                        curation_dict['folder_data'])  # ORIGINAL_DATA
 
         # README template
-        self.readme_template = curation_dict['readme_template']
+        self.readme_template = self.select_template(update=update)
 
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
@@ -176,8 +179,42 @@ class ReadmeClass:
 
         return template_source
 
+    def select_template(self, update: bool):
+        """Select README template to use from template repository"""
+
+        self.log.info("")
+        self.log.info("** SELECTING README TEMPLATE **")
+
+        if not update:
+            template_dir = join(dirname(__file__), 'templates/')
+            template_list = glob(template_dir + '*.md')
+            if len(template_list) == 0:
+                self.log.warning("Missing templates!!!")
+                raise SystemError
+
+            template_list = [basename(t_file) for t_file in template_list]
+            if len(template_list) == 1:
+                self.log.info(f"Only one template found: {template_list[0]}. Using!")
+                template_i = 0
+            else:
+                self.log.info("List of README templates: ")
+                for i, template_file in enumerate(template_list):
+                    self.log.info(f"  ({i}): {template_file}")
+                template_i = int(input("Select from above list (enter number ONLY) : "))
+                self.log.info(f"RESPONSE: {template_i} == {template_list[template_i]}")
+
+            return template_list[template_i]
+        else:
+            t_list = [basename(md_file) for md_file in
+                      glob(join(self.metadata_path, '*.md'))]
+            t_list.remove(self.config_dict['curation']['readme_template'])
+            return t_list[0]
+
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
+
+        symlink_file = join(self.metadata_path,
+                            self.config_dict['curation']['readme_template'])
 
         dest_file = join(self.metadata_path, self.readme_template)
 
@@ -185,13 +222,19 @@ class ReadmeClass:
             self.log.info(f"Saving {self.template_source} template in DATA ...")
 
             if self.template_source == 'default':
-                src_file = join(dirname(__file__), self.readme_template)
+                src_file = join(dirname(__file__), 'templates',
+                                self.readme_template)
             else:
                 src_file = self.README_files[0]
 
             shutil.copy(src_file, dest_file)
         else:
-            self.log.info(f"{self.readme_template} exists. Not overwriting template!")
+            self.log.info(f"{dest_file} exists. Not overwriting template!")
+
+        if not exists(symlink_file):
+            symlink(self.readme_template, symlink_file)
+        else:
+            self.log.info(f"{symlink_file} symbolic file link exists. Not overwriting!")
 
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
@@ -199,7 +242,8 @@ class ReadmeClass:
         file_loader = FileSystemLoader(self.metadata_path)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
-        jinja_template = env.get_template(self.readme_template)
+        jinja_template = env.get_template(
+            self.config_dict['curation']['readme_template'])
         return jinja_template
 
     def retrieve_article_metadata(self):
