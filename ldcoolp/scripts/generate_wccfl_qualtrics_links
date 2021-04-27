@@ -95,7 +95,7 @@ if __name__ == '__main__':
                         help='path to configuration file')
     parser.add_argument('--csv-file', required=True,
                         help='CSV file containing list of presenters')
-    parser.add_argument('--tiny_url', action='store_true',
+    parser.add_argument('--tiny-url', action='store_true',
                         help='Generate TinyURL to use')
     args = parser.parse_args()
 
