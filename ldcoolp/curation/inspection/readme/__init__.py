@@ -117,9 +117,6 @@ class ReadmeClass:
         self.original_data_path = join(self.folder_path,
                                        curation_dict['folder_data'])  # ORIGINAL_DATA
 
-        # README template
-        self.readme_template = self.select_template(update=update)
-
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
@@ -135,6 +132,11 @@ class ReadmeClass:
         try:
             # Define template_source
             self.template_source = self.check_for_readme()
+
+            if self.template_source == 'default':
+                self.readme_template = self.select_template(update=update)
+            else:
+                self.readme_template = 'user_readme_template.md'
 
             # Save copy of template in DATA as README_template.md
             self.save_template()
@@ -157,7 +159,7 @@ class ReadmeClass:
 
         if len(self.README_files) == 0:
             self.log.info("No README files found.")
-            self.log.info(f"Note: default {self.readme_template} will be used")
+            self.log.info(f"Note: You will be asked to select from default templates")
             template_source = 'default'
         else:
             if len(self.README_files) == 1:
@@ -219,7 +221,7 @@ class ReadmeClass:
         dest_file = join(self.metadata_path, self.readme_template)
 
         if not exists(dest_file):
-            self.log.info(f"Saving {self.template_source} template in DATA ...")
+            self.log.info(f"Saving {self.readme_template} template in METADATA ...")
 
             if self.template_source == 'default':
                 src_file = join(dirname(__file__), 'templates',
@@ -227,6 +229,7 @@ class ReadmeClass:
             else:
                 src_file = self.README_files[0]
 
+            self.log.info(f"Source file name: {src_file}")
             shutil.copy(src_file, dest_file)
         else:
             self.log.info(f"{dest_file} exists. Not overwriting template!")
