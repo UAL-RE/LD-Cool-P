@@ -120,6 +120,9 @@ class ReadmeClass:
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
+        # Symlink template name in METADATA
+        self.default_readme_file = curation_dict['readme_template']
+
         # Retrieve Figshare metadata for jinja template engine
         self.figshare_readme_dict = self.retrieve_article_metadata()
 
@@ -209,14 +212,13 @@ class ReadmeClass:
         else:
             t_list = [basename(md_file) for md_file in
                       glob(join(self.metadata_path, '*.md'))]
-            t_list.remove(self.config_dict['curation']['readme_template'])
+            t_list.remove(self.default_readme_file)
             return t_list[0]
 
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
 
-        symlink_file = join(self.metadata_path,
-                            self.config_dict['curation']['readme_template'])
+        symlink_file = join(self.metadata_path, self.default_readme_file)
 
         dest_file = join(self.metadata_path, self.readme_template)
 
@@ -245,8 +247,7 @@ class ReadmeClass:
         file_loader = FileSystemLoader(self.metadata_path)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
-        jinja_template = env.get_template(
-            self.config_dict['curation']['readme_template'])
+        jinja_template = env.get_template(self.default_readme_file)
         return jinja_template
 
     def retrieve_article_metadata(self):
