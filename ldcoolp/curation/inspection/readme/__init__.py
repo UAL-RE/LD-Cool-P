@@ -1,4 +1,4 @@
-from os.path import exists, join, dirname, basename
+from os.path import exists, join, dirname, basename, getctime
 from os import walk, stat, symlink
 from datetime import datetime
 import shutil
@@ -192,7 +192,8 @@ class ReadmeClass:
 
         if not update:
             template_dir = join(dirname(__file__), 'templates/')
-            template_list = sorted(glob(template_dir + '*.md'))
+            template_list = sorted(glob(template_dir + '*.md'), key=getctime)
+
             if len(template_list) == 0:
                 self.log.warning("Missing templates!!!")
                 raise SystemError
