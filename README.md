@@ -253,6 +253,7 @@ v1.0.0 - v1.0.1:
  * Feature: Retrieve Deposit Agreement PDF via API #187
  * Feature: README_template.md migrated to METADATA folder #191
  * Chore: Refactor code to use `redata-commons` #197
+ * Enhancement: Ability to use different README_template.md #195
 
 **Note**: Backward incompatibility with config file due to #137
 
