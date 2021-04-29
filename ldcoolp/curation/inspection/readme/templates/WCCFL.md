@@ -14,8 +14,8 @@ Preferred citation (DataCite format):
 {% endif %}
 
 
-Corresponding Author:   
-  {{ figshare_dict.firstname }} {{ figshare_dict.lastname }}, University of Arizona, {{ figshare_dict.email }}
+Corresponding Author:
+  {{ qualtrics_dict.corr_author_fullname }}, {{ qualtrics_dict.corr_author_affil }}, {{ qualtrics_dict.corr_author_email }}
 
 
 License:
