@@ -568,4 +568,15 @@ class Qualtrics:
                         qualtrics_dict[field] = qualtrics_dict[field][1:]
                         self.log.debug(f"Removing extra single quote in {field} entry")
 
+        # Retrieve corresponding author info and append
+        self.log.info("Appending Deposit Agreement's Corresponding Author metadata")
+        if not self.da_response_id:
+            self.log.info("NO METADATA - Retrieving Deposit Agreement metadata")
+            self.find_deposit_agreement(dn_dict)
+        DA_response_df = self.get_survey_response(self.da_survey_id, self.da_response_id)
+        DA_dict = df_to_dict_single(DA_response_df)
+        qualtrics_dict['corr_author_fullname'] = DA_dict['Q6_1']
+        qualtrics_dict['corr_author_email'] = DA_dict['Q6_2']
+        qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
+
         return qualtrics_dict
