@@ -123,6 +123,10 @@ class Qualtrics:
 
         self.readme_survey_id = self.dict['readme_survey_id']
 
+        # Initialize Deposit Agreement info
+        self.da_response_id: str = ''
+        self.da_survey_id: str = ''
+
         # Logging
         self.file_logging = False
         if isinstance(log, type(None)):
@@ -295,6 +299,8 @@ class Qualtrics:
                 survey_shortname = \
                     self.lookup_survey_shortname(response_dict['SurveyID'])
                 self.log.info(f"Survey name: {survey_shortname}")
+                self.da_response_id = response_dict['ResponseId']
+                self.da_survey_id = response_dict['SurveyID']
                 return response_dict['ResponseId'], response_dict['SurveyID']
             else:
                 self.log.warn("Multiple entries found")
@@ -331,6 +337,8 @@ class Qualtrics:
                     ResponseId = None
 
         if not isinstance(ResponseId, type(None)):
+            self.da_response_id = ResponseId
+
             if browser:
                 self.log.info("Bringing up a window to login to Qualtrics with SSO ....")
                 webbrowser.open('https://qualtrics.arizona.edu', new=2)
