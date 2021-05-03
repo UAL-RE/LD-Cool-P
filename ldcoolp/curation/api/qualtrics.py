@@ -336,6 +336,12 @@ class Qualtrics:
                     self.log.info(custom_url)
                     ResponseId = None
 
+                if ResponseId != '':
+                    self.da_response_id = ResponseId
+
+                if SurveyId != '':
+                    self.da_survey_id = SurveyId
+
         if not isinstance(ResponseId, type(None)):
             self.da_response_id = ResponseId
 
@@ -573,6 +579,10 @@ class Qualtrics:
         if not self.da_response_id:
             self.log.info("NO METADATA - Retrieving Deposit Agreement metadata")
             self.find_deposit_agreement(dn_dict)
+        else:
+            self.log.info(f"Parsed ResponseId : {self.da_response_id}")
+            self.log.info(f"Parsed SurveyID : {self.da_survey_id}")
+
         DA_response_df = self.get_survey_response(self.da_survey_id, self.da_response_id)
         DA_dict = df_to_dict_single(DA_response_df)
         qualtrics_dict['corr_author_fullname'] = DA_dict['Q6_1']
