@@ -86,7 +86,7 @@ class ReadmeClass:
     """
 
     def __init__(self, dn, config_dict=config_default_dict, update=False,
-                 log=None):
+                 q: Qualtrics = None, log=None):
         self.config_dict = config_dict
 
         self.dn = dn
@@ -98,6 +98,13 @@ class ReadmeClass:
             self.log = log_stdout()
         else:
             self.log = log
+
+        # Use or initialize Qualtrics object
+        if q:
+            self.q = q
+        else:
+            self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
+                               log=self.log)
 
         curation_dict = self.config_dict['curation']
         self.root_directory_main = curation_dict[curation_dict['parent_dir']]
@@ -322,9 +329,7 @@ class ReadmeClass:
         self.log.info("")
         self.log.info("** IDENTIFYING README FORM RESPONSE **")
 
-        q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
-
-        readme_dict = q.retrieve_qualtrics_readme(self.dn)
+        readme_dict = self.q.retrieve_qualtrics_readme(self.dn)
 
         return readme_dict
 

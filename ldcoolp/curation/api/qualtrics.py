@@ -123,6 +123,10 @@ class Qualtrics:
 
         self.readme_survey_id = self.dict['readme_survey_id']
 
+        # Initialize Deposit Agreement info
+        self.da_response_id: str = ''
+        self.da_survey_id: str = ''
+
         # Logging
         self.file_logging = False
         if isinstance(log, type(None)):
@@ -295,6 +299,8 @@ class Qualtrics:
                 survey_shortname = \
                     self.lookup_survey_shortname(response_dict['SurveyID'])
                 self.log.info(f"Survey name: {survey_shortname}")
+                self.da_response_id = response_dict['ResponseId']
+                self.da_survey_id = response_dict['SurveyID']
                 return response_dict['ResponseId'], response_dict['SurveyID']
             else:
                 self.log.warn("Multiple entries found")
@@ -330,7 +336,15 @@ class Qualtrics:
                     self.log.info(custom_url)
                     ResponseId = None
 
+                if ResponseId != '':
+                    self.da_response_id = ResponseId
+
+                if SurveyId != '':
+                    self.da_survey_id = SurveyId
+
         if not isinstance(ResponseId, type(None)):
+            self.da_response_id = ResponseId
+
             if browser:
                 self.log.info("Bringing up a window to login to Qualtrics with SSO ....")
                 webbrowser.open('https://qualtrics.arizona.edu', new=2)
@@ -559,5 +573,20 @@ class Qualtrics:
                     if qualtrics_dict[field][0] == "'":
                         qualtrics_dict[field] = qualtrics_dict[field][1:]
                         self.log.debug(f"Removing extra single quote in {field} entry")
+
+        # Retrieve corresponding author info and append
+        self.log.info("Appending Deposit Agreement's Corresponding Author metadata")
+        if not self.da_response_id:
+            self.log.info("NO METADATA - Retrieving Deposit Agreement metadata")
+            self.find_deposit_agreement(dn_dict)
+        else:
+            self.log.info(f"Parsed ResponseId : {self.da_response_id}")
+            self.log.info(f"Parsed SurveyID : {self.da_survey_id}")
+
+        DA_response_df = self.get_survey_response(self.da_survey_id, self.da_response_id)
+        DA_dict = df_to_dict_single(DA_response_df)
+        qualtrics_dict['corr_author_fullname'] = DA_dict['Q6_1']
+        qualtrics_dict['corr_author_email'] = DA_dict['Q6_2']
+        qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
 
         return qualtrics_dict

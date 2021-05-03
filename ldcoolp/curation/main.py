@@ -179,7 +179,7 @@ def workflow(article_id, url_open=False, browser=True, log=None,
                                      browser=browser)
 
         # Check for README file and create one if it does not exist
-        rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict)
+        rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict, q=q)
         rc.main()
 
         # Move to next curation stage, 2.UnderReview curation folder
