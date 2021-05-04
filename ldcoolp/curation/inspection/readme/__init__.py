@@ -315,21 +315,27 @@ class ReadmeClass:
             self.article_dict['item']['authors'][0]['full_name']
 
         # Retrieve description (single string), strip vertical white space
-        description = self.article_dict['item']['description'].replace('<div>', '')
-        description = description.replace('</div>', '')
+        description = html2text(self.article_dict['item']['description'])
+        # Don't think we need this
+        # description = self.article_dict['item']['description'].replace('<div>', '')
+        # description = html2text(description.replace('</div>', ''))
 
         # Strip ReDATA footer
         if self.curation_dict['footer'] in description:
             self.log.info("Stripping footer")
-            strip_text = description.partition(self.curation_dict['footer'])
-            readme_dict['description'] = html2text(strip_text[0])
+
+            strip_text = description.partition(self.curation_dict['footer'])[0]
+            if not strip_text.endswith("\n\n"):
+                self.log.info("No carriage returns")
+            while strip_text.endswith("  \n\n"):
+                strip_text = strip_text[:-4]
+            while strip_text.endswith("\n\n"):
+                strip_text = strip_text[:-2]
+
+            readme_dict['description'] = strip_text
         else:
             self.log.info("No footer to strip")
-            readme_dict['description'] = html2text(description)
-
-        # Strip extra white space from html2text
-        if readme_dict['description'][-2:] == "\n\n":
-            readme_dict['description'] = readme_dict['description'][:-2]
+            readme_dict['description'] = description
 
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
