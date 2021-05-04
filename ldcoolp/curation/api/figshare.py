@@ -6,7 +6,7 @@ from ...config import config_default_dict
 import pandas as pd
 import numpy as np
 
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 
 class FigshareInstituteAdmin:

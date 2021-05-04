@@ -7,7 +7,10 @@ from urllib.error import HTTPError
 from ldcoolp.admin import permissions
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
+
+# Metadata
+from .metadata import save_metadata
 
 
 def private_file_retrieve(url, filename=None, token=None, url_open=False,
@@ -57,7 +60,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False,
 
 
 def download_files(article_id, fs, root_directory=None, data_directory=None,
-                   log=None, url_open=False):
+                   metadata_directory=None, log=None, url_open=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -66,12 +69,16 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
     :param fs: Figshare object
     :param root_directory: Root path for curation workflow (str)
     :param data_directory: Relative folder path for primary location of data (str)
+    :param metadata_directory: Relative folder path for primary location of metadata (str)
     :param log: logger.LogClass object. Default is stdout via python logging
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     """
 
     if isinstance(log, type(None)):
         log = log_stdout()
+
+    log.info("")
+    log.info("** DOWNLOADING DATA **")
 
     if root_directory is None:
         root_directory = os.getcwd()
@@ -91,6 +98,11 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
     permissions.curation(dir_path)
 
     log.info(f"Total number of files: {n_files}")
+
+    out_file_prefix = f"file_list_original_{article_id}"
+    save_metadata(file_list, out_file_prefix, root_directory=root_directory,
+                  metadata_directory=metadata_directory, save_csv=True,
+                  log=log)
 
     for n, file_dict in zip(range(n_files), file_list):
         log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']} ({file_dict['size']})")

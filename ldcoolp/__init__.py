@@ -1,6 +1,8 @@
 from os import path
 
-__version__ = "0.16.4"
+__version__ = "1.0.3"
+
+CODE_NAME = "LD-Cool-P"
 
 co_path = path.dirname(__file__)
 

@@ -14,8 +14,8 @@ Preferred citation (DataCite format):
 {% endif %}
 
 
-Corresponding Author:   
-  {{ figshare_dict.firstname }} {{ figshare_dict.lastname }}, University of Arizona, {{ figshare_dict.email }}
+Corresponding Author:
+  {{ qualtrics_dict.corr_author_fullname }}, {{ qualtrics_dict.corr_author_affil }}, {{ qualtrics_dict.corr_author_email }}
 
 
 License:
@@ -49,7 +49,6 @@ DOI:
 ## Files and Folders
 
 {{ qualtrics_dict.files }}
-{% endif %}
 {% if ( (qualtrics_dict.materials != 'nan') or
         (qualtrics_dict.contrib != 'nan') or
         (qualtrics_dict.notes != 'nan') or
@@ -58,18 +57,19 @@ DOI:
 
 
 {% endif %}
+{% endif %}
 {% if qualtrics_dict.materials != 'nan' %}
 ---------------------------------------------
 ## Materials & Methods
 
 {{ qualtrics_dict.materials }}
-{% endif %}
 {% if ( (qualtrics_dict.contrib != 'nan') or
         (qualtrics_dict.notes != 'nan') or
         (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
 {% endif %}
 {% if qualtrics_dict.contrib != 'nan' %}
 ---------------------------------------------
@@ -80,12 +80,12 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 {% for contrib in qualtrics_dict.contrib %}
   - {{ contrib }}
 {% endfor -%}
-{% endif %}
 {% if ( (qualtrics_dict.notes != 'nan') or
         (figshare_dict.references != []) ) %}
 
 
 
+{% endif %}
 {% endif %}
 {% if qualtrics_dict.notes != 'nan' or figshare_dict.references != [] %}
 ---------------------------------------------
@@ -102,3 +102,7 @@ Links:
   - {{ reference }}
 {% endfor -%}
 {% endif %}
+
+This presentation is part of 2021 NASA Arizona Space Grant Symposium
+presentations collection, which is available here: 
+https://doi.org/10.25422/azu.data.c.5299166

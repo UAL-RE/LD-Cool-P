@@ -1,15 +1,16 @@
-from os.path import exists, join, dirname, basename
-from os import walk, stat
+from os.path import exists, join, dirname, basename, getctime
+from os import walk, stat, symlink
 from datetime import datetime
 import shutil
 from glob import glob
+import re
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
 from html2text import html2text
 
 # Logging
-from ldcoolp.logger import log_stdout
+from redata.commons.logger import log_stdout
 
 from ....admin import permissions, move
 
@@ -62,11 +63,14 @@ class ReadmeClass:
     check_for_readme()
       Check if a README file is provided and provide list of README files
 
+    select_template(update)
+      Select README template to use from template repository
+
     save_template()
       Save either default or user-provided templates in DATA path
 
     import_template()
-     Returns a jinja2 template by importing markdown README file (README_template.md)
+      Returns a jinja2 template by importing markdown README file (README_template.md)
 
     retrieve article_metadata()
       Returns a dictionary containing metadata for jinja2 template
@@ -82,7 +86,7 @@ class ReadmeClass:
     """
 
     def __init__(self, dn, config_dict=config_default_dict, update=False,
-                 log=None):
+                 q: Qualtrics = None, log=None):
         self.config_dict = config_dict
 
         self.dn = dn
@@ -95,8 +99,16 @@ class ReadmeClass:
         else:
             self.log = log
 
-        self.curation_dict = self.config_dict['curation']
-        self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
+        # Use or initialize Qualtrics object
+        if q:
+            self.q = q
+        else:
+            self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
+                               log=self.log)
+
+        curation_dict = self.config_dict['curation']
+        self.root_directory_main = curation_dict[curation_dict['parent_dir']]
+
         if not update:
             # Use 1.ToDo
             self.root_directory = join(self.root_directory_main,
@@ -109,15 +121,16 @@ class ReadmeClass:
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
-        self.data_path = join(self.folder_path, self.curation_dict['folder_copy_data'])  # DATA
+        self.metadata_path = join(self.folder_path, curation_dict['folder_metadata'])  # METADATA
+        self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
-                                       self.curation_dict['folder_data'])  # ORIGINAL_DATA
-
-        # README template
-        self.readme_template = self.curation_dict['readme_template']
+                                       curation_dict['folder_data'])  # ORIGINAL_DATA
 
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
+
+        # Symlink template name in METADATA
+        self.default_readme_file = curation_dict['readme_template']
 
         # Retrieve Figshare metadata for jinja template engine
         self.figshare_readme_dict = self.retrieve_article_metadata()
@@ -132,6 +145,11 @@ class ReadmeClass:
             # Define template_source
             self.template_source = self.check_for_readme()
 
+            if self.template_source == 'default':
+                self.readme_template = self.select_template(update=update)
+            else:
+                self.readme_template = 'user_readme_template.md'
+
             # Save copy of template in DATA as README_template.md
             self.save_template()
 
@@ -139,7 +157,7 @@ class ReadmeClass:
             self.jinja_template = self.import_template()
         except SystemError:
             self.template_source = 'unknown'
-            self.log.warn("More than one README files found!")
+            self.log.warning("More than one README files found!")
 
     def get_readme_files(self):
         """Return list of README files in the ORIGINAL_DATA path"""
@@ -153,7 +171,7 @@ class ReadmeClass:
 
         if len(self.README_files) == 0:
             self.log.info("No README files found.")
-            self.log.info(f"Note: default {self.readme_template} will be used")
+            self.log.info(f"Note: You will be asked to select from default templates")
             template_source = 'default'
         else:
             if len(self.README_files) == 1:
@@ -175,30 +193,71 @@ class ReadmeClass:
 
         return template_source
 
+    def select_template(self, update: bool):
+        """Select README template to use from template repository"""
+
+        self.log.info("")
+        self.log.info("** SELECTING README TEMPLATE **")
+
+        if not update:
+            template_dir = join(dirname(__file__), 'templates/')
+            template_list = sorted(glob(template_dir + '*.md'), key=getctime)
+
+            if len(template_list) == 0:
+                self.log.warning("Missing templates!!!")
+                raise SystemError
+
+            template_list = [basename(t_file) for t_file in template_list]
+            if len(template_list) == 1:
+                self.log.info(f"Only one template found: {template_list[0]}. Using!")
+                template_i = 0
+            else:
+                self.log.info("List of README templates: ")
+                for i, template_file in enumerate(template_list):
+                    self.log.info(f"  ({i}): {template_file}")
+                template_i = int(input("Select from above list (enter number ONLY) : "))
+                self.log.info(f"RESPONSE: {template_i} == {template_list[template_i]}")
+
+            return template_list[template_i]
+        else:
+            t_list = [basename(md_file) for md_file in
+                      glob(join(self.metadata_path, '*.md'))]
+            t_list.remove(self.default_readme_file)
+            return t_list[0]
+
     def save_template(self):
         """Save either default or user-provided templates in DATA path"""
 
-        dest_file = join(self.data_path, self.readme_template)
+        symlink_file = join(self.metadata_path, self.default_readme_file)
+
+        dest_file = join(self.metadata_path, self.readme_template)
 
         if not exists(dest_file):
-            self.log.info(f"Saving {self.template_source} template in DATA ...")
+            self.log.info(f"Saving {self.readme_template} template in METADATA ...")
 
             if self.template_source == 'default':
-                src_file = join(dirname(__file__), self.readme_template)
+                src_file = join(dirname(__file__), 'templates',
+                                self.readme_template)
             else:
                 src_file = self.README_files[0]
 
+            self.log.info(f"Source file name: {src_file}")
             shutil.copy(src_file, dest_file)
         else:
-            self.log.info(f"{self.readme_template} exists. Not overwriting template!")
+            self.log.info(f"{dest_file} exists. Not overwriting template!")
+
+        if not exists(symlink_file):
+            symlink(self.readme_template, symlink_file)
+        else:
+            self.log.info(f"{symlink_file} symbolic file link exists. Not overwriting!")
 
     def import_template(self):
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
-        file_loader = FileSystemLoader(self.data_path)
+        file_loader = FileSystemLoader(self.metadata_path)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
 
-        jinja_template = env.get_template(self.readme_template)
+        jinja_template = env.get_template(self.default_readme_file)
         return jinja_template
 
     def retrieve_article_metadata(self):
@@ -217,12 +276,14 @@ class ReadmeClass:
 
         # Retrieve preferred citation. Default: ReDATA in DataCite format
         # This forces a period after the year and ensures multiple rows
-        # with the last two row merged for simplicity
+        # with the last two rows merged for simplicity
+        # Bug: v0.17.6 handles periods in author list (e.g., initials)
         single_str_citation = self.article_dict['item']['citation']
-        str_list = [str_row + '.' for str_row in
-                    single_str_citation.replace('):', ').').split('. ')]
-        citation_list = [content for content in str_list[0:-2]]
-        citation_list.append(f"{str_list[-2]} {str_list[-1]}")
+        pre_processed_str = single_str_citation.replace('):', ').')
+        # Match spaces following group 1, only if followed by group 2
+        END_SENT = re.compile('((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
+        # Filter for empty list entry
+        citation_list = list(filter(None, END_SENT.split(pre_processed_str)))
         readme_dict['preferred_citation'] = citation_list
 
         # Retrieve DOI info. Reserve if it does not exist
@@ -276,9 +337,10 @@ class ReadmeClass:
     def retrieve_qualtrics_readme(self):
         """Retrieve README custom information from Qualtrics form"""
 
-        q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'], log=self.log)
+        self.log.info("")
+        self.log.info("** IDENTIFYING README FORM RESPONSE **")
 
-        readme_dict = q.retrieve_qualtrics_readme(self.dn.name_dict)
+        readme_dict = self.q.retrieve_qualtrics_readme(self.dn)
 
         return readme_dict
 
@@ -337,6 +399,9 @@ class ReadmeClass:
 
     def main(self):
         """Main function for README file construction"""
+
+        self.log.info("")
+        self.log.info("** STARTING README.txt CONSTRUCTION **")
 
         if self.template_source != 'unknown':
             self.log.info("PROMPT: Do you wish to create a README file?")
