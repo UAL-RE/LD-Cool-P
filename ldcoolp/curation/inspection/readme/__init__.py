@@ -106,8 +106,8 @@ class ReadmeClass:
             self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
                                log=self.log)
 
-        curation_dict = self.config_dict['curation']
-        self.root_directory_main = curation_dict[curation_dict['parent_dir']]
+        self.curation_dict = self.config_dict['curation']
+        self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
 
         if not update:
             # Use 1.ToDo
@@ -121,16 +121,18 @@ class ReadmeClass:
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
-        self.metadata_path = join(self.folder_path, curation_dict['folder_metadata'])  # METADATA
-        self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
+        self.metadata_path = join(self.folder_path,
+                                  self.curation_dict['folder_metadata'])  # METADATA
+        self.data_path = join(self.folder_path,
+                              self.curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
-                                       curation_dict['folder_data'])  # ORIGINAL_DATA
+                                       self.curation_dict['folder_data'])  # ORIGINAL_DATA
 
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
         # Symlink template name in METADATA
-        self.default_readme_file = curation_dict['readme_template']
+        self.default_readme_file = self.curation_dict['readme_template']
 
         # Retrieve Figshare metadata for jinja template engine
         self.figshare_readme_dict = self.retrieve_article_metadata()
