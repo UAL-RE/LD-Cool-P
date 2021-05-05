@@ -110,7 +110,11 @@ class Qualtrics:
       Generate URL with customized query strings based on Figshare metadata
     """
 
-    def __init__(self, qualtrics_dict=config_default_dict['qualtrics'], log=None):
+    def __init__(self, qualtrics_dict=config_default_dict['qualtrics'], log=None,
+                 interactive=True):
+
+        self.interactive = interactive
+
         self.dict = qualtrics_dict
         self.token = self.dict['token']
         self.data_center = self.dict['datacenter']
@@ -324,11 +328,16 @@ class Qualtrics:
             except ValueError:
                 self.log.warn("Error with retrieving ResponseId and SurveyId")
                 self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
-                ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
-                self.log.info(f"RESPONSE: {ResponseId}")
-                self.log.info("PROMPT: If you wish, you can manually enter SurveyId to retrieve.")
-                SurveyId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
-                self.log.info(f"RESPONSE: {SurveyId}")
+                if self.interactive:
+                    ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                    self.log.info(f"RESPONSE: {ResponseId}")
+                    self.log.info("PROMPT: If you wish, you can manually enter SurveyId to retrieve.")
+                    SurveyId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                    self.log.info(f"RESPONSE: {SurveyId}")
+                else:
+                    self.log.info("Interactive mode disabled. Skipping manual input")
+                    ResponseId = ''
+                    SurveyId = ''
 
                 if ResponseId == '' or SurveyId == '':
                     custom_url = self.generate_url(dn_dict)
@@ -356,7 +365,10 @@ class Qualtrics:
 
             # Retrieve PDF via direct URL link
             if out_path:
-                pdf_url = 'retrieve'
+                if self.interactive:
+                    pdf_url = 'retrieve'
+                else:
+                    pdf_url = ''
                 while pdf_url == 'retrieve':
                     pdf_url = input("To retrieve PDF via API, provide PDF URL here. Hit enter to skip : ")
 
@@ -539,8 +551,12 @@ class Qualtrics:
             except ValueError:
                 self.log.warn("Error with retrieving ResponseId")
                 self.log.info("PROMPT: If you wish, you can manually enter ResponseId to retrieve.")
-                ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
-                self.log.info(f"RESPONSE: {ResponseId}")
+                if self.interactive:
+                    ResponseId = input("PROMPT: An EMPTY RETURN will generate a custom Qualtrics link to provide ... ")
+                    self.log.info(f"RESPONSE: {ResponseId}")
+                else:
+                    self.log.info("Interactive mode disabled. Skipping manual input")
+                    ResponseId = ''
 
                 if ResponseId:
                     response_df = self.get_survey_response(self.readme_survey_id, ResponseId)

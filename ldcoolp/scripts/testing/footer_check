@@ -1,0 +1,175 @@
+#!/usr/bin/env python
+import shutil
+from os.path import dirname, exists, join, basename
+from os import rename, makedirs
+
+import argparse
+import configparser
+
+from datetime import date
+
+from requests import HTTPError
+
+from ldcoolp.curation.api import figshare
+from redata.commons import logger
+from figshare.figshare import Figshare
+
+from ldcoolp.curation.depositor_name import DepositorName
+from ldcoolp.curation.inspection.readme import ReadmeClass
+
+# Version and branch info
+from ldcoolp import __version__, CODE_NAME
+from redata.commons.git_info import GitInfo
+from ldcoolp import __file__ as library_path
+
+
+# Config loader
+from ldcoolp.config import dict_load
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
+
+today = date.today()
+
+
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Command-line driver for checking footer.')
+    parser.add_argument('--config', required=True, help='path to configuration file')
+    args = parser.parse_args()
+
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
+    gi = GitInfo(library_root_path)
+
+    banner_message = f"""
+    This is the command-line tool that automates data retrieval, and curatorial review set-up. It:
+    1. Perform folder management for each deposit
+    2. Retrieves the dataset
+    3. Download a copy of the curatorial review process
+    4. Attempt to retrieve the Qualtrics deposit agreement or provide you with the link
+
+    {CODE_NAME} branch: {gi.branch}
+    {CODE_NAME} version: {__version__}
+    {CODE_NAME} commit hash: {gi.short_commit}
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    """
+    print(banner_message)
+
+    # Load configuration
+    try:
+        config_dict = dict_load(args.config)
+    except configparser.ParsingError:
+        exit()
+
+    curation_dict = config_dict['curation']
+
+    # Define logfile
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    if not exists(log_dir):
+        makedirs(log_dir)
+    logfile_prefix = 'footer_check'
+    log = logger.log_setup(log_dir, logfile_prefix)
+
+    fs_dict = config_dict['figshare']
+    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
+
+    fs = Figshare()
+
+    log.info("Retrieving list now ...")
+
+    lc = logger.LogCommons(log, logfile_prefix, gi,
+                           code_name=CODE_NAME, version=__version__)
+
+    lc.script_start()
+
+    # Retrieve username, hostname, IP
+    lc.script_sys_info()
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
+    curation_df = fs_admin.get_curation_list()
+
+    log.info("Truncating to approved list ...")
+    published_curation_df = curation_df.loc[(curation_df['status'] == 'approved') &
+                                            (curation_df['group_id'] != 28925)]
+    published_curation_articles = published_curation_df['article_id'].tolist()
+    published_curation_versions = published_curation_df['version'].tolist()
+    published_curation_id = published_curation_df['id'].tolist()
+
+    num_articles = len(published_curation_articles)
+
+    log.info(f"Number of Deposits: {num_articles}")
+
+    footer_dir = curation_dict[curation_dict['source']+'_path']
+    if not exists(footer_dir):
+        log.info(f"Creating: {footer_dir}")
+        makedirs(footer_dir)
+
+    count = 0
+    for article, version, curation_id in zip(published_curation_articles,
+                                             published_curation_versions,
+                                             published_curation_id):
+
+        output_readme_file = join(footer_dir, f"README_{article}_v{version}.txt")
+        if exists(output_readme_file):
+            log.info(f"README file found. Skipping! {basename(output_readme_file)}")
+        else:
+            print(f"Getting: {article}, v{version}")
+
+            try:
+                dn = DepositorName(article, fs_admin, curation_id=curation_id,
+                                   log=log)
+                working_path = join(footer_dir, "1.ToDo", dn.folderName)
+                for folder in ['DATA', 'METADATA']:
+                    dir0 = join(working_path, folder)
+                    if not exists(dir0):
+                        makedirs(dir0)
+
+                rc = ReadmeClass(dn, config_dict=config_dict, interactive=False)
+                rc.main()
+                rename(rc.readme_file_path, output_readme_file)
+
+                shutil.rmtree(working_path)
+
+                count += 1
+            except HTTPError:
+                log.warning("RECORDED UNAVAILABLE")
+                pass
+            except ValueError:
+                log.warning("NO DEPOSIT AGREEMENT")
+                pass
+
+    # Change permission to mode=666 (rw for all)
+    lc.log_permission()
+
+    lc.script_end()
+
+'''
+# This is for earlier testing to check partitioning
+try:
+    details_dict = fs.get_article_details(article, version=version)
+    description = html2text(details_dict['description'])
+    if curation_dict['footer'] in description:
+        footer_check.append(True)
+        strip_text = description.partition(curation_dict['footer'])[0]
+        print(description.partition(curation_dict['footer']))
+
+        if not strip_text.endswith("  \n\n"):
+            print("WARNING: no ending")
+        while strip_text.endswith("  \n\n"):
+            strip_text = strip_text[:-4]
+        while strip_text.endswith("\n\n"):
+            strip_text = strip_text[:-2]
+    else:
+        print("no footer")
+        footer_check.append(False)
+        print(html2text(description))
+        print(details_dict['title'])
+except HTTPError:
+    footer_check.append('N/A')
+'''

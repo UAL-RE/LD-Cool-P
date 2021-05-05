@@ -86,8 +86,9 @@ class ReadmeClass:
     """
 
     def __init__(self, dn, config_dict=config_default_dict, update=False,
-                 q: Qualtrics = None, log=None):
+                 q: Qualtrics = None, interactive=True, log=None):
         self.config_dict = config_dict
+        self.interactive = interactive
 
         self.dn = dn
         self.folderName = self.dn.folderName
@@ -104,31 +105,35 @@ class ReadmeClass:
             self.q = q
         else:
             self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
-                               log=self.log)
+                               interactive=interactive, log=self.log)
 
-        curation_dict = self.config_dict['curation']
-        self.root_directory_main = curation_dict[curation_dict['parent_dir']]
+        self.curation_dict = self.config_dict['curation']
+        self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
+
         if not update:
             # Use 1.ToDo
-            self.root_directory = join(self.root_directory_main, curation_dict['folder_todo'])
+            self.root_directory = join(self.root_directory_main,
+                                       self.curation_dict['folder_todo'])
         else:
             # Use 2.UnderReview. Need to use admin.move module to find current path
-            mc = move.MoveClass(curation_dict=curation_dict)
+            mc = move.MoveClass(curation_dict=self.curation_dict)
             current_stage = mc.get_source_stage(self.folderName)
             self.root_directory = join(self.root_directory_main, current_stage)
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
-        self.metadata_path = join(self.folder_path, curation_dict['folder_metadata'])  # METADATA
-        self.data_path = join(self.folder_path, curation_dict['folder_copy_data'])  # DATA
+        self.metadata_path = join(self.folder_path,
+                                  self.curation_dict['folder_metadata'])  # METADATA
+        self.data_path = join(self.folder_path,
+                              self.curation_dict['folder_copy_data'])  # DATA
         self.original_data_path = join(self.folder_path,
-                                       curation_dict['folder_data'])  # ORIGINAL_DATA
+                                       self.curation_dict['folder_data'])  # ORIGINAL_DATA
 
         # This is the full path of the final README.txt file for creation
         self.readme_file_path = join(self.data_path, 'README.txt')
 
         # Symlink template name in METADATA
-        self.default_readme_file = curation_dict['readme_template']
+        self.default_readme_file = self.curation_dict['readme_template']
 
         # Retrieve Figshare metadata for jinja template engine
         self.figshare_readme_dict = self.retrieve_article_metadata()
@@ -176,8 +181,12 @@ class ReadmeClass:
                 self.log.info("Only one README file found!")
 
                 self.log.info("PROMPT: Type 'Yes'/'yes' if you wish to use as template.")
-                src_input = input("PROMPT: Anything else will use 'default' : ")
-                self.log.info(f"RESPONSE: {src_input}")
+                if self.interactive:
+                    src_input = input("PROMPT: Anything else will use 'default' : ")
+                    self.log.info(f"RESPONSE: {src_input}")
+                else:
+                    self.log.info("Interactive mode disabled. Using default")
+                    src_input = ''
 
                 if src_input.lower() == 'yes':
                     template_source = 'user'
@@ -311,12 +320,29 @@ class ReadmeClass:
             self.article_dict['item']['authors'][0]['full_name']
 
         # Retrieve description (single string), strip vertical white space
-        description = self.article_dict['item']['description'].replace('<div>', '')
-        description = description.replace('</div>', '')
-        readme_dict['description'] = html2text(description)
-        # Strip extra white space from html2text
-        if readme_dict['description'][-2:] == "\n\n":
-            readme_dict['description'] = readme_dict['description'][:-2]
+        description = html2text(self.article_dict['item']['description'])
+        # Don't think we need this
+        # description = self.article_dict['item']['description'].replace('<div>', '')
+        # description = html2text(description.replace('</div>', ''))
+
+        # Strip ReDATA footer
+        if self.curation_dict['footer'] in description:
+            self.log.info("Stripping footer")
+
+            strip_text = description.partition(self.curation_dict['footer'])[0]
+            if not strip_text.endswith("\n\n"):
+                self.log.info("No carriage returns")
+            while strip_text.endswith("  \n\n"):
+                strip_text = strip_text[:-4]
+            while strip_text.endswith("\n\n"):
+                strip_text = strip_text[:-2]
+            while strip_text.endswith("\n"):
+                strip_text = strip_text[:-1]
+
+            readme_dict['description'] = strip_text
+        else:
+            self.log.info("No footer to strip")
+            readme_dict['description'] = description
 
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
@@ -392,17 +418,22 @@ class ReadmeClass:
         self.log.info("")
         self.log.info("** STARTING README.txt CONSTRUCTION **")
 
-        if self.template_source != 'unknown':
-            self.log.info("PROMPT: Do you wish to create a README file?")
-            user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")
-            self.log.info(f"RESPONSE: {user_response}")
-            if user_response.lower() == "yes":
-                self.construct()
+        if self.interactive:
+            if self.template_source != 'unknown':
+                self.log.info("PROMPT: Do you wish to create a README file?")
+                user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")
+                self.log.info(f"RESPONSE: {user_response}")
             else:
-                self.log.warn("Exiting script")
-                return
+                self.log.warn(f"Multiple README files. Unable to save {self.readme_template} and README.txt")
         else:
-            self.log.warn(f"Multiple README files. Unable to save {self.readme_template} and README.txt")
+            self.log.info("Interactive mode disabled. Always creating README.txt")
+            user_response = 'yes'
+
+        if user_response.lower() == "yes":
+            self.construct()
+        else:
+            self.log.warn("Exiting script")
+            return
 
 
 def walkthrough(data_path, ignore='', log=None):
