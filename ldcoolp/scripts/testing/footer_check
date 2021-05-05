@@ -126,7 +126,7 @@ if __name__ == '__main__':
                     if not exists(dir0):
                         makedirs(dir0)
 
-                rc = ReadmeClass(dn, config_dict=config_dict)
+                rc = ReadmeClass(dn, config_dict=config_dict, interactive=False)
                 rc.main()
                 rename(rc.readme_file_path,
                        join(footer_dir, f"README_{article}_v{version}.txt"))
