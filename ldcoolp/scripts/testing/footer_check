@@ -114,29 +114,27 @@ if __name__ == '__main__':
     for article, version, curation_id in zip(published_curation_articles,
                                              published_curation_versions,
                                              published_curation_id):
-        if count < 3:
-            print(f"Getting: {article}, v{version}")
+        print(f"Getting: {article}, v{version}")
 
-            try:
-                dn = DepositorName(article, fs_admin, curation_id=curation_id,
-                                   log=log)
-                working_path = join(footer_dir, "1.ToDo", dn.folderName)
-                for folder in ['DATA', 'METADATA']:
-                    dir0 = join(working_path, folder)
-                    if not exists(dir0):
-                        makedirs(dir0)
+        try:
+            dn = DepositorName(article, fs_admin, curation_id=curation_id,
+                               log=log)
+            working_path = join(footer_dir, "1.ToDo", dn.folderName)
+            for folder in ['DATA', 'METADATA']:
+                dir0 = join(working_path, folder)
+                if not exists(dir0):
+                    makedirs(dir0)
 
-                rc = ReadmeClass(dn, config_dict=config_dict, interactive=False)
-                rc.main()
-                rename(rc.readme_file_path,
-                       join(footer_dir, f"README_{article}_v{version}.txt"))
+            rc = ReadmeClass(dn, config_dict=config_dict, interactive=False)
+            rc.main()
+            rename(rc.readme_file_path,
+                   join(footer_dir, f"README_{article}_v{version}.txt"))
 
-                for folder in ['DATA', 'METADATA']:
-                    shutil.rmtree(join(working_path, folder))
+            shutil.rmtree(working_path)
 
-                count += 1
-            except HTTPError:
-                log.warning("RECORDED UNAVAILABLE")
+            count += 1
+        except HTTPError:
+            log.warning("RECORDED UNAVAILABLE")
 
     # Change permission to mode=666 (rw for all)
     lc.log_permission()
