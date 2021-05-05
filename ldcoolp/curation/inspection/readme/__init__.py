@@ -86,8 +86,9 @@ class ReadmeClass:
     """
 
     def __init__(self, dn, config_dict=config_default_dict, update=False,
-                 q: Qualtrics = None, log=None):
+                 q: Qualtrics = None, interactive=True, log=None):
         self.config_dict = config_dict
+        self.interactive = interactive
 
         self.dn = dn
         self.folderName = self.dn.folderName
@@ -180,8 +181,12 @@ class ReadmeClass:
                 self.log.info("Only one README file found!")
 
                 self.log.info("PROMPT: Type 'Yes'/'yes' if you wish to use as template.")
-                src_input = input("PROMPT: Anything else will use 'default' : ")
-                self.log.info(f"RESPONSE: {src_input}")
+                if self.interactive:
+                    src_input = input("PROMPT: Anything else will use 'default' : ")
+                    self.log.info(f"RESPONSE: {src_input}")
+                else:
+                    self.log.info("Interactive mode disabled. Using default")
+                    src_input = ''
 
                 if src_input.lower() == 'yes':
                     template_source = 'user'
@@ -411,17 +416,22 @@ class ReadmeClass:
         self.log.info("")
         self.log.info("** STARTING README.txt CONSTRUCTION **")
 
-        if self.template_source != 'unknown':
-            self.log.info("PROMPT: Do you wish to create a README file?")
-            user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")
-            self.log.info(f"RESPONSE: {user_response}")
-            if user_response.lower() == "yes":
-                self.construct()
+        if self.interactive:
+            if self.template_source != 'unknown':
+                self.log.info("PROMPT: Do you wish to create a README file?")
+                user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")
+                self.log.info(f"RESPONSE: {user_response}")
             else:
-                self.log.warn("Exiting script")
-                return
+                self.log.warn(f"Multiple README files. Unable to save {self.readme_template} and README.txt")
         else:
-            self.log.warn(f"Multiple README files. Unable to save {self.readme_template} and README.txt")
+            self.log.info("Interactive mode disabled. Always creating README.txt")
+            user_response = 'yes'
+
+        if user_response.lower() == "yes":
+            self.construct()
+        else:
+            self.log.warn("Exiting script")
+            return
 
 
 def walkthrough(data_path, ignore='', log=None):
