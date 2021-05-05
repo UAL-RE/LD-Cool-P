@@ -105,7 +105,7 @@ class ReadmeClass:
             self.q = q
         else:
             self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
-                               log=self.log)
+                               interactive=interactive, log=self.log)
 
         self.curation_dict = self.config_dict['curation']
         self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
