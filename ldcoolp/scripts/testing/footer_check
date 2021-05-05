@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import shutil
-from os.path import dirname, exists, join
+from os.path import dirname, exists, join, basename
 from os import rename, makedirs
 
 import argparse
@@ -114,27 +114,35 @@ if __name__ == '__main__':
     for article, version, curation_id in zip(published_curation_articles,
                                              published_curation_versions,
                                              published_curation_id):
-        print(f"Getting: {article}, v{version}")
 
-        try:
-            dn = DepositorName(article, fs_admin, curation_id=curation_id,
-                               log=log)
-            working_path = join(footer_dir, "1.ToDo", dn.folderName)
-            for folder in ['DATA', 'METADATA']:
-                dir0 = join(working_path, folder)
-                if not exists(dir0):
-                    makedirs(dir0)
+        output_readme_file = join(footer_dir, f"README_{article}_v{version}.txt")
+        if exists(output_readme_file):
+            log.info(f"README file found. Skipping! {basename(output_readme_file)}")
+        else:
+            print(f"Getting: {article}, v{version}")
 
-            rc = ReadmeClass(dn, config_dict=config_dict, interactive=False)
-            rc.main()
-            rename(rc.readme_file_path,
-                   join(footer_dir, f"README_{article}_v{version}.txt"))
+            try:
+                dn = DepositorName(article, fs_admin, curation_id=curation_id,
+                                   log=log)
+                working_path = join(footer_dir, "1.ToDo", dn.folderName)
+                for folder in ['DATA', 'METADATA']:
+                    dir0 = join(working_path, folder)
+                    if not exists(dir0):
+                        makedirs(dir0)
 
-            shutil.rmtree(working_path)
+                rc = ReadmeClass(dn, config_dict=config_dict, interactive=False)
+                rc.main()
+                rename(rc.readme_file_path, output_readme_file)
 
-            count += 1
-        except HTTPError:
-            log.warning("RECORDED UNAVAILABLE")
+                shutil.rmtree(working_path)
+
+                count += 1
+            except HTTPError:
+                log.warning("RECORDED UNAVAILABLE")
+                pass
+            except ValueError:
+                log.warning("NO DEPOSIT AGREEMENT")
+                pass
 
     # Change permission to mode=666 (rw for all)
     lc.log_permission()
