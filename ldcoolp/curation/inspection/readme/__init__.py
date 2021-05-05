@@ -336,6 +336,8 @@ class ReadmeClass:
                 strip_text = strip_text[:-4]
             while strip_text.endswith("\n\n"):
                 strip_text = strip_text[:-2]
+            while strip_text.endswith("\n"):
+                strip_text = strip_text[:-1]
 
             readme_dict['description'] = strip_text
         else:
