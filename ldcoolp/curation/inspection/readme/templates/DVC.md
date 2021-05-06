@@ -80,13 +80,10 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 {% for contrib in qualtrics_dict.contrib %}
   - {{ contrib }}
 {% endfor -%}
-{% if ( (qualtrics_dict.notes != 'nan') or
-        (figshare_dict.references != []) ) %}
-
-
-
 {% endif %}
-{% endif %}
+
+
+
 ---------------------------------------------
 ## Additional Notes
 
