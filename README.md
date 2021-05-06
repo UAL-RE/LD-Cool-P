@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `1.0.4`.
+You should see that the version is `1.0.5`.
 
 ### Configuration Settings
 
@@ -240,7 +240,7 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v1.0.0 - v1.0.4:
+v1.0.0 - v1.0.5:
  * Feature: Handle multiple Qualtrics Deposit Agreement survey,
    including conference-style submissions (e.g., Space Grant, WCCFL)
    #137, #193, #194
@@ -257,6 +257,7 @@ v1.0.0 - v1.0.4:
  * Enhancement: Ability to use different README_template.md #195
  * Feature: Retrieve corresponding author from Qualtrics Deposit Agreement for jinja templating #138
  * Feature: Strip Figshare Description footer for README.txt #118
+ * Bug: Template for DVC has incorrect jinja content #204
 
 **Note**: Backward incompatibility with config file due to #137
 
