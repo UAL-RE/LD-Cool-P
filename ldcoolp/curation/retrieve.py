@@ -10,7 +10,10 @@ from ldcoolp.admin import permissions
 from redata.commons.logger import log_stdout
 
 # Metadata
+from .inspection.checksum import check_md5
 from .metadata import save_metadata
+
+N_TRIES_MD5 = 3  # Number of attempts for checksum
 
 
 def private_file_retrieve(url, filename=None, token=None, url_open=False,
@@ -108,22 +111,38 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
         log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']} ({file_dict['size']})")
         log.info(f"URL: {file_dict['download_url']}")
         filename = os.path.join(dir_path, file_dict['name'])
+        retrieve_cnt = 0
+        checksum_flag = False
         if not exists(filename):
-            try:
-                private_file_retrieve(file_dict['download_url'],
-                                      filename=filename, token=fs.token,
-                                      url_open=url_open, log=log)
-                log.info("Success!")
-            except HTTPError:
-                log.info(f"URL might be public: {file_dict['download_url']}")
-                log.info("Attempting retrieval without token")
+            while retrieve_cnt < N_TRIES_MD5:
+                log.info(f"Retrieval attempt #{retrieve_cnt + 1}")
                 try:
                     private_file_retrieve(file_dict['download_url'],
-                                          filename=filename,
+                                          filename=filename, token=fs.token,
                                           url_open=url_open, log=log)
-                    log.info("Success!")
+                    log.info("Download successful!")
+                    retrieve_cnt += 1
                 except HTTPError:
-                    log.warning(f"Failed to retrieve: {filename}")
+                    log.info(f"URL might be public: {file_dict['download_url']}")
+                    log.info("Attempting retrieval without token")
+                    try:
+                        private_file_retrieve(file_dict['download_url'],
+                                              filename=filename,
+                                              url_open=url_open, log=log)
+                        log.info("Download successful!")
+                    except HTTPError:
+                        log.warning(f"Failed to retrieve: {filename}")
+                    retrieve_cnt += 1
+
+                # Perform checksum
+                if exists(filename):
+                    checksum_flag = check_md5(filename, file_dict['supplied_md5'])
+                    if checksum_flag:
+                        break
+            else:
+                if not checksum_flag:
+                    log.info("File retrieval unsuccessful! "
+                             f"Aborted after {N_TRIES_MD5} tries")
         else:
             log.info("File exists! Not overwriting!")
 
