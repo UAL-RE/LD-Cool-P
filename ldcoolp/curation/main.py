@@ -180,14 +180,19 @@ def workflow(article_id, url_open=False, browser=True, log=None,
 
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict, q=q)
-        rc.main()
+        try:
+            rc.main()
 
-        # Move to next curation stage, 2.UnderReview curation folder
-        if rc.template_source != 'unknown':
-            log.info("PROMPT: Do you wish to move deposit to the next curation stage?")
-            user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will skip : ")
-            log.info(f"RESPONSE: {user_response}")
-            if user_response.lower() == 'yes':
-                pw.move_to_next()
-            else:
-                print("Skipping move ...")
+            # Move to next curation stage, 2.UnderReview curation folder
+            if rc.template_source != 'unknown':
+                log.info("PROMPT: Do you wish to move deposit to the next curation stage?")
+                user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will skip : ")
+                log.info(f"RESPONSE: {user_response}")
+                if user_response.lower() == 'yes':
+                    pw.move_to_next()
+                else:
+                    log.info("Skipping move ...")
+        except SystemExit as msg:
+            log.warning(msg)
+            log.info(" > To construct, run the `update_readme` command")
+

@@ -100,7 +100,26 @@ class ReadmeClass:
         else:
             self.log = log
 
+        self.log.info("")
+        if not update:
+            self.log.info("** STARTING README.txt CONSTRUCTION **")
+            if self.interactive:
+                self.log.info("PROMPT: Do you wish to create a README file?")
+                self.user_response = input(
+                    "PROMPT: Type 'Yes'/'yes'. Anything else will exit : "
+                ).lower()
+                self.log.info(f"RESPONSE: {self.user_response}")
+            else:
+                self.log.info("Interactive mode disabled. Always creating README.txt")
+                self.user_response = 'yes'
+        else:
+            self.log.info("** UPDATING README.txt **")
+            self.user_response = 'yes'
+
         # Use or initialize Qualtrics object
+        if self.user_response != 'yes':
+            return
+
         if q:
             self.q = q
         else:
@@ -149,7 +168,7 @@ class ReadmeClass:
             self.template_source = self.check_for_readme()
 
             if self.template_source == 'default':
-                self.readme_template = self.select_template(update=update)
+                self.readme_template = self.select_template()
             else:
                 self.readme_template = 'user_readme_template.md'
 
@@ -200,20 +219,24 @@ class ReadmeClass:
 
         return template_source
 
-    def select_template(self, update: bool):
+    def select_template(self):
         """Select README template to use from template repository"""
 
         self.log.info("")
         self.log.info("** SELECTING README TEMPLATE **")
 
-        if not update:
-            template_dir = join(dirname(__file__), 'templates/')
-            template_list = sorted(glob(template_dir + '*.md'), key=getctime)
+        # Retrieve LD-Cool-P templates
+        template_dir = join(dirname(__file__), 'templates/')
+        template_list = sorted(glob(template_dir + '*.md'), key=getctime)
 
-            if len(template_list) == 0:
-                self.log.warning("Missing templates!!!")
-                raise SystemError
+        if len(template_list) == 0:
+            self.log.warning("Missing templates!!!")
+            raise SystemError
 
+        # Check that templates exists for deposit
+        t_list = [basename(md_file) for md_file in
+                  glob(join(self.metadata_path, '*.md'))]
+        if len(t_list) == 0:
             template_list = [basename(t_file) for t_file in template_list]
             if len(template_list) == 1:
                 self.log.info(f"Only one template found: {template_list[0]}. Using!")
@@ -227,8 +250,6 @@ class ReadmeClass:
 
             return template_list[template_i]
         else:
-            t_list = [basename(md_file) for md_file in
-                      glob(join(self.metadata_path, '*.md'))]
             t_list.remove(self.default_readme_file)
             return t_list[0]
 
@@ -415,25 +436,14 @@ class ReadmeClass:
     def main(self):
         """Main function for README file construction"""
 
-        self.log.info("")
-        self.log.info("** STARTING README.txt CONSTRUCTION **")
-
-        if self.interactive:
-            if self.template_source != 'unknown':
-                self.log.info("PROMPT: Do you wish to create a README file?")
-                user_response = input("PROMPT: Type 'Yes'/'yes'. Anything else will exit : ")
-                self.log.info(f"RESPONSE: {user_response}")
-            else:
+        if self.user_response == "yes":
+            if self.template_source == 'unknown':
                 self.log.warn(f"Multiple README files. Unable to save {self.readme_template} and README.txt")
-        else:
-            self.log.info("Interactive mode disabled. Always creating README.txt")
-            user_response = 'yes'
+                raise SystemError
 
-        if user_response.lower() == "yes":
             self.construct()
         else:
-            self.log.warn("Exiting script")
-            return
+            raise SystemExit("SKIPPING README.txt CONSTRUCTION")
 
 
 def walkthrough(data_path, ignore='', log=None):
