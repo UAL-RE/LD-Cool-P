@@ -141,8 +141,8 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                         break
             else:
                 if not checksum_flag:
-                    log.info("File retrieval unsuccessful! "
-                             f"Aborted after {N_TRIES_MD5} tries")
+                    log.warning("File retrieval unsuccessful! "
+                                f"Aborted after {N_TRIES_MD5} tries")
         else:
             log.info("File exists! Not overwriting!")
 

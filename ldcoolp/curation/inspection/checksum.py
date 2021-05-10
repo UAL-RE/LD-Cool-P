@@ -31,7 +31,7 @@ def check_md5(filename: str, figshare_checksum: str,
         checksum_pass = True
         log.info("MD5 Checksum passed!!!")
     else:
-        log.info("Checksum failed!!!")
+        log.warning("Checksum failed!!!")
     log.info(f"MD5 Result:  {checksum_compute}")
     log.info(f"Expectation: {figshare_checksum}")
 
