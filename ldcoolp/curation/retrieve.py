@@ -136,8 +136,13 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
 
                 # Perform checksum
                 if exists(filename):
-                    checksum_flag = check_md5(filename, file_dict['supplied_md5'])
-                    if checksum_flag:
+                    if not file_dict['is_link_only']:
+                        checksum_flag = check_md5(filename,
+                                                  file_dict['supplied_md5'])
+                        if checksum_flag:
+                            break
+                    else:
+                        log.info("Not performing checksum on linked-only record")
                         break
             else:
                 if not checksum_flag:
