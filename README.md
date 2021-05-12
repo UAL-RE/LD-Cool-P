@@ -259,6 +259,7 @@ v1.0.0 - v1.0.8:
  * Feature: Strip Figshare Description footer for README.txt #118
  * Bug: Template for DVC has incorrect jinja content #204
  * Refactor: README construction prompts are in incorrect order #206
+ * Checksum checks during data retrieval #133
  * DVC README template not providing correct carriage returns for custom workflow #209
 
 **Note**: Backward incompatibility with config file due to #137
