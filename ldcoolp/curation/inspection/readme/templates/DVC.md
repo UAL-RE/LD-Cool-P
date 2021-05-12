@@ -38,8 +38,7 @@ DOI:
 {% if ( (qualtrics_dict.files != 'nan') or
         (qualtrics_dict.materials != 'nan') or
         (qualtrics_dict.contrib != 'nan') or
-        (qualtrics_dict.notes != 'nan') or
-        (figshare_dict.references != []) ) %}
+        (qualtrics_dict.notes != 'nan') ) %}
 
 
 
@@ -51,8 +50,7 @@ DOI:
 {{ qualtrics_dict.files }}
 {% if ( (qualtrics_dict.materials != 'nan') or
         (qualtrics_dict.contrib != 'nan') or
-        (qualtrics_dict.notes != 'nan') or
-        (figshare_dict.references != []) ) %}
+        (qualtrics_dict.notes != 'nan') ) %}
 
 
 
@@ -64,8 +62,7 @@ DOI:
 
 {{ qualtrics_dict.materials }}
 {% if ( (qualtrics_dict.contrib != 'nan') or
-        (qualtrics_dict.notes != 'nan') or
-        (figshare_dict.references != []) ) %}
+        (qualtrics_dict.notes != 'nan') ) %}
 
 
 

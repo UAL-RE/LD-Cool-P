@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `1.0.7`.
+You should see that the version is `1.0.8`.
 
 ### Configuration Settings
 
@@ -240,7 +240,7 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v1.0.0 - v1.0.7:
+v1.0.0 - v1.0.8:
  * Feature: Handle multiple Qualtrics Deposit Agreement survey,
    including conference-style submissions (e.g., Space Grant, WCCFL)
    #137, #193, #194
@@ -260,6 +260,7 @@ v1.0.0 - v1.0.7:
  * Bug: Template for DVC has incorrect jinja content #204
  * Refactor: README construction prompts are in incorrect order #206
  * Checksum checks during data retrieval #133
+ * DVC README template not providing correct carriage returns for custom workflow #209
 
 **Note**: Backward incompatibility with config file due to #137
 
