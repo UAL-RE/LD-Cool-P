@@ -1,9 +1,9 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
 [![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
-![GitHub top language](https://img.shields.io/github/languages/top/ualibraries/LD_Cool_P)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/ualibraries/LD_Cool_P)
-![GitHub](https://img.shields.io/github/license/ualibraries/LD_Cool_P?color=blue)
+![GitHub top language](https://img.shields.io/github/languages/top/UAL-ODIS/LD-Cool-P)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-ODIS/LD-Cool-P)
+![GitHub](https://img.shields.io/github/license/UAL-ODIS/LD-Cool-P?color=blue)
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
@@ -101,9 +101,9 @@ Then, clone this repository (`LD-Cool-P`) into the parent folder and install wit
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/ualibraries/LD_Cool_P.git
+(curation) $ git clone https://github.com/UAL-ODIS/LD-Cool-P.git
 
-(curation) $ cd /path/to/parent/folder/LD_Cool_P
+(curation) $ cd /path/to/parent/folder/LD-Cool-P
 (curation) $ (sudo) python setup.py develop
 ```
 
@@ -217,7 +217,7 @@ Additional python scripts are available to
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
-[tags on this repository](https://github.com/ualibraries/LD_Cool_P/tags).
+[tags on this repository](https://github.com/UAL-ODIS/LD-Cool-P/tags).
 
 Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
 following a `git tag` version.
@@ -369,7 +369,7 @@ v0.1.0:
 * Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) - [University of Arizona Libraries](https://github.com/ualibraries), [Office of Digital Innovation and Stewardship](https://github.com/UAL-ODIS)
 
 See also the list of
-[contributors](https://github.com/ualibraries/LD_Cool_P/contributors) who participated in this project.
+[contributors](https://github.com/UAL-ODIS/LD-Cool-P/contributors) who participated in this project.
 
 
 ## License

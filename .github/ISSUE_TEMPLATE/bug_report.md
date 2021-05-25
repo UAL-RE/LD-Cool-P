@@ -20,8 +20,8 @@ assignees: ''
 **Version information**
 - LD_Cool-P version: [e.g. `0.17.0`] 
 <!-- Update with tagged version or branch full name-->
-[requirements](https://github.com/ualibraries/LD_Cool_P/blob/v<version>/requirements.txt)
-[requirements](https://github.com/ualibraries/LD_Cool_P/blob/<branch>/requirements.txt)
+- [requirements](https://github.com/UAL-ODIS/LD-Cool-P/blob/v<version>/requirements.txt)
+- [requirements](https://github.com/UAL-ODIS/LD-Cool-P/blob/<branch>/requirements.txt)
 
 *Expected behavior*
 <!-- A clear and concise description of what you expected to happen. -->
