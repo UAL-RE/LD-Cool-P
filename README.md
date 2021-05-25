@@ -62,7 +62,7 @@ These instructions will have the code running on your local or virtual machine.
 You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (>=v3.7.9)
-2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
+2. [`figshare`](https://github.com/UAL-ODIS/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
 3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
 5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
@@ -86,12 +86,12 @@ $ conda activate curation
 ```
 
 With the activated `conda` environment, next clone the
-[UA Libraries' forked copy of figshare](https://github.com/ualibraries/figshare)
+[UA Libraries' forked copy of figshare](https://github.com/UAL-ODIS/figshare)
 and install with the `setup.py` script:
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/ualibraries/figshare.git
+(curation) $ git clone https://github.com/UAL-ODIS/figshare.git
 
 (curation) $ cd /path/to/parent/folder/figshare
 (curation) $ (sudo) python setup.py develop
