@@ -240,7 +240,7 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v1.0.0 - v1.0.8:
+v1.0.0 - v1.0.9:
  * Feature: Handle multiple Qualtrics Deposit Agreement survey,
    including conference-style submissions (e.g., Space Grant, WCCFL)
    #137, #193, #194
@@ -261,6 +261,8 @@ v1.0.0 - v1.0.8:
  * Refactor: README construction prompts are in incorrect order #206
  * Checksum checks during data retrieval #133
  * DVC README template not providing correct carriage returns for custom workflow #209
+ * Bump `jinja2` from 2.11.2 to 2.11.3 #184
+ * Enhancement: Migrate repository to UAL-ODIS #175
 
 **Note**: Backward incompatibility with config file due to #137
 
