@@ -1,6 +1,6 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
-[![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
+[![GitHub build](https://github.com/UAL-ODIS/LD-Cool-P/workflows/Python%20package/badge.svg)](https://github.com/UAL-ODIS/LD-Cool-P/actions?query=workflow%3A%22Python+package%22)
 ![GitHub top language](https://img.shields.io/github/languages/top/UAL-ODIS/LD-Cool-P)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-ODIS/LD-Cool-P)
 ![GitHub](https://img.shields.io/github/license/UAL-ODIS/LD-Cool-P?color=blue)
