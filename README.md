@@ -1,9 +1,9 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
-[![GitHub build](https://github.com/ualibraries/ReQUIAM/workflows/Python%20package/badge.svg)](https://github.com/ualibraries/ReQUIAM/actions?query=workflow%3A%22Python+package%22)
-![GitHub top language](https://img.shields.io/github/languages/top/ualibraries/LD_Cool_P)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/ualibraries/LD_Cool_P)
-![GitHub](https://img.shields.io/github/license/ualibraries/LD_Cool_P?color=blue)
+[![GitHub build](https://github.com/UAL-ODIS/LD-Cool-P/workflows/Python%20package/badge.svg)](https://github.com/UAL-ODIS/LD-Cool-P/actions?query=workflow%3A%22Python+package%22)
+![GitHub top language](https://img.shields.io/github/languages/top/UAL-ODIS/LD-Cool-P)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-ODIS/LD-Cool-P)
+![GitHub](https://img.shields.io/github/license/UAL-ODIS/LD-Cool-P?color=blue)
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
@@ -62,7 +62,7 @@ These instructions will have the code running on your local or virtual machine.
 You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (>=v3.7.9)
-2. [`figshare`](https://github.com/ualibraries/figshare) - UA Libraries' forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
+2. [`figshare`](https://github.com/UAL-ODIS/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
 3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
 5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
@@ -86,12 +86,12 @@ $ conda activate curation
 ```
 
 With the activated `conda` environment, next clone the
-[UA Libraries' forked copy of figshare](https://github.com/ualibraries/figshare)
+[UA Libraries' forked copy of figshare](https://github.com/UAL-ODIS/figshare)
 and install with the `setup.py` script:
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/ualibraries/figshare.git
+(curation) $ git clone https://github.com/UAL-ODIS/figshare.git
 
 (curation) $ cd /path/to/parent/folder/figshare
 (curation) $ (sudo) python setup.py develop
@@ -101,9 +101,9 @@ Then, clone this repository (`LD-Cool-P`) into the parent folder and install wit
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/ualibraries/LD_Cool_P.git
+(curation) $ git clone https://github.com/UAL-ODIS/LD-Cool-P.git
 
-(curation) $ cd /path/to/parent/folder/LD_Cool_P
+(curation) $ cd /path/to/parent/folder/LD-Cool-P
 (curation) $ (sudo) python setup.py develop
 ```
 
@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `1.0.8`.
+You should see that the version is `1.0.9`.
 
 ### Configuration Settings
 
@@ -217,7 +217,7 @@ Additional python scripts are available to
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
-[tags on this repository](https://github.com/ualibraries/LD_Cool_P/tags).
+[tags on this repository](https://github.com/UAL-ODIS/LD-Cool-P/tags).
 
 Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
 following a `git tag` version.
@@ -240,7 +240,7 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v1.0.0 - v1.0.8:
+v1.0.0 - v1.0.9:
  * Feature: Handle multiple Qualtrics Deposit Agreement survey,
    including conference-style submissions (e.g., Space Grant, WCCFL)
    #137, #193, #194
@@ -261,6 +261,8 @@ v1.0.0 - v1.0.8:
  * Refactor: README construction prompts are in incorrect order #206
  * Checksum checks during data retrieval #133
  * DVC README template not providing correct carriage returns for custom workflow #209
+ * Bump `jinja2` from 2.11.2 to 2.11.3 #184
+ * Enhancement: Migrate repository to UAL-ODIS #175
 
 **Note**: Backward incompatibility with config file due to #137
 
@@ -369,7 +371,7 @@ v0.1.0:
 * Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) - [University of Arizona Libraries](https://github.com/ualibraries), [Office of Digital Innovation and Stewardship](https://github.com/UAL-ODIS)
 
 See also the list of
-[contributors](https://github.com/ualibraries/LD_Cool_P/contributors) who participated in this project.
+[contributors](https://github.com/UAL-ODIS/LD-Cool-P/contributors) who participated in this project.
 
 
 ## License

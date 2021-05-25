@@ -48,7 +48,7 @@ if __name__ == '__main__':
     LD-Cool-P branch: {gi.branch}
     LD-Cool-P version: {__version__}
     Created by Chun Ly
-    Bug/Suggestions? Submit a GitHub bug report here: https://github.com/ualibraries/LD_Cool_P/issues/choose
+    Bug/Suggestions? Submit a GitHub bug report here: https://github.com/UAL-ODIS/LD-Cool-P/issues/choose
     """
     print(banner_message)
 

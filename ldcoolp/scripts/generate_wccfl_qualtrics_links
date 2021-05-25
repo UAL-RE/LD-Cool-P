@@ -114,7 +114,7 @@ if __name__ == '__main__':
     LD-Cool-P version: {__version__}
     LD-Cool-P commit hash: {git_short_commit}
     Created by Chun Ly
-    Issues? Submit a GitHub ticket: https://github.com/ualibraries/LD_Cool_P/issues/new
+    Issues? Submit a GitHub ticket: https://github.com/UAL-ODIS/LD-Cool-P/issues/new
     """
 
     print(banner_message)
