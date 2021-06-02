@@ -4,7 +4,7 @@ from os.path import dirname
 import argparse
 import configparser
 
-from ldcoolp.curation.api import figshare
+from ldcoolp_figshare import FigshareInstituteAdmin
 from ldcoolp.curation.depositor_name import DepositorName
 
 # Version and branch info
@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     api_token = config.get('figshare', 'api_token')
     stage_flag = config.getboolean('figshare', 'stage')
-    fs_admin = figshare.FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+    fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag)
 
     print("STATUS: Retrieving curation list ...")
     curation_df = fs_admin.get_curation_list()

@@ -9,7 +9,7 @@ import configparser
 from datetime import date, datetime
 import pytz
 
-from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
+from ldcoolp_figshare import FigshareInstituteAdmin
 from redata.commons import logger
 from ldcoolp.admin import permissions
 
@@ -72,11 +72,14 @@ if __name__ == '__main__':
     # Configuration information
     log.info(f"Config file: {args.config}")
 
-    fs_admin = FigshareInstituteAdmin(figshare_dict=config_dict['figshare'],
+    admin_filter = ['data-management@email.arizona.edu',
+                    '-test@email.arizona.edu']
+    fs_admin = FigshareInstituteAdmin(**config_dict['figshare'],
+                                      admin_filter=admin_filter,
                                       log=log)
 
     if not args.simple:
-        accounts_df = fs_admin.get_account_details(flag=False, ignore_admin=True)
+        accounts_df = fs_admin.get_account_details(flag=False)
 
         log.info(f"Number of users: {len(accounts_df)}")
         if not args.write_file:
@@ -89,7 +92,7 @@ if __name__ == '__main__':
             accounts_df.to_csv(csv_outfile, index=False)
             permissions.curation(csv_outfile, mode=0o666)
     else:
-        accounts_df = fs_admin.get_account_list(ignore_admin=True)
+        accounts_df = fs_admin.get_account_list()
 
         log.info(f"Number of users: {len(accounts_df)}")
         print(accounts_df)

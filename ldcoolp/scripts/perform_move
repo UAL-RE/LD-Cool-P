@@ -10,7 +10,7 @@ from datetime import date
 
 from ldcoolp.admin.move import MoveClass
 from ldcoolp.curation.depositor_name import DepositorName
-from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
+from ldcoolp_figshare import FigshareInstituteAdmin
 from redata.commons import logger
 
 # Version and branch info
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     log.info(f"Number of Deposits: {num_articles}")
 
-    fs_admin = FigshareInstituteAdmin(figshare_dict=config_dict['figshare'], log=log)
+    fs_admin = FigshareInstituteAdmin(**config_dict['figshare'], log=log)
     mc = MoveClass(curation_dict=curation_dict, log=log)
 
     # Loop over each article

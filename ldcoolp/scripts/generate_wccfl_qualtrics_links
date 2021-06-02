@@ -16,7 +16,7 @@ import argparse
 from datetime import date
 
 from ldcoolp.logger import LogClass, get_user_hostname
-from ldcoolp.curation.api import figshare
+from ldcoolp_figshare import FigshareInstituteAdmin
 from ldcoolp.curation import df_to_dict_single
 from ldcoolp.admin import permissions
 from ldcoolp.config import dict_load
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     # Figshare API
     ##############
     fs_dict = config_dict['figshare']
-    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
+    fs_admin = FigshareInstituteAdmin(**fs_dict)
 
     acct_df = fs_admin.get_account_list()
     acct_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])
