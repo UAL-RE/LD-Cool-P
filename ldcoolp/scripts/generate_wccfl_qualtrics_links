@@ -160,7 +160,7 @@ if __name__ == '__main__':
     # Figshare API
     ##############
     fs_dict = config_dict['figshare']
-    fs_admin = FigshareInstituteAdmin(**fs_dict)
+    fs_admin = FigshareInstituteAdmin(**fs_dict, log=log)
 
     acct_df = fs_admin.get_account_list()
     acct_dict = df_to_dict_single(acct_df.loc[acct_df['id'] == account_id])

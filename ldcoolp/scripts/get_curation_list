@@ -77,7 +77,7 @@ if __name__ == '__main__':
     log.info(f"Config file: {args.config}")
 
     fs_dict = config_dict['figshare']
-    fs_admin = FigshareInstituteAdmin(**fs_dict)
+    fs_admin = FigshareInstituteAdmin(**fs_dict, log=log)
 
     log.info("Retrieving list now ...")
 
