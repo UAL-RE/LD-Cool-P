@@ -18,7 +18,7 @@ from .metadata import save_metadata
 
 # API
 from figshare.figshare import Figshare
-from ldcoolp.curation.api.figshare import FigshareInstituteAdmin
+from ldcoolp_figshare import FigshareInstituteAdmin
 from ldcoolp.curation.api.qualtrics import Qualtrics
 
 # Read in default configuration settings
@@ -57,7 +57,7 @@ class PrerequisiteWorkflow:
 
         self.fs = Figshare(token=self.figshare_dict['api_token'], private=True,
                            stage=self.figshare_dict['stage'])
-        self.fs_admin = FigshareInstituteAdmin(figshare_dict=self.figshare_dict, log=self.log)
+        self.fs_admin = FigshareInstituteAdmin(**self.figshare_dict, log=self.log)
 
         self.dn = DepositorName(self.article_id, self.fs_admin, log=self.log)
 
