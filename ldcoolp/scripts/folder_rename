@@ -56,9 +56,9 @@ if __name__ == '__main__':
 
     config.read(args.config)
 
-    api_token = config.get('figshare', 'api_token')
+    token = config.get('figshare', 'token')
     stage_flag = config.getboolean('figshare', 'stage')
-    fs_admin = FigshareInstituteAdmin(token=api_token, stage=stage_flag)
+    fs_admin = FigshareInstituteAdmin(token=token, stage=stage_flag)
 
     print("STATUS: Retrieving curation list ...")
     curation_df = fs_admin.get_curation_list()

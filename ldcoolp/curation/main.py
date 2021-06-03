@@ -55,7 +55,7 @@ class PrerequisiteWorkflow:
         self.curation_dict = config_dict['curation']
         self.figshare_dict = config_dict['figshare']
 
-        self.fs = Figshare(token=self.figshare_dict['api_token'], private=True,
+        self.fs = Figshare(token=self.figshare_dict['token'], private=True,
                            stage=self.figshare_dict['stage'])
         self.fs_admin = FigshareInstituteAdmin(**self.figshare_dict, log=self.log)
 
