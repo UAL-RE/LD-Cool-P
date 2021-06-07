@@ -9,7 +9,7 @@ import configparser
 from datetime import date
 
 from redata.commons import logger
-from ldcoolp.curation.api import figshare
+from ldcoolp_figshare import FigshareInstituteAdmin
 from ldcoolp.curation import depositor_name
 
 # Version and branch info
@@ -77,14 +77,13 @@ if __name__ == '__main__':
     log.info(f"Config file: {args.config}")
 
     fs_dict = config_dict['figshare']
-    fs_admin = figshare.FigshareInstituteAdmin(figshare_dict=fs_dict)
+    fs_admin = FigshareInstituteAdmin(**fs_dict, log=log)
 
-    log.info("Retrieving list now ...")
+    log.info("Retrieving list of pending reviews now ...")
 
-    curation_df = fs_admin.get_curation_list()
+    pending_curation_df = fs_admin.get_curation_list(status='pending')
+    log.info(f"Number of pending reviews: {len(pending_curation_df)}")
 
-    log.info("Truncating to pending list ...")
-    pending_curation_df = curation_df.loc[curation_df['status'] == 'pending']
     pending_curation_article = pending_curation_df['article_id'].tolist()
 
     depositor_names = ['N/A'] * len(pending_curation_df)
