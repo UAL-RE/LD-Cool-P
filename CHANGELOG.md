@@ -1,4 +1,4 @@
-## [v1.1.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.0) (YYYY-MM-DD)
+## [v1.1.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.0) (2021-06-07)
 
 **Implemented enhancements:**
  - Refactor figshare module with ldcoolp-figshare [#215](http://github.com/UAL-ODIS/LD-Cool-P/pull/215)
