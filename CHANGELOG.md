@@ -24,6 +24,95 @@
  - Refactor figshare module with ldcoolp-figshare [#214](http://github.com/UAL-ODIS/LD-Cool-P/issues/214)
 
 
+## [v1.0.9](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.9) (2021-05-25)
+
+**Implemented enhancements:**
+ - Enhancement: Migrate repository to UAL-ODIS [#212](http://github.com/UAL-ODIS/LD-Cool-P/pull/212)
+
+**Fixed bugs:**
+ - Bug: Incorrect path for GitHub badge [#211](http://github.com/UAL-ODIS/LD-Cool-P/issues/211)
+
+**Closed issues:**
+ - Enhancement: Migrate repository to UAL-ODIS [#175](http://github.com/UAL-ODIS/LD-Cool-P/issues/175)
+
+**Merged pull requests:**
+ - Bump jinja2 from 2.11.2 to 2.11.3 [#184](https://github.com/UAL-ODIS/LD-Cool-P/pull/184)
+
+
+## [v1.0.8](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.8) (2021-05-12)
+
+**Fixed bugs:**
+ - DVC README template not providing correct carriage returns for custom workflow [#209](http://github.com/UAL-ODIS/LD-Cool-P/issues/209)
+
+**Merged pull requests:**
+ - DVC README template not providing correct carriage returns for custom workflow [#210](http://github.com/UAL-ODIS/LD-Cool-P/pull/210)
+
+
+## [v1.0.7](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.7) (2021-05-11)
+
+**Implemented enhancements:**
+ - Checksum checks during data retrieval [#208](http://github.com/UAL-ODIS/LD-Cool-P/pull/208)
+
+**Closed issues:**
+ - Checksum checks during data retrieval [#133](http://github.com/UAL-ODIS/LD-Cool-P/issues/133)
+
+
+## [v1.0.6](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.6) (2021-05-10)
+
+**Fixed bugs:**
+ - Refactor: README construction prompts are in incorrect order [#206](http://github.com/UAL-ODIS/LD-Cool-P/issues/206)
+
+**Merged pull requests:**
+ - Refactor: README construction prompts are in incorrect order [#207](http://github.com/UAL-ODIS/LD-Cool-P/pull/207)
+
+
+## [v1.0.5](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.5) (2021-05-06)
+    
+**Fixed bugs:**
+ - Bug: Template for DVC has incorrect jinja content [#204](http://github.com/UAL-ODIS/LD-Cool-P/issues/204)
+
+**Merged pull requests:**
+     - Bug: Template for DVC has incorrect jinja content [#205](http://github.com/UAL-ODIS/LD-Cool-P/pull/205)
+
+
+## [v1.0.4](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.4) (2021-05-05)
+
+**Implemented enhancements:**
+ - feature/118_footer_strip [#141](http://github.com/UAL-ODIS/LD-Cool-P/pull/141)
+
+**Closed issues:**
+ - Strip Figshare Description footer for README.txt [#118](http://github.com/UAL-ODIS/LD-Cool-P/issues/118)
+
+
+## [v1.0.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.3) (2021-05-03)
+
+**Implemented enhancements:**
+ - Retrieve corresponding author from Qualtrics Deposit Agreement for jinja templating [#201](http://github.com/UAL-ODIS/LD-Cool-P/pull/201)
+ - Enhancement: Simple script for Qualtrics link generation for WCCFL conference [#178](http://github.com/UAL-ODIS/LD-Cool-P/pull/178)
+
+**Closed issues:**
+ - Retrieve corresponding author from Qualtrics Deposit Agreement for jinja templating [#138](http://github.com/UAL-ODIS/LD-Cool-P/issues/138)
+ - Enhancement: Simple script for Qualtrics link generation for WCCFL conference [#171](http://github.com/UAL-ODIS/LD-Cool-P/issues/171)
+
+
+## [v1.0.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.2) (2021-04-28)
+
+**Implemented enhancements:**
+ - Enhancement: Ability to use different README_template.md [#200](http://github.com/UAL-ODIS/LD-Cool-P/pull/200)
+
+**Closed issues:**
+ - Enhancement: Ability to use different README_template.md [#195](http://github.com/UAL-ODIS/LD-Cool-P/issues/195)
+
+
+## [v1.0.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.1) (2021-04-26)
+
+**Closed issues:**
+ - Chore: Refactor code to use redata-commons [#197](http://github.com/UAL-ODIS/LD-Cool-P/issues/197)
+
+**Merged pull requests:**
+ - Chore: Refactor code to use redata-commons [#198](http://github.com/UAL-ODIS/LD-Cool-P/pull/198)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

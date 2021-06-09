@@ -252,17 +252,6 @@ v1.0.0 - v1.0.9:
  * Bug: Handle missing README form responses for simplified curation sets #172
  * Feature: Retrieve Deposit Agreement PDF via API #187
  * Feature: README_template.md migrated to METADATA folder #191
- * Chore: Refactor code to use `redata-commons` #197
- * Enhancement: Simple script for Qualtrics link generation for WCCFL conference #171
- * Enhancement: Ability to use different README_template.md #195
- * Feature: Retrieve corresponding author from Qualtrics Deposit Agreement for jinja templating #138
- * Feature: Strip Figshare Description footer for README.txt #118
- * Bug: Template for DVC has incorrect jinja content #204
- * Refactor: README construction prompts are in incorrect order #206
- * Checksum checks during data retrieval #133
- * DVC README template not providing correct carriage returns for custom workflow #209
- * Bump `jinja2` from 2.11.2 to 2.11.3 #184
- * Enhancement: Migrate repository to UAL-ODIS #175
 
 **Note**: Backward incompatibility with config file due to #137
 
