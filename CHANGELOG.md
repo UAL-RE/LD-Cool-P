@@ -113,6 +113,37 @@
  - Chore: Refactor code to use redata-commons [#198](http://github.com/UAL-ODIS/LD-Cool-P/pull/198)
 
 
+## [v1.0.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.0.0) (2021-04-13)
+
+**Implemented enhancements:**
+ - release/v1.0.0 [#190](http://github.com/UAL-ODIS/LD-Cool-P/pull/190)
+
+**Fixed bugs:**
+ - Bug: Missing Qualtrics information when identified by name [#168](http://github.com/UAL-ODIS/LD-Cool-P/issues/168)
+
+**Closed issues:**
+ - Enhancement: Generalize survey_2_email to survey_email [#193](http://github.com/UAL-ODIS/LD-Cool-P/issues/193)
+ - Enhancement: Add CI testing for Python 3.9 [#155](http://github.com/UAL-ODIS/LD-Cool-P/issues/155)
+ - Feature+Bug: Handling of missing README form response [#172](http://github.com/UAL-ODIS/LD-Cool-P/issues/172)
+ - Move README_template.md to METADATA folder [#191](http://github.com/UAL-ODIS/LD-Cool-P/issues/191)
+ - Enhancement: Check config files has correct inputs for list [#194](http://github.com/UAL-ODIS/LD-Cool-P/issues/194)
+ - Feature: Retrieve Deposit Agreement PDF via API [#187](http://github.com/UAL-ODIS/LD-Cool-P/issues/187)
+ - Long Qualtrics links a problem for Outlook [#144](http://github.com/UAL-ODIS/LD-Cool-P/issues/144)
+ - Enhancement: METADATA folder [#151](http://github.com/UAL-ODIS/LD-Cool-P/issues/151)
+ - Curation to work with Space Grant deposits [#137](http://github.com/UAL-ODIS/LD-Cool-P/issues/137)
+ - Enhancement: Function to dump JSON responses to METADATA [#152](http://github.com/UAL-ODIS/LD-Cool-P/issues/152)
+
+**Merged pull requests:**
+ - Feature: Retrieve Deposit Agreement PDF via API [#188](http://github.com/UAL-ODIS/LD-Cool-P/pull/188)
+ - Feature+Bug: Handling of missing README form response [#174](http://github.com/UAL-ODIS/LD-Cool-P/pull/174)
+ - Curation to work with Space Grant deposits [#167](http://github.com/UAL-ODIS/LD-Cool-P/pull/167)
+ - Enhancement: Function to dump JSON responses to METADATA [#156](http://github.com/UAL-ODIS/LD-Cool-P/pull/156)
+ - feature/151_metadata [#154](http://github.com/UAL-ODIS/LD-Cool-P/pull/154)
+ - feature/144_url_shorten [#149](http://github.com/UAL-ODIS/LD-Cool-P/pull/149)
+
+**Note**: Backward incompatibility with config file due to [#137](http://github.com/UAL-ODIS/LD-Cool-P/issues/137)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

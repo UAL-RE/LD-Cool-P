@@ -240,21 +240,6 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v1.0.0 - v1.0.9:
- * Feature: Handle multiple Qualtrics Deposit Agreement survey,
-   including conference-style submissions (e.g., Space Grant, WCCFL)
-   #137, #193, #194
- * Feature: Use TinyURL API to construct simplified Qualtrics links #144
- * Feature: Add METADATA folder in curation #151
- * Feature: Write JSON files for submitted content (curation metadata, file list) #152
- * CI: Python 3.9 #155
- * Bug: Fix missing `pandas_write_buffer` call for Qualtrics match by input name #168
- * Bug: Handle missing README form responses for simplified curation sets #172
- * Feature: Retrieve Deposit Agreement PDF via API #187
- * Feature: README_template.md migrated to METADATA folder #191
-
-**Note**: Backward incompatibility with config file due to #137
-
 v0.17.0 - v0.17.7:
  * Include Travis CI configuration (disabled see #136) #129
  * Include GitHub Actions for Python CI build and testing #136
