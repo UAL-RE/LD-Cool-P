@@ -231,6 +231,16 @@
  - hotfix/v0.16.4 [#132](http://github.com/UAL-ODIS/LD-Cool-P/pull/132)
 
 
+## [v0.16.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.3) (2021-11-30)
+
+**Fixed bugs:**
+ - Retrieval issue for higher version on files that didn't change [#127](http://github.com/UAL-ODIS/LD-Cool-P/issues/127)
+ - Issue with retrieving files using download_files for datasets that are published [#32](https://github.com/UAL-ODIS/LD-Cool-P/issues/32)
+
+**Merged pull requests:**
+ - hotfix/v0.16.3 [#128](http://github.com/UAL-ODIS/LD-Cool-P/pull/128)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
