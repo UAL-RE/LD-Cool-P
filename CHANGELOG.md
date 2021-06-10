@@ -162,6 +162,15 @@
  - hotfix/v0.17.6 [#181](http://github.com/UAL-ODIS/LD-Cool-P/pull/181)
 
 
+## [v0.17.5](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.5) (2021-03-17)
+
+**Fixed bugs:**
+ - Hotfix: Update GH Bug Report template to current format [#169](http://github.com/UAL-ODIS/LD-Cool-P/issues/169)
+
+**Merged pull requests:**
+ - PR/Hotfix: #169 Update Bug Report Template [#170](http://github.com/UAL-ODIS/LD-Cool-P/pull/170)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
