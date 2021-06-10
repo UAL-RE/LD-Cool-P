@@ -222,6 +222,15 @@
  - Priority labels for project management [#134](http://github.com/UAL-ODIS/LD-Cool-P/issues/134)
 
 
+## [v0.16.4](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.4) (2021-12-04)
+
+**Fixed bugs:**
+ - Create new GitHub issue template for enhancement [#131](http://github.com/UAL-ODIS/LD-Cool-P/issues/131)
+
+**Merged pull requests:**
+ - hotfix/v0.16.4 [#132](http://github.com/UAL-ODIS/LD-Cool-P/pull/132)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
