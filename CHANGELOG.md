@@ -144,6 +144,14 @@
 **Note**: Backward incompatibility with config file due to [#137](http://github.com/UAL-ODIS/LD-Cool-P/issues/137)
 
 
+## [v0.17.7](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.7) (2021-03-23)
+
+**Fixed bugs:**
+ - Bug: Not creating README.txt when multiple README form responses are available [#182](http://github.com/UAL-ODIS/LD-Cool-P/issues/182)
+
+**Merged pull requests:**
+ - hotfix/v0.17.7 [#183](http://github.com/UAL-ODIS/LD-Cool-P/pull/183)
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

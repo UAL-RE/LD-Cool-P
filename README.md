@@ -253,7 +253,6 @@ v0.17.0 - v0.17.7:
  * Minor: Fix Qualtrics bug with multiple responses #150
  * Minor: Update `bug report` template #169 
  * Bug: Fix handling of period in author list (middle initial, "et al.") for preferred citation #180
- * Bug: Use manual `ResponseId` for Qualtrics README form for README.txt generation #182
 
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131
