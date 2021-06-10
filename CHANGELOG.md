@@ -241,6 +241,18 @@
  - hotfix/v0.16.3 [#128](http://github.com/UAL-ODIS/LD-Cool-P/pull/128)
 
 
+## [v0.16.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.2) (2021-11-17)
+
+**Fixed bugs:**
+ - Bug: convenience scripts only work from the codes/LD_CoolP folder [#124](http://github.com/UAL-ODIS/LD-Cool-P/issues/124)
+
+**Closed issues:**
+ - Adjust git_info module to handle any path, including detached HEAD [#125](http://github.com/UAL-ODIS/LD-Cool-P/issues/125)
+
+**Merged pull requests:**
+ - hotfix/v0.16.2 [#126](http://github.com/UAL-ODIS/LD-Cool-P/pull/126)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

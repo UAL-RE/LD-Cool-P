@@ -241,9 +241,6 @@ A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
 v0.16.0 - v0.16.4:
- * Add `enhancement` template #131
- * Handle public file(s) in curation step #32, #127
- * Improved handling of .git set-up in `git_info` #124, #125
  * `update` method for `ReadmeClass` to enable updating README.txt file #73, #122
  * `update_readme` script to enable easy revision #73
  * Scripts are executable #110
