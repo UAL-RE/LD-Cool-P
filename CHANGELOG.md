@@ -180,6 +180,15 @@
  - hotfix/v0.17.4 [#166](http://github.com/UAL-ODIS/LD-Cool-P/pull/166)
 
 
+## [v0.17.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.3) (2021-02-02)
+
+**Fixed bugs:**
+ - Bug: Qualtrics README form retrieval failed for multiple responses [#150](http://github.com/UAL-ODIS/LD-Cool-P/issues/150)
+
+**Merged pull requests:**
+ - Bug: Qualtrics README form retrieval failed for multiple responses [#159](http://github.com/UAL-ODIS/LD-Cool-P/pull/159)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
