@@ -10,7 +10,7 @@
 
 **Merged pull requests:**
  - Delete populate and strip module from curation.inspection.readme [#219](http://github.com/UAL-ODIS/LD-Cool-P/pull/219)
- - Bug: Characters in old readme files can cause problems [#221](http://github.com/UAL-ODIS/LD-Cool-P/issues/221)
+ - Bug: Characters in old readme files can cause problems [#221](http://github.com/UAL-ODIS/LD-Cool-P/pull/221)
 
 
 ## [v1.1.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.0) (2021-06-07)
