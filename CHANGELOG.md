@@ -207,6 +207,21 @@
  - hotfix/v0.17.1 [#146](http://github.com/UAL-ODIS/LD-Cool-P/pull/146)
 
 
+## [v0.17.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.0) (2020-12-17)
+
+**Implemented enhancements:**
+ - release/v0.17.0 [#143](http://github.com/UAL-ODIS/LD-Cool-P/pull/143)
+
+**Fixed bugs:**
+ - White space with README generation when it should not have occurred [#117](http://github.com/UAL-ODIS/LD-Cool-P/issues/117)
+
+**Closed issues:**
+ - CI with Travis [#129](http://github.com/UAL-ODIS/LD-Cool-P/issues/129)
+ - Use GitHub Actions for CI [#136](http://github.com/UAL-ODIS/LD-Cool-P/issues/136)
+ - Script to re-name curation folders to new convention [#120](http://github.com/UAL-ODIS/LD-Cool-P/issues/120)
+ - Priority labels for project management [#134](http://github.com/UAL-ODIS/LD-Cool-P/issues/134)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
