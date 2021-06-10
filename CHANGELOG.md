@@ -198,6 +198,15 @@
  - hotfix/v0.17.2 [#148](http://github.com/UAL-ODIS/LD-Cool-P/pull/148)
 
 
+## [v0.17.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.1) (2021-01-07)
+
+**Fixed bugs:**
+ - Bug: README form issue from Qualtrics information [#145](http://github.com/UAL-ODIS/LD-Cool-P/issues/145)
+
+**Merged pull requests:**
+ - hotfix/v0.17.1 [#146](http://github.com/UAL-ODIS/LD-Cool-P/pull/146)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
