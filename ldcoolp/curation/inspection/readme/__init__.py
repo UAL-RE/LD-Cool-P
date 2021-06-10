@@ -416,7 +416,9 @@ class ReadmeClass:
             else:
                 self.log.info("README.txt changed. Updating!")
                 st = stat(self.readme_file_path)
-                mod_time_str = datetime.fromtimestamp(st.st_mtime).strftime('%Y-%m-%d_%H:%M:%S')
+                mod_time = datetime.fromtimestamp(st.st_mtime)
+                mod_time_str = mod_time.isoformat(timespec='seconds').\
+                    replace(':', '')
                 backup_copy_filename = self.readme_file_path.replace('.txt', f'_{mod_time_str}.txt')
                 self.log.info(f"Saving previous copy as : {basename(backup_copy_filename)}")
                 shutil.copyfile(self.readme_file_path, backup_copy_filename)
