@@ -252,7 +252,6 @@ v0.17.0 - v0.17.7:
  * Fix to handle extraneous single quote from Qualtrics API data #147
  * Minor: Fix Qualtrics bug with multiple responses #150
  * Minor: Update `bug report` template #169 
- * Bug: Fix handling of period in author list (middle initial, "et al.") for preferred citation #180
 
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131

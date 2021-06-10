@@ -152,6 +152,16 @@
 **Merged pull requests:**
  - hotfix/v0.17.7 [#183](http://github.com/UAL-ODIS/LD-Cool-P/pull/183)
 
+
+## [v0.17.6](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.6) (2021-03-19)
+
+**Fixed bugs:**
+ - Bug: Year wraps in auto generated readme [#180](http://github.com/UAL-ODIS/LD-Cool-P/issues/180)
+
+**Merged pull requests:**
+ - hotfix/v0.17.6 [#181](http://github.com/UAL-ODIS/LD-Cool-P/pull/181)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
