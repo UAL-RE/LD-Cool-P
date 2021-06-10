@@ -248,7 +248,6 @@ v0.17.0 - v0.17.7:
  * Project management with priority labels #134
  * Minor adjustments to issue templates #134
  * Fix involving `html2text` (stop using) for Qualtrics README form's files and materials section #145
- * Fix to handle extraneous single quote from Qualtrics API data #147
 
 v0.16.0 - v0.16.4:
  * Add `enhancement` template #131

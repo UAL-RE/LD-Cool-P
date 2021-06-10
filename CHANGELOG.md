@@ -189,6 +189,15 @@
  - Bug: Qualtrics README form retrieval failed for multiple responses [#159](http://github.com/UAL-ODIS/LD-Cool-P/pull/159)
 
 
+## [v0.17.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.17.2) (2021-01-11)
+
+**Fixed bugs:**
+ - Bug: Qualtrics content can include an extra single quote at start [#147](http://github.com/UAL-ODIS/LD-Cool-P/issues/147)
+
+**Merged pull requests:**
+ - hotfix/v0.17.2 [#148](http://github.com/UAL-ODIS/LD-Cool-P/pull/148)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
