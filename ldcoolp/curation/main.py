@@ -129,7 +129,7 @@ class PrerequisiteWorkflow:
 
 
 def workflow(article_id, url_open=False, browser=True, log=None,
-             config_dict=config_default_dict):
+             config_dict=config_default_dict, metadata_only=False):
     """
     Purpose:
       This function follows our initial set-up to:
@@ -145,6 +145,7 @@ def workflow(article_id, url_open=False, browser=True, log=None,
     :param log: logger.LogClass object. Default is stdout via python logging
     :param config_dict: dict of dict with hierarchy of sections
            (figshare, curation, qualtrics) follow by options
+    :param metadata_only: When True, only downloads the item metadata.
     """
 
     # If log is not defined, then output log to stdout
@@ -160,7 +161,8 @@ def workflow(article_id, url_open=False, browser=True, log=None,
         pw.reserve_doi()
 
         # Retrieve data and place in 1.ToDo curation folder
-        pw.download_data()
+        if not metadata_only:
+            pw.download_data()
 
         # Download curation report
         pw.download_report()
