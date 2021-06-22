@@ -294,6 +294,15 @@
  - GitHub Actions for release gating [#111](http://github.com/UAL-ODIS/LD-Cool-P/issues/111)
 
 
+## [v0.15.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.3) (2021-10-14)
+
+**Implemented enhancements:**
+ - hotfix/v0.15.3 [#109](http://github.com/UAL-ODIS/LD-Cool-P/pull/109)
+
+**Closed issues:**
+ - Script to retrieve information about users from Figshare API [#107](http://github.com/UAL-ODIS/LD-Cool-P/issues/107)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
