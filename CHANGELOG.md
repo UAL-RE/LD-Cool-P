@@ -322,6 +322,16 @@
  - Re-structure of curation folders for versioning [#100](http://github.com/UAL-ODIS/LD-Cool-P/issues/100)
 
 
+## [v0.15.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.0) (2020-10-09)
+
+**Implemented enhancements:**
+ - release/v0.15.0 [#104](http://github.com/UAL-ODIS/LD-Cool-P/pull/104)
+
+**Closed issues:**
+ - Handling of Qualtrics README form [#98](http://github.com/UAL-ODIS/LD-Cool-P/issues/98)
+ - Re-structure of curation folders for versioning [#100](http://github.com/UAL-ODIS/LD-Cool-P/issues/100)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
