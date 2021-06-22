@@ -222,7 +222,7 @@
  - Priority labels for project management [#134](http://github.com/UAL-ODIS/LD-Cool-P/issues/134)
 
 
-## [v0.16.4](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.4) (2021-12-04)
+## [v0.16.4](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.4) (2020-12-04)
 
 **Fixed bugs:**
  - Create new GitHub issue template for enhancement [#131](http://github.com/UAL-ODIS/LD-Cool-P/issues/131)
@@ -231,7 +231,7 @@
  - hotfix/v0.16.4 [#132](http://github.com/UAL-ODIS/LD-Cool-P/pull/132)
 
 
-## [v0.16.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.3) (2021-11-30)
+## [v0.16.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.3) (2020-11-30)
 
 **Fixed bugs:**
  - Retrieval issue for higher version on files that didn't change [#127](http://github.com/UAL-ODIS/LD-Cool-P/issues/127)
@@ -241,7 +241,7 @@
  - hotfix/v0.16.3 [#128](http://github.com/UAL-ODIS/LD-Cool-P/pull/128)
 
 
-## [v0.16.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.2) (2021-11-17)
+## [v0.16.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.2) (2020-11-17)
 
 **Fixed bugs:**
  - Bug: convenience scripts only work from the codes/LD_CoolP folder [#124](http://github.com/UAL-ODIS/LD-Cool-P/issues/124)
@@ -273,7 +273,7 @@
  - GitHub Actions for release gating [#111](http://github.com/UAL-ODIS/LD-Cool-P/issues/111)
 
 
-## [v0.15.5](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.5) (2021-10-19)
+## [v0.15.5](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.5) (2020-10-19)
 
 **Fixed bugs:**
  - MoveClass perform moves but does not delete parent folder [#113](http://github.com/UAL-ODIS/LD-Cool-P/issues/113)
@@ -285,7 +285,7 @@
  - hotfix/v0.15.5 [#114](http://github.com/UAL-ODIS/LD-Cool-P/pull/114)
 
 
-## [v0.15.4](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.4) (2021-10-19)
+## [v0.15.4](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.4) (2020-10-19)
 
 **Implemented enhancements:**
  - hotfix/v0.15.4 [#112](http://github.com/UAL-ODIS/LD-Cool-P/pull/112)
@@ -294,7 +294,7 @@
  - GitHub Actions for release gating [#111](http://github.com/UAL-ODIS/LD-Cool-P/issues/111)
 
 
-## [v0.15.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.3) (2021-10-14)
+## [v0.15.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.3) (2020-10-14)
 
 **Implemented enhancements:**
  - hotfix/v0.15.3 [#109](http://github.com/UAL-ODIS/LD-Cool-P/pull/109)
@@ -303,13 +303,23 @@
  - Script to retrieve information about users from Figshare API [#107](http://github.com/UAL-ODIS/LD-Cool-P/issues/107)
 
 
-## [v0.15.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.2) (2021-10-13)
+## [v0.15.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.2) (2020-10-13)
 
 **Implemented enhancements:**
  - hotfix/v0.15.2 [#108](http://github.com/UAL-ODIS/LD-Cool-P/pull/108)
 
 **Closed issues:**
  - Script to retrieve information about users from Figshare API [#107](http://github.com/UAL-ODIS/LD-Cool-P/issues/107)
+
+
+## [v0.15.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.1) (2020-10-12)
+
+**Implemented enhancements:**
+ - hotfix/v0.15.1 [#106](http://github.com/UAL-ODIS/LD-Cool-P/pull/106)
+
+**Closed issues:**
+ - Script to perform simple move [#105](http://github.com/UAL-ODIS/LD-Cool-P/issues/105)
+ - Re-structure of curation folders for versioning [#100](http://github.com/UAL-ODIS/LD-Cool-P/issues/100)
 
 
 <!-- TEMPLATE
