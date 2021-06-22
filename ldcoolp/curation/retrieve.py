@@ -110,7 +110,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                   metadata_directory=metadata_directory, save_csv=True,
                   log=log)
 
-    if metadata_only:
+    if not metadata_only:
         for n, file_dict in zip(range(n_files), file_list):
             log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']} ({file_dict['size']})")
             log.info(f"URL: {file_dict['download_url']}")
