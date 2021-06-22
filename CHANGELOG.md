@@ -253,6 +253,15 @@
  - hotfix/v0.16.2 [#126](http://github.com/UAL-ODIS/LD-Cool-P/pull/126)
 
 
+## [v0.16.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.1) (2020-11-13)
+
+**Fixed bugs:**
+ - Bug: Unable to create README.txt with update option when file does not exist [#122](http://github.com/UAL-ODIS/LD-Cool-P/issues/122)
+
+**Merged pull requests:**
+ - hotfix/v0.16.1 [#123](http://github.com/UAL-ODIS/LD-Cool-P/pull/123)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
