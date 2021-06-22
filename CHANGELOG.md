@@ -303,6 +303,15 @@
  - Script to retrieve information about users from Figshare API [#107](http://github.com/UAL-ODIS/LD-Cool-P/issues/107)
 
 
+## [v0.15.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.2) (2021-10-13)
+
+**Implemented enhancements:**
+ - hotfix/v0.15.2 [#108](http://github.com/UAL-ODIS/LD-Cool-P/pull/108)
+
+**Closed issues:**
+ - Script to retrieve information about users from Figshare API [#107](http://github.com/UAL-ODIS/LD-Cool-P/issues/107)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
