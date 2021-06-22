@@ -119,6 +119,7 @@
  - release/v1.0.0 [#190](http://github.com/UAL-ODIS/LD-Cool-P/pull/190)
 
 **Fixed bugs:**
+ - Bug: Q_EED does not work with Q_PopulateResponse [#162](http://github.com/UAL-ODIS/LD-Cool-P/issues/162)
  - Bug: Missing Qualtrics information when identified by name [#168](http://github.com/UAL-ODIS/LD-Cool-P/issues/168)
 
 **Closed issues:**
@@ -371,3 +372,4 @@
  - `______` [#XX](http://github.com/UAL-ODIS/LD-Cool-P/pull/XX)
 
 -->
+
