@@ -1,5 +1,14 @@
 # Changelog
 
+## [UNRELEASED](https://github.com/UAL-ODIS/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+
+**Implemented enhancements:**
+ - Enhancement: Double digit for version [#225](http://github.com/UAL-ODIS/LD-Cool-P/pull/225)
+
+**Closed issues:**
+ - Enhancement: Double digit for version [#224](http://github.com/UAL-ODIS/LD-Cool-P/issues/224)
+
+
 ## [v1.1.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.1) (2021-06-10)
 
 **Fixed bugs:**
