@@ -120,7 +120,8 @@ class PrerequisiteWorkflow:
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
                            metadata_directory=self.metadata_directory,
-                           log=self.log, url_open=self.url_open)
+                           log=self.log, url_open=self.url_open,
+                           metadata_only=self.metadata_only)
 
     def download_report(self):
         if self.new_set:
