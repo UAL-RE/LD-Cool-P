@@ -84,7 +84,10 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
         log = log_stdout()
 
     log.info("")
-    log.info("** DOWNLOADING DATA **")
+    if metadata_only:
+        log.info(f"** NO FILE RETRIEVAL: metadata_only={metadata_only} **")
+    else:
+        log.info("** DOWNLOADING DATA **")
 
     if root_directory is None:
         root_directory = os.getcwd()
@@ -154,8 +157,6 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                                     f"Aborted after {N_TRIES_MD5} tries")
             else:
                 log.info("File exists! Not overwriting!")
-    else:
-        log.info(f"No file retrieval: metadata_only={metadata_only}")
 
     # Change permissions on folders and files
     # permissions.curation(dir_path)
