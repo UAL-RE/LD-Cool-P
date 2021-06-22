@@ -115,7 +115,8 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
 
     if not metadata_only:
         for n, file_dict in zip(range(n_files), file_list):
-            log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']} ({file_dict['size']})")
+            log.info(f"Retrieving {n+1} of {n_files} : "
+                     f"{file_dict['name']} ({file_dict['size']})")
             log.info(f"URL: {file_dict['download_url']}")
             filename = os.path.join(dir_path, file_dict['name'])
             retrieve_cnt = 0
@@ -130,7 +131,8 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                         log.info("Download successful!")
                         retrieve_cnt += 1
                     except HTTPError:
-                        log.info(f"URL might be public: {file_dict['download_url']}")
+                        log.info(f"URL might be public: "
+                                 f"{file_dict['download_url']}")
                         log.info("Attempting retrieval without token")
                         try:
                             private_file_retrieve(file_dict['download_url'],
