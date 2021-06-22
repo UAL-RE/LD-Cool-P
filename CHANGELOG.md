@@ -341,6 +341,20 @@
  - hotfix/v0.14.1 [#102](http://github.com/UAL-ODIS/LD-Cool-P/pull/102)
 
 
+## [v0.14.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.14.0) (2020-09-10)
+
+**Implemented enhancements:**
+ - release/v0.14.0 [#97](http://github.com/UAL-ODIS/LD-Cool-P/pull/97)
+
+**Fixed bugs:**
+ - Bug: Check for config file and provide warning if incorrect path provided [#93](http://github.com/UAL-ODIS/LD-Cool-P/issues/93)
+ - Bug: jinja_template in readme overrides readme_template variable [#96](http://github.com/UAL-ODIS/LD-Cool-P/issues/96)
+
+**Closed issues:**
+ - Add option for full logging to stdout and logfile [#83](http://github.com/UAL-ODIS/LD-Cool-P/issues/83)
+ - Add ability to provide config file outside of the __init__ settings [#87](http://github.com/UAL-ODIS/LD-Cool-P/issues/87)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
