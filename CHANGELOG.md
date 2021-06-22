@@ -273,6 +273,15 @@
  - GitHub Actions for release gating [#111](http://github.com/UAL-ODIS/LD-Cool-P/issues/111)
 
 
+## [v0.15.5](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.15.5) (2021-10-19)
+
+**Fixed bugs:**
+ - MoveClass perform moves but does not delete parent folder [#113](http://github.com/UAL-ODIS/LD-Cool-P/issues/113)
+
+**Merged pull requests:**
+ - hotfix/v0.15.5 [#114](http://github.com/UAL-ODIS/LD-Cool-P/pull/114)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
