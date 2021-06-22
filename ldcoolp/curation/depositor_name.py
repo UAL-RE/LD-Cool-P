@@ -146,7 +146,7 @@ class DepositorName:
             folderName = f"{temp_name}-{first_author}"
 
         # Add article_id and version number
-        folderName += f"_{self.article_id}/v{self.version_no}"
+        folderName += f"_{self.article_id}/v{self.version_no:02}"
 
         if self.verbose:
             self.log.info(f"depository_name : {folderName}")
