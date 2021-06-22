@@ -332,6 +332,15 @@
  - Re-structure of curation folders for versioning [#100](http://github.com/UAL-ODIS/LD-Cool-P/issues/100)
 
 
+## [v0.14.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.14.1) (2020-10-07)
+
+**Fixed bugs:**
+ - Bug: "DOI NOT MINTED" mistake [#101](http://github.com/UAL-ODIS/LD-Cool-P/issues/101)
+
+**Merged pull requests:**
+ - hotfix/v0.14.1 [#102](http://github.com/UAL-ODIS/LD-Cool-P/pull/102)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

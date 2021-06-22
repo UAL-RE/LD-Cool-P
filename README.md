@@ -244,7 +244,6 @@ v0.14.0 - 0.14.1:
  * Full stdout and file logging #83
  * Configuration handling using dictionary structure #87, #93
  * Minor `ReadmeClass` fix with jinja template #96
- * Minor fix in `ReadmeClass` with DOI handling when a reservation is not made #101
 
 v0.13.0 - 0.13.2:
  * Re-definition of `DepositorName` `folderName` for uniqueness.
