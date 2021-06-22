@@ -240,12 +240,6 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.16.0 - v0.16.4:
- * `update` method for `ReadmeClass` to enable updating README.txt file #73, #122
- * `update_readme` script to enable easy revision #73
- * Scripts are executable #110
- * Minor: GitHub Actions body default #111
-
 v0.15.0 - v0.15.5:
  * Implementation of Qualtrics README file #98
  * Folder re-structuring for versioning #100

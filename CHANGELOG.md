@@ -262,6 +262,17 @@
  - hotfix/v0.16.1 [#123](http://github.com/UAL-ODIS/LD-Cool-P/pull/123)
 
 
+## [v0.16.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.16.0) (2020-10-21)
+
+**Implemented enhancements:**
+ - release/v0.16.0 [#116](http://github.com/UAL-ODIS/LD-Cool-P/pull/116)
+
+**Closed issues:**
+ - Update README.txt after changes are implemented [#73](http://github.com/UAL-ODIS/LD-Cool-P/issues/73)
+ - Change all python scripts to executable [#110](http://github.com/UAL-ODIS/LD-Cool-P/issues/110)
+ - GitHub Actions for release gating [#111](http://github.com/UAL-ODIS/LD-Cool-P/issues/111)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
