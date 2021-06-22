@@ -38,7 +38,8 @@ class PrerequisiteWorkflow:
     """
 
     def __init__(self, article_id, log=None, url_open=False,
-                 config_dict=config_default_dict):
+                 config_dict=config_default_dict,
+                 metadata_only=False):
 
         # If log is not defined, then output log to stdout
         if isinstance(log, type(None)):
@@ -70,6 +71,8 @@ class PrerequisiteWorkflow:
                                        self.curation_dict['folder_metadata'])
 
         self.url_open = url_open
+
+        self.metadata_only = metadata_only
 
         # Check if dataset has been retrieved
         try:
@@ -153,7 +156,8 @@ def workflow(article_id, url_open=False, browser=True, log=None,
         log = log_stdout()
 
     pw = PrerequisiteWorkflow(article_id, url_open=url_open, log=log,
-                              config_dict=config_dict)
+                              config_dict=config_dict,
+                              metadata_only=metadata_only)
 
     # Perform prerequisite workflow if dataset is entirely new
     if pw.new_set:
@@ -161,8 +165,7 @@ def workflow(article_id, url_open=False, browser=True, log=None,
         pw.reserve_doi()
 
         # Retrieve data and place in 1.ToDo curation folder
-        if not metadata_only:
-            pw.download_data()
+        pw.download_data()
 
         # Download curation report
         pw.download_report()
