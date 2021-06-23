@@ -365,6 +365,19 @@
  - hotfix/v0.13.2 [#94](http://github.com/UAL-ODIS/LD-Cool-P/pull/94)
 
 
+## [v0.13.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.13.1) (2020-08-18)
+
+**Implemented enhancements:**
+ - hotfix/v0.13.1 [#86](http://github.com/UAL-ODIS/LD-Cool-P/pull/86)
+
+**Fixed bugs:**
+ - Bug: Handling of multiple versioned articles (ability to specified the curation_id)
+   [#85](http://github.com/UAL-ODIS/LD-Cool-P/issues/85)
+
+**Closed issues:**
+ - Script to convert old names to new names [#84](http://github.com/UAL-ODIS/LD-Cool-P/issues/84)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
