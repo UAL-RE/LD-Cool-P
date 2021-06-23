@@ -356,6 +356,15 @@
  - Add ability to provide config file outside of the __init__ settings [#87](http://github.com/UAL-ODIS/LD-Cool-P/issues/87)
 
 
+## [v0.13.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.13.2) (2020-09-03)
+
+**Closed issues:**
+ - Update README_template.md for change in CReDIT [#68](http://github.com/UAL-ODIS/LD-Cool-P/issues/68)
+
+**Merged pull requests:**
+ - hotfix/v0.13.2 [#94](http://github.com/UAL-ODIS/LD-Cool-P/pull/94)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
