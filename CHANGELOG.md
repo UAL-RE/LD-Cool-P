@@ -378,6 +378,25 @@
  - Script to convert old names to new names [#84](http://github.com/UAL-ODIS/LD-Cool-P/issues/84)
 
 
+## [v0.13.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.13.0) (2020-08-11)
+
+**Implemented enhancements:**
+ - release/v0.13.0 [#79](http://github.com/UAL-ODIS/LD-Cool-P/pull/79)
+
+**Fixed bugs:**
+ - Bug: Handling of multiple deposits from one depositor
+   [#55](http://github.com/UAL-ODIS/LD-Cool-P/issues/55)
+
+**Closed issues:**
+ - Handle retrieving multiple datasets and check if dataset has been retrieved
+   [#72](https://github.com/UAL-ODIS/LD-Cool-P/issues/72)
+ - Improvements to README_template handling within ReadmeClass
+   [#80](http://github.com/UAL-ODIS/LD-Cool-P/issues/80)
+ - Have the README inspection and construction as part of the 1.ToDo step
+   [#81](http://github.com/UAL-ODIS/LD-Cool-P/issues/81)
+ - Option to move files to 2.UnderReview when ready [#82](http://github.com/UAL-ODIS/LD-Cool-P/issues/82)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
