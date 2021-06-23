@@ -397,6 +397,18 @@
  - Option to move files to 2.UnderReview when ready [#82](http://github.com/UAL-ODIS/LD-Cool-P/issues/82)
 
 
+## [v0.12.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.12.1) (2020-08-06)
+
+**Implemented enhancements:**
+ - hotfix/v0.12.1 [#76](http://github.com/UAL-ODIS/LD-Cool-P/pull/76)
+
+**Closed issues:**
+ - Handling of datasets without a minted DOI
+   [#58](http://github.com/UAL-ODIS/LD-Cool-P/issues/58)
+ - A copy of default README_template.md should always be saved as a template
+   [#77](https://github.com/UAL-ODIS/LD-Cool-P/issues/77)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
