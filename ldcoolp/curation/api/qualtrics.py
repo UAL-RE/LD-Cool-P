@@ -295,6 +295,8 @@ class Qualtrics:
         else:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
+                self.save_metadata(response_dict, dn, out_file_prefix=
+                                   f'deposit_agreement_original_{article_id}')
                 self.pandas_write_buffer(response_df[cols_order])
                 self.log.info("Only one entry found!")
                 self.log.info(f"Survey completed on {response_dict['Date Completed']}")
@@ -573,6 +575,8 @@ class Qualtrics:
             qualtrics_dict['references'] = []
         else:
             qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
+            self.save_metadata(qualtrics_dict, dn, out_file_prefix=
+                               f"readme_original_{dn.name_dict['article_id']}")
             for key in qualtrics_dict.keys():
                 if isinstance(qualtrics_dict[key], float):
                     qualtrics_dict[key] = str(qualtrics_dict[key])
