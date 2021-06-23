@@ -174,7 +174,7 @@ def workflow(article_id, url_open=False, browser=True, log=None,
             curation_dict['folder_ual_rdm'],
         )
         log.debug(f"out_path: {out_path}")
-        q = Qualtrics(qualtrics_dict=config_dict['qualtrics'], log=log)
+        q = Qualtrics(config_dict=config_dict, log=log)
         q.retrieve_deposit_agreement(pw.dn.name_dict, out_path=out_path,
                                      browser=browser)
 

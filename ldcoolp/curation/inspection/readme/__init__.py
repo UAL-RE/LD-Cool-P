@@ -123,7 +123,7 @@ class ReadmeClass:
         if q:
             self.q = q
         else:
-            self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
+            self.q = Qualtrics(config_dict=self.config_dict,
                                interactive=interactive, log=self.log)
 
         self.curation_dict = self.config_dict['curation']

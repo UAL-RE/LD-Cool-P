@@ -52,13 +52,7 @@ class Qualtrics:
       A Python interface for interaction with Qualtrics API for Deposit
       Agreement form survey
 
-    :param qualtrics_dict: Dict that contains Qualtrics configuration.
-      This should include:
-        - survey_id
-        - token
-        - datacenter
-        - download_url
-        - generate_url
+    :param config_dict: Dict that contains LD-Cool-P configuration.
 
       Default: config_default_dict from config/default.ini
 
@@ -110,12 +104,13 @@ class Qualtrics:
       Generate URL with customized query strings based on Figshare metadata
     """
 
-    def __init__(self, qualtrics_dict=config_default_dict['qualtrics'], log=None,
+    def __init__(self, config_dict=config_default_dict, log=None,
                  interactive=True):
 
         self.interactive = interactive
 
-        self.dict = qualtrics_dict
+        self.curation_dict = config_dict['curation']
+        self.dict = config_dict['qualtrics']
         self.token = self.dict['token']
         self.data_center = self.dict['datacenter']
 
