@@ -10,6 +10,7 @@ from redata.commons.logger import log_stdout
 
 def save_metadata(json_response: Union[list, dict],
                   out_file_prefix: str,
+                  metadata_source: str = 'CURATION',
                   root_directory: str = '',
                   metadata_directory: str = '',
                   save_csv: bool = False,
@@ -23,6 +24,7 @@ def save_metadata(json_response: Union[list, dict],
     :param root_directory: Full path containing the working directory
     :param metadata_directory: Metadata path
     :param save_csv: Save a CSV file. Default: False
+    :param metadata_source: Source of metadata,
     :param log: LogClass or logging object. Default: log_stdout()
     """
 
@@ -31,7 +33,7 @@ def save_metadata(json_response: Union[list, dict],
 
     log.debug("starting ...")
     log.info("")
-    log.info("** SAVING CURATION METADATA **")
+    log.info(f"** SAVING {metadata_source} METADATA **")
 
     if not root_directory:
         root_directory = os.getcwd()
