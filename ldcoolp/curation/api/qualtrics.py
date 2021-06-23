@@ -24,6 +24,7 @@ import webbrowser
 
 # Convert single-entry DataFrame to dictionary
 from ldcoolp.curation import df_to_dict_single
+from ldcoolp.curation import metadata
 
 # Logging
 from redata.commons.logger import log_stdout
@@ -604,3 +605,20 @@ class Qualtrics:
         qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
 
         return qualtrics_dict
+
+    def save_metadata(self, response_dict: dict, dn: DepositorName,
+                      out_file_prefix: str = 'qualtrics'):
+        """Save Qualtrics metadata to JSON file"""
+
+        root_directory = join(
+            self.curation_dict[self.curation_dict['parent_dir']],
+            self.curation_dict['folder_todo'],
+            dn.folderName
+        )
+        metadata_directory = self.curation_dict['folder_metadata']
+
+        metadata.save_metadata(response_dict, out_file_prefix,
+                               metadata_source='QUALTRICS',
+                               root_directory=root_directory,
+                               metadata_directory=metadata_directory,
+                               log=self.log)
