@@ -95,8 +95,9 @@ if __name__ == '__main__':
         log.info(f"Retrieving: {articles[ii]} ...")  # ... {ii+1} / {num_articles}")
 
         # Run pre-req steps
-        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser,
-                      log=log, config_dict=config_dict, metadata_only=args.metadata_only)
+        main.workflow(articles[ii], url_open=args.url_open,
+                      browser=args.browser, log=log, config_dict=config_dict,
+                      metadata_only=args.metadata_only)
         count += 1
 
         log.info(f"Completed: {articles[ii]} ...")
