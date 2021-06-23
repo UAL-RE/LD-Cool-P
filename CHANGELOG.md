@@ -409,6 +409,24 @@
    [#77](https://github.com/UAL-ODIS/LD-Cool-P/issues/77)
 
 
+## [v0.12.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.12.0) (2020-08-03)
+
+**Implemented enhancements:**
+ - release/v0.12.0 [#71](http://github.com/UAL-ODIS/LD-Cool-P/pull/71)
+
+**Closed issues:**
+ - Create a conf.py to handle import configuration settings
+   [#60](http://github.com/UAL-ODIS/LD-Cool-P/issues/60)
+ - Create python scripts to execute the prerequisite workflow with argument inputs
+   [#59](https://github.com/UAL-ODIS/LD-Cool-P/issues/59)
+ - Retrieve files without reading it in memory
+   [#69](https://github.com/UAL-ODIS/LD-Cool-P/issues/69)
+ - Disable webbrowser launch for command-line interface
+   [#70](https://github.com/UAL-ODIS/LD-Cool-P/issues/70)
+ - Add verbose option in DepositorName class
+   [#74](https://github.com/UAL-ODIS/LD-Cool-P/issues/74)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

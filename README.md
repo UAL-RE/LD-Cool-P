@@ -240,13 +240,6 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.12.0 - 0.12.1
- * Centralized definition of configuration settings #60
- * Scripts for data curation #59
- * Figshare file retrieval with memory caching #69
- * Add option to disable opening web browser for CLI #70
- * Add option to disable verbosity with `DepositorName` call #74
-
 v0.11.0 - 0.11.1:
  * Data Curation README inspection tool (`ReadmeClass`) with `jinja2` #15
  * Documentation update for installation, configuration settings, CLI
