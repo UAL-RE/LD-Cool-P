@@ -175,7 +175,7 @@ def workflow(article_id, url_open=False, browser=True, log=None,
         )
         log.debug(f"out_path: {out_path}")
         q = Qualtrics(config_dict=config_dict, log=log)
-        q.retrieve_deposit_agreement(pw.dn.name_dict, out_path=out_path,
+        q.retrieve_deposit_agreement(pw.dn, out_path=out_path,
                                      browser=browser)
 
         # Check for README file and create one if it does not exist
