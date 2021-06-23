@@ -14,6 +14,7 @@ def save_metadata(json_response: Union[list, dict],
                   root_directory: str = '',
                   metadata_directory: str = '',
                   save_csv: bool = False,
+                  overwrite: bool = False,
                   log=None):
 
     """
@@ -21,10 +22,11 @@ def save_metadata(json_response: Union[list, dict],
 
     :param json_response: Content in list or dict
     :param out_file_prefix: Filename prefix. Appends .json and .csv
+    :param metadata_source: Source of metadata,
     :param root_directory: Full path containing the working directory
     :param metadata_directory: Metadata path
     :param save_csv: Save a CSV file. Default: False
-    :param metadata_source: Source of metadata,
+    :param overwrite: Overwrite file if it exists. Default: False
     :param log: LogClass or logging object. Default: log_stdout()
     """
 
@@ -45,17 +47,30 @@ def save_metadata(json_response: Union[list, dict],
     # Write JSON file
     json_out_file = f"{out_file_prefix}.json"
     if not os.path.exists(json_out_file):
-        log.info(f"Writing: {json_out_file}")
-        with open(json_out_file, 'w') as f:
-            json.dump(json_response, f, indent=4)
+        write_json(json_out_file, json_response, log)
     else:
-        log.info(f"File exists: {out_file_prefix}")
+        log.info(f"File exists: {json_out_file}")
+        if overwrite:
+            log.info("Overwriting!")
+            write_json(json_out_file, json_response, log)
 
     # Write CSV file
     if save_csv:
-        csv_out_file = f"{out_file_prefix}.csv"
         df = pd.DataFrame.from_dict(json_response, orient='columns')
-        log.info(f"Writing: {csv_out_file}")
-        df.to_csv(csv_out_file, index=False)
+        csv_out_file = f"{out_file_prefix}.csv"
+        if not os.path.exists(csv_out_file):
+            log.info(f"Writing: {csv_out_file}")
+            df.to_csv(csv_out_file, index=False)
+        else:
+            log.info(f"File exists: {csv_out_file}")
+            if overwrite:
+                log.info("Overwriting!")
+                df.to_csv(csv_out_file, index=False)
 
     log.debug("finished.")
+
+
+def write_json(json_out_file, json_response, log):
+    log.info(f"Writing: {json_out_file}")
+    with open(json_out_file, 'w') as f:
+        json.dump(json_response, f, indent=4)
