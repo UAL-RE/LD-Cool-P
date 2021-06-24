@@ -540,7 +540,8 @@ class Qualtrics:
                 self.log.warn("Multiple entries found")
                 raise ValueError
 
-    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True):
+    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True,
+                                  save_metadata: bool = False):
         """Retrieve response to Qualtrics README form"""
 
         if ResponseId:
@@ -607,8 +608,11 @@ class Qualtrics:
         qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
 
         # Save Qualtrics README metadata
-        self.save_metadata(qualtrics_dict, dn, out_file_prefix=
-                           f"readme_original_{dn.name_dict['article_id']}")
+        if save_metadata:
+            out_file_prefix = "qualtrics_readme_original_" + \
+                              f"{dn.name_dict['article_id']}"
+            self.save_metadata(qualtrics_dict, dn,
+                               out_file_prefix=out_file_prefix)
 
         return qualtrics_dict
 
