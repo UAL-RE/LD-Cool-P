@@ -242,7 +242,6 @@ List is sorted from moderate to minor revisions for reach release.
 
 v0.10.0 - 0.10.1:
  * Re-organization of data curation workflow with ORIGINAL_DATA and DATA folder #38
- * Figshare API endpoint support for stage institutional instances #62
 
 v0.9.0 - 0.9.3:
  * Re-naming of software #34

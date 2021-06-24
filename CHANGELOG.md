@@ -447,6 +447,15 @@
    [#15](https://github.com/UAL-ODIS/LD-Cool-P/issues/15)
 
 
+## [v0.10.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.10.0) (2020-07-14)
+
+**Implemented enhancements:**
+ - hotfix/v0.10.1 [#63](https://github.com/UAL-ODIS/LD-Cool-P/pull/63)
+
+**Closed issues:**
+ - Support for Figshare stage [#62](https://github.com/UAL-ODIS/LD-Cool-P/issues/62)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
