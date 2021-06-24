@@ -475,7 +475,7 @@ class ReadmeClass:
         metadata_directory = self.curation_dict['folder_metadata']
 
         metadata.save_metadata(response_dict, out_file_prefix,
-                               metadata_source='QUALTRICS',
+                               metadata_source='README',
                                root_directory=root_directory,
                                metadata_directory=metadata_directory,
                                log=self.log)
