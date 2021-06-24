@@ -427,6 +427,12 @@
    [#74](https://github.com/UAL-ODIS/LD-Cool-P/issues/74)
 
 
+## [v0.11.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.11.1) (2020-07-23)
+
+**Merged pull requests:**
+ - DOC: hotfix/v0.11.1 [#67](http://github.com/UAL-ODIS/LD-Cool-P/pull/67)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

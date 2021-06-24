@@ -242,7 +242,6 @@ List is sorted from moderate to minor revisions for reach release.
 
 v0.11.0 - 0.11.1:
  * Data Curation README inspection tool (`ReadmeClass`) with `jinja2` #15
- * Documentation update for installation, configuration settings, CLI
  * Use `pandas.to_markdown()` to prettify output #24
 
 v0.10.0 - 0.10.1:
