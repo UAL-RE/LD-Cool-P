@@ -87,8 +87,9 @@ class ReadmeClass:
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn, config_dict=config_default_dict, update=False,
-                 q: Qualtrics = None, interactive=True, log=None):
+    def __init__(self, dn: DepositorName, config_dict=config_default_dict,
+                 update=False, q: Qualtrics = None, interactive=True,
+                 log=None):
         self.config_dict = config_dict
         self.interactive = interactive
 
