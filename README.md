@@ -240,10 +240,6 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.11.0 - 0.11.1:
- * Data Curation README inspection tool (`ReadmeClass`) with `jinja2` #15
- * Use `pandas.to_markdown()` to prettify output #24
-
 v0.10.0 - 0.10.1:
  * Re-organization of data curation workflow with ORIGINAL_DATA and DATA folder #38
  * Figshare API endpoint support for stage institutional instances #62

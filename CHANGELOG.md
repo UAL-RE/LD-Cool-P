@@ -433,6 +433,20 @@
  - DOC: hotfix/v0.11.1 [#67](http://github.com/UAL-ODIS/LD-Cool-P/pull/67)
 
 
+## [v0.11.0](https://github.com/UAL-ODIS/LD-Cool-P/tree/v0.11.0) (2020-07-15)
+
+**Implemented enhancements:**
+ - release/v0.11.0 [#61](http://github.com/UAL-ODIS/LD-Cool-P/pull/61)
+
+**Fixed bugs:**
+ - Bug: Calls to os.makedirs and os.chmod not working in PrerequisiteWorkflow
+   [#57](http://github.com/UAL-ODIS/LD-Cool-P/issues/57)
+
+**Closed issues:**
+ - Inspection module to identify problems with dataset for curation
+   [#15](https://github.com/UAL-ODIS/LD-Cool-P/issues/15)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-ODIS/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
