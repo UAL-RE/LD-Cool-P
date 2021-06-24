@@ -575,8 +575,6 @@ class Qualtrics:
             qualtrics_dict['references'] = []
         else:
             qualtrics_dict = df_to_dict_single(response_df[readme_custom_content])
-            self.save_metadata(qualtrics_dict, dn, out_file_prefix=
-                               f"readme_original_{dn.name_dict['article_id']}")
             for key in qualtrics_dict.keys():
                 if isinstance(qualtrics_dict[key], float):
                     qualtrics_dict[key] = str(qualtrics_dict[key])
@@ -607,6 +605,10 @@ class Qualtrics:
         qualtrics_dict['corr_author_fullname'] = DA_dict['Q6_1']
         qualtrics_dict['corr_author_email'] = DA_dict['Q6_2']
         qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
+
+        # Save Qualtrics README metadata
+        self.save_metadata(qualtrics_dict, dn, out_file_prefix=
+                           f"readme_original_{dn.name_dict['article_id']}")
 
         return qualtrics_dict
 
