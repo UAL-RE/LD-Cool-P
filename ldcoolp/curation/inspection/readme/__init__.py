@@ -427,6 +427,13 @@ class ReadmeClass:
                 f = open(self.readme_file_path, 'w')
                 f.writelines(content_list)
                 f.close()
+
+                # Saving Qualtrics README for metadata for updated README.txt
+                cur_time = datetime.now()
+                out_file_prefix = f"readme_revised_{self.article_id}_" + \
+                                  f"{cur_time.isoformat(timespec='seconds').replace(':', '')}"
+                self.q.save_metadata(self.qualtrics_readme_dict, self.dn,
+                                     out_file_prefix=out_file_prefix)
         else:
             self.log.info("README.txt does not exist. Creating new one")
 
