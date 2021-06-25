@@ -1,5 +1,16 @@
 # Changelog
 
+## [UNRELEASED](https://github.com/UAL-ODIS/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+
+**Implemented enhancements:**
+ -  Enhancement: Dump JSON metadata from Qualtrics API
+    [#226](https://github.com/UAL-ODIS/LD-Cool-P/pull/226)
+
+**Closed issues:**
+ - Enhancement: Dump JSON metadata from Qualtrics API
+   [#160](https://github.com/UAL-ODIS/LD-Cool-P/issues/160)
+
+
 ## [v1.1.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.1) (2021-06-10)
 
 **Fixed bugs:**
