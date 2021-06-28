@@ -1,5 +1,12 @@
 # Changelog
 
+## [UNRELEASED](https://github.com/UAL-ODIS/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+
+**Merged pull requests:**
+ - Allow for downloading only the metadata
+   [#223](https://github.com/UAL-ODIS/LD-Cool-P/pull/223)
+
+
 ## [v1.1.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.1) (2021-06-10)
 
 **Fixed bugs:**
