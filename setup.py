@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as fr:
 
 setup(
     name='ldcoolp',
-    version='1.1.1',
+    version='1.1.2',
     packages=['ldcoolp'],
     url='https://github.com/UAL-ODIS/LD-Cool-P',
     license='MIT License',

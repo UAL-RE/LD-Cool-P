@@ -12,12 +12,14 @@ from html2text import html2text
 # Logging
 from redata.commons.logger import log_stdout
 
+from ... import metadata
 from ....admin import permissions, move
 
 # Read in default configuration settings
 from ....config import config_default_dict
 
 from ...api.qualtrics import Qualtrics
+from ...depositor_name import DepositorName
 
 
 class ReadmeClass:
@@ -85,8 +87,9 @@ class ReadmeClass:
       Construct README.txt by calling retrieve
     """
 
-    def __init__(self, dn, config_dict=config_default_dict, update=False,
-                 q: Qualtrics = None, interactive=True, log=None):
+    def __init__(self, dn: DepositorName, config_dict=config_default_dict,
+                 update=False, q: Qualtrics = None, interactive=True,
+                 log=None):
         self.config_dict = config_dict
         self.interactive = interactive
 
@@ -123,7 +126,7 @@ class ReadmeClass:
         if q:
             self.q = q
         else:
-            self.q = Qualtrics(qualtrics_dict=self.config_dict['qualtrics'],
+            self.q = Qualtrics(config_dict=self.config_dict,
                                interactive=interactive, log=self.log)
 
         self.curation_dict = self.config_dict['curation']
@@ -394,6 +397,9 @@ class ReadmeClass:
                                                       qualtrics_dict=self.qualtrics_readme_dict)
             f.writelines(content_list)
             f.close()
+
+            out_file_prefix = f"readme_original_{self.article_id}"
+            self.save_metadata(out_file_prefix=out_file_prefix)
         else:
             self.log.warn("Default README.txt file found! Not overwriting with template!")
 
@@ -427,6 +433,12 @@ class ReadmeClass:
                 f = open(self.readme_file_path, 'w')
                 f.writelines(content_list)
                 f.close()
+
+                # Saving Qualtrics README for metadata for updated README.txt
+                cur_time = datetime.now()
+                out_file_prefix = f"readme_revised_{self.article_id}_" + \
+                                  f"{cur_time.isoformat(timespec='seconds').replace(':', '')}"
+                self.save_metadata(out_file_prefix=out_file_prefix)
         else:
             self.log.info("README.txt does not exist. Creating new one")
 
@@ -446,6 +458,27 @@ class ReadmeClass:
             self.construct()
         else:
             raise SystemExit("SKIPPING README.txt CONSTRUCTION")
+
+    def save_metadata(self, out_file_prefix: str = 'readme'):
+        """Save README metadata to JSON file"""
+
+        response_dict = {
+            'figshare': self.figshare_readme_dict,
+            'qualtrics': self.qualtrics_readme_dict,
+        }
+
+        root_directory = join(
+            self.curation_dict[self.curation_dict['parent_dir']],
+            self.curation_dict['folder_todo'],
+            self.dn.folderName
+        )
+        metadata_directory = self.curation_dict['folder_metadata']
+
+        metadata.save_metadata(response_dict, out_file_prefix,
+                               metadata_source='README',
+                               root_directory=root_directory,
+                               metadata_directory=metadata_directory,
+                               log=self.log)
 
 
 def walkthrough(data_path, ignore='', log=None):
