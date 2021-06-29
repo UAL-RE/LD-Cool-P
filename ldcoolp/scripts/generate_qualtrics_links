@@ -79,8 +79,7 @@ if __name__ == '__main__':
     fs_dict = config_dict['figshare']
     fs_admin = FigshareInstituteAdmin(**fs_dict, log=log)
 
-    q_dict = config_dict['qualtrics']
-    q = qualtrics.Qualtrics(qualtrics_dict=q_dict, log=log)
+    q = qualtrics.Qualtrics(config_dict=config_dict, log=log)
 
     dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
 

@@ -63,7 +63,8 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False,
 
 
 def download_files(article_id, fs, root_directory=None, data_directory=None,
-                   metadata_directory=None, log=None, url_open=False):
+                   metadata_directory=None, log=None, url_open=False,
+                   metadata_only=False):
     """
     Purpose:
       Retrieve data for a Figshare deposit following data curation workflow
@@ -75,13 +76,18 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
     :param metadata_directory: Relative folder path for primary location of metadata (str)
     :param log: logger.LogClass object. Default is stdout via python logging
     :param url_open: bool indicates using urlopen over urlretrieve. Default: False
+    :param metadata_only: bool indicates whether to retrieve metadata. Default: True
+           If set, no files are downloaded
     """
 
     if isinstance(log, type(None)):
         log = log_stdout()
 
     log.info("")
-    log.info("** DOWNLOADING DATA **")
+    if metadata_only:
+        log.info(f"** NO FILE RETRIEVAL: metadata_only={metadata_only} **")
+    else:
+        log.info("** DOWNLOADING DATA **")
 
     if root_directory is None:
         root_directory = os.getcwd()
@@ -107,49 +113,52 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                   metadata_directory=metadata_directory, save_csv=True,
                   log=log)
 
-    for n, file_dict in zip(range(n_files), file_list):
-        log.info(f"Retrieving {n+1} of {n_files} : {file_dict['name']} ({file_dict['size']})")
-        log.info(f"URL: {file_dict['download_url']}")
-        filename = os.path.join(dir_path, file_dict['name'])
-        retrieve_cnt = 0
-        checksum_flag = False
-        if not exists(filename):
-            while retrieve_cnt < N_TRIES_MD5:
-                log.info(f"Retrieval attempt #{retrieve_cnt + 1}")
-                try:
-                    private_file_retrieve(file_dict['download_url'],
-                                          filename=filename, token=fs.token,
-                                          url_open=url_open, log=log)
-                    log.info("Download successful!")
-                    retrieve_cnt += 1
-                except HTTPError:
-                    log.info(f"URL might be public: {file_dict['download_url']}")
-                    log.info("Attempting retrieval without token")
+    if not metadata_only:
+        for n, file_dict in zip(range(n_files), file_list):
+            log.info(f"Retrieving {n+1} of {n_files} : "
+                     f"{file_dict['name']} ({file_dict['size']})")
+            log.info(f"URL: {file_dict['download_url']}")
+            filename = os.path.join(dir_path, file_dict['name'])
+            retrieve_cnt = 0
+            checksum_flag = False
+            if not exists(filename):
+                while retrieve_cnt < N_TRIES_MD5:
+                    log.info(f"Retrieval attempt #{retrieve_cnt + 1}")
                     try:
                         private_file_retrieve(file_dict['download_url'],
-                                              filename=filename,
+                                              filename=filename, token=fs.token,
                                               url_open=url_open, log=log)
                         log.info("Download successful!")
+                        retrieve_cnt += 1
                     except HTTPError:
-                        log.warning(f"Failed to retrieve: {filename}")
-                    retrieve_cnt += 1
+                        log.info(f"URL might be public: "
+                                 f"{file_dict['download_url']}")
+                        log.info("Attempting retrieval without token")
+                        try:
+                            private_file_retrieve(file_dict['download_url'],
+                                                  filename=filename,
+                                                  url_open=url_open, log=log)
+                            log.info("Download successful!")
+                        except HTTPError:
+                            log.warning(f"Failed to retrieve: {filename}")
+                        retrieve_cnt += 1
 
-                # Perform checksum
-                if exists(filename):
-                    if not file_dict['is_link_only']:
-                        checksum_flag = check_md5(filename,
-                                                  file_dict['supplied_md5'])
-                        if checksum_flag:
+                    # Perform checksum
+                    if exists(filename):
+                        if not file_dict['is_link_only']:
+                            checksum_flag = check_md5(filename,
+                                                      file_dict['supplied_md5'])
+                            if checksum_flag:
+                                break
+                        else:
+                            log.info("Not performing checksum on linked-only record")
                             break
-                    else:
-                        log.info("Not performing checksum on linked-only record")
-                        break
+                else:
+                    if not checksum_flag:
+                        log.warning("File retrieval unsuccessful! "
+                                    f"Aborted after {N_TRIES_MD5} tries")
             else:
-                if not checksum_flag:
-                    log.warning("File retrieval unsuccessful! "
-                                f"Aborted after {N_TRIES_MD5} tries")
-        else:
-            log.info("File exists! Not overwriting!")
+                log.info("File exists! Not overwriting!")
 
     # Change permissions on folders and files
     # permissions.curation(dir_path)

@@ -1,12 +1,25 @@
 # Changelog
 
-## [UNRELEASED](https://github.com/UAL-ODIS/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+## [v1.1.3](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.3) (2021-06-29)
 
 **Implemented enhancements:**
- - Enhancement: Double digit for version [#225](http://github.com/UAL-ODIS/LD-Cool-P/pull/225)
+ - Enhancement: Double digit for version [#225](https://github.com/UAL-ODIS/LD-Cool-P/pull/225)
 
 **Closed issues:**
- - Enhancement: Double digit for version [#224](http://github.com/UAL-ODIS/LD-Cool-P/issues/224)
+ - Enhancement: Double digit for version [#224](https://github.com/UAL-ODIS/LD-Cool-P/issues/224)
+
+
+## [v1.1.2](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.2) (2021-06-28)
+
+**Implemented enhancements:**
+ - Allow for downloading only the metadata
+   [#223](https://github.com/UAL-ODIS/LD-Cool-P/pull/223)
+ - Enhancement: Dump JSON metadata from Qualtrics API
+   [#226](https://github.com/UAL-ODIS/LD-Cool-P/pull/226)
+
+**Closed issues:**
+ - Enhancement: Dump JSON metadata from Qualtrics API
+   [#160](https://github.com/UAL-ODIS/LD-Cool-P/issues/160)
 
 
 ## [v1.1.1](https://github.com/UAL-ODIS/LD-Cool-P/tree/v1.1.1) (2021-06-10)
