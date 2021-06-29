@@ -10,7 +10,7 @@ setup(
     name='ldcoolp',
     version='1.1.3',
     packages=['ldcoolp'],
-    url='https://github.com/UAL-ODIS/LD-Cool-P',
+    url='https://github.com/UAL-RE/LD-Cool-P',
     license='MIT License',
     author='Chun Ly',
     author_email='astro.chun@gmail.com',
