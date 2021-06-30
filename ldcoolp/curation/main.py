@@ -37,7 +37,7 @@ class PrerequisiteWorkflow:
 
     """
 
-    def __init__(self, article_id, log=None, url_open=False,
+    def __init__(self, article_id, log=None,
                  config_dict=config_default_dict,
                  metadata_only=False):
 
@@ -69,8 +69,6 @@ class PrerequisiteWorkflow:
                                         self.curation_dict['folder_copy_data'])
         self.metadata_directory = join(self.dn.folderName,
                                        self.curation_dict['folder_metadata'])
-
-        self.url_open = url_open
 
         self.metadata_only = metadata_only
 
@@ -120,8 +118,7 @@ class PrerequisiteWorkflow:
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
                            metadata_directory=self.metadata_directory,
-                           log=self.log, url_open=self.url_open,
-                           metadata_only=self.metadata_only)
+                           metadata_only=self.metadata_only, log=self.log)
 
     def download_report(self):
         if self.new_set:
@@ -132,7 +129,7 @@ class PrerequisiteWorkflow:
         self.mc.move_to_next(self.dn.folderName)
 
 
-def workflow(article_id, url_open=False, browser=True, log=None,
+def workflow(article_id, browser=True, log=None,
              config_dict=config_default_dict, metadata_only=False):
     """
     Purpose:
@@ -144,7 +141,6 @@ def workflow(article_id, url_open=False, browser=True, log=None,
        5. Check the README file
 
     :param article_id: str or int, Figshare article id
-    :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     :param browser: bool indicates opening a web browser for Qualtrics survey. Default: True
     :param log: logger.LogClass object. Default is stdout via python logging
     :param config_dict: dict of dict with hierarchy of sections
@@ -156,7 +152,7 @@ def workflow(article_id, url_open=False, browser=True, log=None,
     if isinstance(log, type(None)):
         log = log_stdout()
 
-    pw = PrerequisiteWorkflow(article_id, url_open=url_open, log=log,
+    pw = PrerequisiteWorkflow(article_id, log=log,
                               config_dict=config_dict,
                               metadata_only=metadata_only)
 

@@ -17,8 +17,7 @@ from .metadata import save_metadata
 N_TRIES_MD5 = 3  # Number of attempts for checksum
 
 
-def private_file_retrieve(url, filename=None, token=None, url_open=False,
-                          log=None):
+def private_file_retrieve(url, filename=None, token=None, log=None):
     """
     Purpose:
       Custom Request to privately retrieve a file with a token.
@@ -28,7 +27,6 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False,
     :param url: Full URL (str)
     :param filename: Full filename for file to be written (str)
     :param token: API token (str)
-    :param url_open: Boolean to indicate whether to use urlopen. Default: False
     :param log: logger.LogClass object. Default is stdout via python logging
     """
 
@@ -51,7 +49,7 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False,
 
 
 def download_files(article_id, fs, root_directory=None, data_directory=None,
-                   metadata_directory=None, log=None, url_open=False,
+                   metadata_directory=None, log=None,
                    metadata_only=False):
     """
     Purpose:
@@ -63,7 +61,6 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
     :param data_directory: Relative folder path for primary location of data (str)
     :param metadata_directory: Relative folder path for primary location of metadata (str)
     :param log: logger.LogClass object. Default is stdout via python logging
-    :param url_open: bool indicates using urlopen over urlretrieve. Default: False
     :param metadata_only: bool indicates whether to retrieve metadata. Default: True
            If set, no files are downloaded
     """
@@ -115,7 +112,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                     try:
                         private_file_retrieve(file_dict['download_url'],
                                               filename=filename, token=fs.token,
-                                              url_open=url_open, log=log)
+                                              log=log)
                         log.info("Download successful!")
                         retrieve_cnt += 1
                     except HTTPError:
