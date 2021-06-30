@@ -1,8 +1,9 @@
 import os
+import shutil
 from os.path import exists
 
-from urllib.request import Request, urlopen, build_opener, install_opener, urlretrieve
-from urllib.error import HTTPError
+import requests
+from requests import HTTPError
 
 from ldcoolp.admin import permissions
 
@@ -34,32 +35,19 @@ def private_file_retrieve(url, filename=None, token=None, url_open=False,
     if isinstance(log, type(None)):
         log = log_stdout()
 
-    if not url_open:
-        if token:
-            opener = build_opener()
-            opener.addheaders = [('Authorization', f'token {token}')]
-            install_opener(opener)
-        else:
-            opener = build_opener()
-            install_opener(opener)
+    headers = dict()
+    if token:
+        headers['Authorization'] = f'token {token}'
 
-        try:
-            urlretrieve(url, filename)
-        except HTTPError as error:
-            log.warning(f"Caught an HTTPError: {error}")
-            raise
-    else:
-        req = Request(url)
-        if token:
-            req.add_header('Authorization', f'token {token}')
+    try:
+        h = requests.head(url, headers=headers)
+        h.raise_for_status()
 
-        response = urlopen(req)
-        content = response.read()
-        print(url)
-
-        f = open(filename, 'wb')
-        f.write(content)
-        f.close()
+        with requests.get(url, stream=True, headers=headers) as r:
+            with open(filename, 'wb') as f:
+                shutil.copyfileobj(r.raw, f)
+    except HTTPError as error:
+        log.warning(error)
 
 
 def download_files(article_id, fs, root_directory=None, data_directory=None,
@@ -131,16 +119,6 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                         log.info("Download successful!")
                         retrieve_cnt += 1
                     except HTTPError:
-                        log.info(f"URL might be public: "
-                                 f"{file_dict['download_url']}")
-                        log.info("Attempting retrieval without token")
-                        try:
-                            private_file_retrieve(file_dict['download_url'],
-                                                  filename=filename,
-                                                  url_open=url_open, log=log)
-                            log.info("Download successful!")
-                        except HTTPError:
-                            log.warning(f"Failed to retrieve: {filename}")
                         retrieve_cnt += 1
 
                     # Perform checksum
