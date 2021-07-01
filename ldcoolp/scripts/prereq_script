@@ -51,7 +51,7 @@ if __name__ == '__main__':
     {CODE_NAME} version: {__version__}
     {CODE_NAME} commit hash: {gi.short_commit}
     Created by Chun Ly
-    Issues? Submit a GitHub ticket: https://github.com/UAL-ODIS/LD-Cool-P/issues/new
+    Issues? Submit a GitHub ticket: https://github.com/UAL-RE/LD-Cool-P/issues/new
     """
     print(banner_message)
 
