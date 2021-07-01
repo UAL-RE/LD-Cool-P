@@ -1,5 +1,11 @@
 # Changelog
 
+## [UNRELEASED](https://github.com/UAL-RE/LD-Cool-P/tree/HEAD) (2021-07-01)
+
+**Merged pull requests:**
+ - Org rename [#228](http://github.com/UAL-RE/LD-Cool-P/pull/228)
+
+
 ## [v1.1.3](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.3) (2021-06-29)
 
 **Implemented enhancements:**
