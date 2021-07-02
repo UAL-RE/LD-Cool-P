@@ -46,6 +46,7 @@ def private_file_retrieve(url, filename=None, token=None, log=None):
                 shutil.copyfileobj(r.raw, f)
     except HTTPError as error:
         log.warning(error)
+        raise HTTPError(error)
 
 
 def download_files(article_id, fs, root_directory=None, data_directory=None,
