@@ -1,9 +1,13 @@
 # Changelog
 
-## [UNRELEASED](https://github.com/UAL-RE/LD-Cool-P/tree/HEAD) (2021-07-01)
+## [UNRELEASED](https://github.com/UAL-RE/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+
+**Fixed bugs:**
+ - Bug: urlretrieve is returning HTTPS 400 error [#229](https://github.com/UAL-RE/LD-Cool-P/issues/229)
 
 **Merged pull requests:**
- - Org rename [#228](http://github.com/UAL-RE/LD-Cool-P/pull/228)
+ - Org rename [#228](https://github.com/UAL-RE/LD-Cool-P/pull/228)
+ - Bug: urlretrieve is returning HTTPS 400 error [#230](https://github.com/UAL-RE/LD-Cool-P/pull/230)
 
 
 ## [v1.1.3](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.3) (2021-06-29)
