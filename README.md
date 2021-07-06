@@ -240,10 +240,6 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.7.0:
- * Re-packaging for easier installation #9
- * Variable definition of configuration file #9
-
 v0.6.0:
  * Identification of depositor and other information with `DepositorName` class #28
 

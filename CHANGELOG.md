@@ -528,6 +528,18 @@
    [#24](https://github.com/UAL-RE/LD-Cool-P/issues/24)
 
 
+## [v0.7.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.7.0) (2020-05-28)
+
+**Implemented enhancements:**
+ - release/v0.7.0 [#36](https://github.com/UAL-RE/LD-Cool-P/pull/36)
+
+**Closed issues:**
+ - Packaging code for simple installation
+   [#9](https://github.com/UAL-RE/LD-Cool-P/issues/9)
+ - Common __init__ variable for config file
+   [#29](https://github.com/UAL-RE/LD-Cool-P/issues/29)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
