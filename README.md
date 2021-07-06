@@ -237,12 +237,8 @@ Currently, there are two GitHub Action workflows:
 
 ## Changelog
 
-A list of released features and their issue number(s).
-List is sorted from moderate to minor revisions for reach release.
+See the [CHANGELOG](CHANGELOG.md) for all changes since project inception
 
-v0.1.0:
- * Figshare administrative tool for institution with `FigshareInstituteAdmin` class #1
- * Private file retrieval #1
 
 ## Authors
 

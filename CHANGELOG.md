@@ -603,6 +603,16 @@
    [#7](https://github.com/UAL-RE/LD-Cool-P/issues/7)
 
 
+## [v0.1.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.1.0) (2020-04-06)
+
+**Implemented enhancements:**
+ - release/v0.1.0 [#5](https://github.com/UAL-RE/LD-Cool-P/pull/5)
+
+**Closed issues:**
+ - Use Figshare API to retrieve information and dataset for data curation
+   [#1](https://github.com/UAL-RE/LD-Cool-P/issues/1)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
