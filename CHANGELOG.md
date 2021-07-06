@@ -540,6 +540,16 @@
    [#29](https://github.com/UAL-RE/LD-Cool-P/issues/29)
 
 
+## [v0.6.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.6.0) (2020-05-14)
+
+**Implemented enhancements:**
+ - release/v0.6.0 [#31](https://github.com/UAL-RE/LD-Cool-P/pull/31)
+
+**Closed issues:**
+ - feature/bug - depositor_name handling should be done with a dictionary
+   [#28](https://github.com/UAL-RE/LD-Cool-P/issues/28)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
