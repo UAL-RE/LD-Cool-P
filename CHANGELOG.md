@@ -485,6 +485,16 @@
  - hotfix/v0.9.2 [#49](https://github.com/UAL-RE/LD-Cool-P/pull/49)
 
 
+## [v0.9.1](https://github.com/UAL-RE/LD-Cool-P/tree/v0.9.1) (2020-06-12)
+
+**Fixed bugs:**
+ - Bug: Permissions might not be set to 777 for each curation parent folder
+   [#45](https://github.com/UAL-RE/LD-Cool-P/issues/45)
+
+**Merged pull requests:**
+ - hotfix/v0.9.1 [#46](https://github.com/UAL-RE/LD-Cool-P/pull/46)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
