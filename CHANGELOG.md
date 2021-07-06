@@ -465,6 +465,16 @@
  - Curation Workflow: separate ORIGINAL_DATA folder [#38](https://github.com/UAL-RE/LD-Cool-P/pull/38)
 
 
+## [v0.9.3](https://github.com/UAL-RE/LD-Cool-P/tree/v0.9.3) (2020-06-16)
+
+**Fixed bugs:**
+ - Bug: FigshareInstituteAdmin.get_curation_list is limited to only 20 entries
+   [#50](https://github.com/UAL-RE/LD-Cool-P/issues/50)
+
+**Merged pull requests:**
+ - hotfix/v0.9.3 [#51](https://github.com/UAL-RE/LD-Cool-P/pull/51)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
