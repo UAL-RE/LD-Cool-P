@@ -572,6 +572,15 @@
    [#19](https://github.com/UAL-RE/LD-Cool-P/issues/19)
 
 
+## [v0.3.1](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (2020-04-27)
+
+**Fixed bugs:**
+ - Bug in `admin.ownership.curation` [#17](https://github.com/UAL-RE/LD-Cool-P/issues/17)
+
+**Merged pull requests:**
+ - hotfix/v0.3.1 [#18](https://github.com/UAL-RE/LD-Cool-P/pull/18)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 

@@ -241,7 +241,7 @@ A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
 v0.3.0 - 0.3.1:
- * Retrieval of curation report #12, #17
+ * Retrieval of curation report #12
 
 v0.2.0:
  * File permission settings #6
