@@ -24,6 +24,7 @@ import webbrowser
 
 # Convert single-entry DataFrame to dictionary
 from ldcoolp.curation import df_to_dict_single
+from ldcoolp.curation import metadata
 
 # Logging
 from redata.commons.logger import log_stdout
@@ -33,6 +34,7 @@ import logging
 from figshare.figshare import issue_request
 
 # Read in default configuration settings
+from ..depositor_name import DepositorName
 from ...config import config_default_dict
 
 # for quote and urlencode
@@ -52,13 +54,7 @@ class Qualtrics:
       A Python interface for interaction with Qualtrics API for Deposit
       Agreement form survey
 
-    :param qualtrics_dict: Dict that contains Qualtrics configuration.
-      This should include:
-        - survey_id
-        - token
-        - datacenter
-        - download_url
-        - generate_url
+    :param config_dict: Dict that contains LD-Cool-P configuration.
 
       Default: config_default_dict from config/default.ini
 
@@ -95,27 +91,28 @@ class Qualtrics:
       Retrieve pandas DataFrame containing responses for a survey
       See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
 
-    find_deposit_agreement(dn_dict)
+    find_deposit_agreement(dn)
       Call get_survey_responses() and identify response that matches based on
       depositor name (implemented) and deposit title (to be implemented).
       Returns ResponseID if a unique match is available
 
-    retrieve_deposit_agreement(dn_dict=, ResponseId=, browser=True)
+    retrieve_deposit_agreement(dn=, ResponseId=, browser=True)
       Opens up web browser to an HTML page containing the deposit agreement.
       It will call find_deposit_agreement() with DepositorName dict if
       ResponseId is not provided. Otherwise, it will use the provided
-      ResponseId. Note that either dn_dict or ResponseId must be provided
+      ResponseId. Note that either dn or ResponseId must be provided
 
     generate_url(dn_dict)
       Generate URL with customized query strings based on Figshare metadata
     """
 
-    def __init__(self, qualtrics_dict=config_default_dict['qualtrics'], log=None,
+    def __init__(self, config_dict=config_default_dict, log=None,
                  interactive=True):
 
         self.interactive = interactive
 
-        self.dict = qualtrics_dict
+        self.curation_dict = config_dict['curation']
+        self.dict = config_dict['qualtrics']
         self.token = self.dict['token']
         self.data_center = self.dict['datacenter']
 
@@ -249,10 +246,12 @@ class Qualtrics:
         except KeyError:
             self.log.warn("survey_id not found among list")
 
-    def find_deposit_agreement(self, dn_dict):
+    def find_deposit_agreement(self, dn: DepositorName):
         """Get Response ID based on a match search for depositor name"""
 
         merged_df = self.merge_survey()
+
+        dn_dict = dn.name_dict
 
         # First perform search via article_id or curation_id
         self.log.info("Attempting to identify using article_id or curation_id ...")
@@ -296,6 +295,8 @@ class Qualtrics:
         else:
             if response_df.shape[0] == 1:
                 response_dict = df_to_dict_single(response_df)
+                self.save_metadata(response_dict, dn, out_file_prefix=
+                                   f'deposit_agreement_original_{article_id}')
                 self.pandas_write_buffer(response_df[cols_order])
                 self.log.info("Only one entry found!")
                 self.log.info(f"Survey completed on {response_dict['Date Completed']}")
@@ -313,7 +314,7 @@ class Qualtrics:
 
                 raise ValueError
 
-    def retrieve_deposit_agreement(self, dn_dict=None, ResponseId=None, out_path='',
+    def retrieve_deposit_agreement(self, dn=None, ResponseId=None, out_path='',
                                    browser=True):
         """Opens web browser to navigate to a page with Deposit Agreement Form"""
 
@@ -322,7 +323,7 @@ class Qualtrics:
 
         if isinstance(ResponseId, type(None)):
             try:
-                ResponseId, SurveyId = self.find_deposit_agreement(dn_dict)
+                ResponseId, SurveyId = self.find_deposit_agreement(dn)
                 self.log.info(f"Qualtrics ResponseID : {ResponseId}")
                 self.log.info(f"Qualtrics SurveyID : {SurveyId}")
             except ValueError:
@@ -340,7 +341,7 @@ class Qualtrics:
                     SurveyId = ''
 
                 if ResponseId == '' or SurveyId == '':
-                    custom_url = self.generate_url(dn_dict)
+                    custom_url = self.generate_url(dn.name_dict)
                     self.log.info("CUSTOM URL BELOW : ")
                     self.log.info(custom_url)
                     ResponseId = None
@@ -505,9 +506,10 @@ class Qualtrics:
 
         return full_url
 
-    def find_qualtrics_readme(self, dn_dict):
+    def find_qualtrics_readme(self, dn: DepositorName):
         """Get Response ID based on a article_id,curation_id search"""
 
+        dn_dict = dn.name_dict
         qualtrics_df = self.get_survey_responses(self.readme_survey_id)
 
         # First perform search via article_id or curation_id
@@ -538,15 +540,15 @@ class Qualtrics:
                 self.log.warn("Multiple entries found")
                 raise ValueError
 
-    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True):
+    def retrieve_qualtrics_readme(self, dn=None, ResponseId='', browser=True,
+                                  save_metadata: bool = False):
         """Retrieve response to Qualtrics README form"""
-        dn_dict = dn.name_dict
 
         if ResponseId:
             response_df = self.get_survey_response(self.readme_survey_id, ResponseId)
         else:
             try:
-                ResponseId, response_df = self.find_qualtrics_readme(dn_dict)
+                ResponseId, response_df = self.find_qualtrics_readme(dn)
                 self.log.info(f"Qualtrics README ResponseID : {ResponseId}")
             except ValueError:
                 self.log.warn("Error with retrieving ResponseId")
@@ -594,7 +596,7 @@ class Qualtrics:
         self.log.info("Appending Deposit Agreement's Corresponding Author metadata")
         if not self.da_response_id:
             self.log.info("NO METADATA - Retrieving Deposit Agreement metadata")
-            self.find_deposit_agreement(dn_dict)
+            self.find_deposit_agreement(dn)
         else:
             self.log.info(f"Parsed ResponseId : {self.da_response_id}")
             self.log.info(f"Parsed SurveyID : {self.da_survey_id}")
@@ -605,4 +607,28 @@ class Qualtrics:
         qualtrics_dict['corr_author_email'] = DA_dict['Q6_2']
         qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
 
+        # Save Qualtrics README metadata
+        if save_metadata:
+            out_file_prefix = "qualtrics_readme_original_" + \
+                              f"{dn.name_dict['article_id']}"
+            self.save_metadata(qualtrics_dict, dn,
+                               out_file_prefix=out_file_prefix)
+
         return qualtrics_dict
+
+    def save_metadata(self, response_dict: dict, dn: DepositorName,
+                      out_file_prefix: str = 'qualtrics'):
+        """Save Qualtrics metadata to JSON file"""
+
+        root_directory = join(
+            self.curation_dict[self.curation_dict['parent_dir']],
+            self.curation_dict['folder_todo'],
+            dn.folderName
+        )
+        metadata_directory = self.curation_dict['folder_metadata']
+
+        metadata.save_metadata(response_dict, out_file_prefix,
+                               metadata_source='QUALTRICS',
+                               root_directory=root_directory,
+                               metadata_directory=metadata_directory,
+                               log=self.log)

@@ -1,9 +1,9 @@
 # ![ReDATA Library Data Curation Tool in Python](img/LDCoolP_full.png)
 
-[![GitHub build](https://github.com/UAL-ODIS/LD-Cool-P/workflows/Python%20package/badge.svg)](https://github.com/UAL-ODIS/LD-Cool-P/actions?query=workflow%3A%22Python+package%22)
-![GitHub top language](https://img.shields.io/github/languages/top/UAL-ODIS/LD-Cool-P)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-ODIS/LD-Cool-P)
-![GitHub](https://img.shields.io/github/license/UAL-ODIS/LD-Cool-P?color=blue)
+[![GitHub build](https://github.com/UAL-RE/LD-Cool-P/workflows/Python%20package/badge.svg)](https://github.com/UAL-RE/LD-Cool-P/actions?query=workflow%3A%22Python+package%22)
+![GitHub top language](https://img.shields.io/github/languages/top/UAL-RE/LD-Cool-P)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/UAL-RE/LD-Cool-P)
+![GitHub](https://img.shields.io/github/license/UAL-RE/LD-Cool-P?color=blue)
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
@@ -62,7 +62,7 @@ These instructions will have the code running on your local or virtual machine.
 You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps:
 1. Python (>=v3.7.9)
-2. [`figshare`](https://github.com/UAL-ODIS/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
+2. [`figshare`](https://github.com/UAL-RE/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
 3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
 4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
 5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
@@ -86,12 +86,12 @@ $ conda activate curation
 ```
 
 With the activated `conda` environment, next clone the
-[UA Libraries' forked copy of figshare](https://github.com/UAL-ODIS/figshare)
+[UA Libraries' forked copy of figshare](https://github.com/UAL-RE/figshare)
 and install with the `setup.py` script:
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/UAL-ODIS/figshare.git
+(curation) $ git clone https://github.com/UAL-RE/figshare.git
 
 (curation) $ cd /path/to/parent/folder/figshare
 (curation) $ (sudo) python setup.py develop
@@ -101,7 +101,7 @@ Then, clone this repository (`LD-Cool-P`) into the parent folder and install wit
 
 ```
 (curation) $ cd /path/to/parent/folder
-(curation) $ git clone https://github.com/UAL-ODIS/LD-Cool-P.git
+(curation) $ git clone https://github.com/UAL-RE/LD-Cool-P.git
 
 (curation) $ cd /path/to/parent/folder/LD-Cool-P
 (curation) $ (sudo) python setup.py develop
@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `1.1.0`.
+You should see that the version is `1.1.3`.
 
 ### Configuration Settings
 
@@ -217,7 +217,7 @@ Additional python scripts are available to
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
-[tags on this repository](https://github.com/UAL-ODIS/LD-Cool-P/tags).
+[tags on this repository](https://github.com/UAL-RE/LD-Cool-P/tags).
 
 Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
 following a `git tag` version.
@@ -242,10 +242,10 @@ See the [CHANGELOG](CHANGELOG.md) for all changes since project inception
 
 ## Authors
 
-* Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) - [University of Arizona Libraries](https://github.com/ualibraries), [Office of Digital Innovation and Stewardship](https://github.com/UAL-ODIS)
+* Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) - [University of Arizona Libraries](https://github.com/ualibraries), [Research Engagement](https://github.com/UAL-RE)
 
 See also the list of
-[contributors](https://github.com/UAL-ODIS/LD-Cool-P/contributors) who participated in this project.
+[contributors](https://github.com/UAL-RE/LD-Cool-P/contributors) who participated in this project.
 
 
 ## License

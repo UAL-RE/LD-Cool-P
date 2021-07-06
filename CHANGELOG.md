@@ -8,11 +8,43 @@
 **Fixed bugs:**
  - `______` [#XX](https://github.com/UAL-RE/LD-Cool-P/issues/XX)
 
+**Merged pull requests:**
+ - Org rename [#228](http://github.com/UAL-RE/LD-Cool-P/pull/228)
+
+
+## [v1.1.3](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.3) (2021-06-29)
+
+**Implemented enhancements:**
+ - Enhancement: Double digit for version [#225](https://github.com/UAL-RE/LD-Cool-P/pull/225)
+
+**Closed issues:**
+ - Enhancement: Double digit for version [#224](https://github.com/UAL-RE/LD-Cool-P/issues/224)
+
+
+## [v1.1.2](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.2) (2021-06-28)
+
+**Implemented enhancements:**
+ - Allow for downloading only the metadata
+   [#223](https://github.com/UAL-RE/LD-Cool-P/pull/223)
+ - Enhancement: Dump JSON metadata from Qualtrics API
+   [#226](https://github.com/UAL-RE/LD-Cool-P/pull/226)
+
+**Closed issues:**
+ - Enhancement: Dump JSON metadata from Qualtrics API
+   [#160](https://github.com/UAL-RE/LD-Cool-P/issues/160)
+
+
+## [v1.1.1](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.1) (2021-06-10)
+
+**Fixed bugs:**
+ - Bug: Characters in old readme files can cause problems [#220](https://github.com/UAL-RE/LD-Cool-P/issues/220)
+
 **Closed issues:**
  - Delete populate and strip module from curation.inspection.readme [#218](https://github.com/UAL-RE/LD-Cool-P/issues/218)
 
 **Merged pull requests:**
  - Delete populate and strip module from curation.inspection.readme [#219](https://github.com/UAL-RE/LD-Cool-P/pull/219)
+ - Bug: Characters in old readme files can cause problems [#221](https://github.com/UAL-RE/LD-Cool-P/pull/221)
 
 
 ## [v1.1.0](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.0) (2021-06-07)
@@ -627,6 +659,5 @@
 
 **Merged pull requests:**
  - `______` [#XX](https://github.com/UAL-RE/LD-Cool-P/pull/XX)
-
 -->
 

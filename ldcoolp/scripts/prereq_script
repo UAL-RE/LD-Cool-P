@@ -31,6 +31,7 @@ if __name__ == '__main__':
     parser.add_argument('--article_id', required=True, help='Figshare article ID')
     parser.add_argument('--url_open', action='store_true', help='Whether to use urlopen')
     parser.add_argument('--browser', action='store_true', help='Whether to use urlopen')
+    parser.add_argument('--metadata_only', action='store_true', help='Do not retrieve data, only metadata')
     # parser.add_argument('--api_token', required=True, help='Figshare API token')
     args = parser.parse_args()
 
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     {CODE_NAME} version: {__version__}
     {CODE_NAME} commit hash: {gi.short_commit}
     Created by Chun Ly
-    Issues? Submit a GitHub ticket: https://github.com/UAL-ODIS/LD-Cool-P/issues/new
+    Issues? Submit a GitHub ticket: https://github.com/UAL-RE/LD-Cool-P/issues/new
     """
     print(banner_message)
 
@@ -94,8 +95,9 @@ if __name__ == '__main__':
         log.info(f"Retrieving: {articles[ii]} ...")  # ... {ii+1} / {num_articles}")
 
         # Run pre-req steps
-        main.workflow(articles[ii], url_open=args.url_open, browser=args.browser,
-                      log=log, config_dict=config_dict)
+        main.workflow(articles[ii], url_open=args.url_open,
+                      browser=args.browser, log=log, config_dict=config_dict,
+                      metadata_only=args.metadata_only)
         count += 1
 
         log.info(f"Completed: {articles[ii]} ...")
