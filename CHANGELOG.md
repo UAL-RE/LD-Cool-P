@@ -550,6 +550,18 @@
    [#28](https://github.com/UAL-RE/LD-Cool-P/issues/28)
 
 
+## [v0.5.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.5.0) (2020-05-13)
+
+**Implemented enhancements:**
+ - release/v0.5.0 [#27](https://github.com/UAL-RE/LD-Cool-P/pull/27)
+
+**Closed issues:**
+ - Primary function for data curation workflow
+   [#20](https://github.com/UAL-RE/LD-Cool-P/issues/20)
+ - Use Qualtrics API to retrieve deposit agreement information
+   [#24](https://github.com/UAL-RE/LD-Cool-P/issues/24)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
