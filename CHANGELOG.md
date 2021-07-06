@@ -518,6 +518,16 @@
  - hotfix/v0.8.1 [#41](https://github.com/UAL-RE/LD-Cool-P/pull/41)
 
 
+## [v0.8.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.8.0) (2020-06-04)
+
+**Implemented enhancements:**
+ - release/v0.8.0 [#39](https://github.com/UAL-RE/LD-Cool-P/pull/39)
+
+**Closed issues:**
+ - Use Qualtrics API to retrieve deposit agreement information
+   [#24](https://github.com/UAL-RE/LD-Cool-P/issues/24)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
