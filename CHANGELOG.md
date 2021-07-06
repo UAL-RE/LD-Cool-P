@@ -495,6 +495,15 @@
  - hotfix/v0.9.1 [#46](https://github.com/UAL-RE/LD-Cool-P/pull/46)
 
 
+## [v0.9.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.9.0) (2020-06-08)
+
+**Closed issues:**
+ - Rename software to LD-Cool-P [#34](https://github.com/UAL-RE/LD-Cool-P/issues/34)
+
+**Merged pull requests:**
+ - release/v0.9.0 [#43](https://github.com/UAL-RE/LD-Cool-P/pull/43)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
