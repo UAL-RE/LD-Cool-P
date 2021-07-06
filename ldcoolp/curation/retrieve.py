@@ -41,6 +41,7 @@ def private_file_retrieve(url, filename=None, token=None, log=None):
         h = requests.head(url, headers=headers)
         h.raise_for_status()
 
+        # Chunk read and write with stream option and copyfileobj
         with requests.get(url, stream=True, headers=headers) as r:
             with open(filename, 'wb') as f:
                 shutil.copyfileobj(r.raw, f)
