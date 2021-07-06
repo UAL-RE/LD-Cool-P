@@ -591,6 +591,18 @@
    [#12](https://github.com/UAL-RE/LD-Cool-P/issues/12)
 
 
+## [v0.2.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.2.0) (2020-04-08)
+
+**Implemented enhancements:**
+ - release/v0.2.0 [#11](https://github.com/UAL-RE/LD-Cool-P/pull/11)
+
+**Closed issues:**
+ - File permissions on data curation drive
+   [#6](https://github.com/UAL-RE/LD-Cool-P/issues/6)
+ - Update default config file to include data curation settings
+   [#7](https://github.com/UAL-RE/LD-Cool-P/issues/7)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
