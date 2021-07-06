@@ -240,9 +240,6 @@ Currently, there are two GitHub Action workflows:
 A list of released features and their issue number(s).
 List is sorted from moderate to minor revisions for reach release.
 
-v0.10.0 - 0.10.1:
- * Re-organization of data curation workflow with ORIGINAL_DATA and DATA folder #38
-
 v0.9.0 - 0.9.3:
  * Re-naming of software #34
  * Minor bug with permission issue tool #45
