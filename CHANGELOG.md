@@ -562,6 +562,16 @@
    [#24](https://github.com/UAL-RE/LD-Cool-P/issues/24)
 
 
+## [v0.4.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.4.0) (2020-05-01)
+
+**Implemented enhancements:**
+ - release/v0.4.0 [#22](https://github.com/UAL-RE/LD-Cool-P/pull/22)
+
+**Closed issues:**
+ - A move function to relocate a dataset as it goes through the data curation process
+   [#19](https://github.com/UAL-RE/LD-Cool-P/issues/19)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
