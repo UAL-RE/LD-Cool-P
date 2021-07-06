@@ -459,10 +459,11 @@
 ## [v0.10.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.10.0) (2020-06-19)
 
 **Implemented enhancements:**
+ - release/v0.10.0 [#54](https://github.com/UAL-RE/LD-Cool-P/pull/54)
+
+**Closed issues:**
  - Curation Workflow: separate ORIGINAL_DATA folder [#38](https://github.com/UAL-RE/LD-Cool-P/pull/38)
 
-**Merged pull requests:**
- - release/v0.10.0 [#54](https://github.com/UAL-RE/LD-Cool-P/pull/54)
 
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
