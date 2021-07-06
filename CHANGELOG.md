@@ -475,6 +475,16 @@
  - hotfix/v0.9.3 [#51](https://github.com/UAL-RE/LD-Cool-P/pull/51)
 
 
+## [v0.9.2](https://github.com/UAL-RE/LD-Cool-P/tree/v0.9.2) (2020-06-15)
+
+**Fixed bugs:**
+ - Bug: Qualtrics generate_url() not always called if ResponseId ill-determined
+   [#48](https://github.com/UAL-RE/LD-Cool-P/issues/48)
+
+**Merged pull requests:**
+ - hotfix/v0.9.2 [#49](https://github.com/UAL-RE/LD-Cool-P/pull/49)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
