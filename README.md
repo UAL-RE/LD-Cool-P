@@ -242,7 +242,6 @@ List is sorted from moderate to minor revisions for reach release.
 
 v0.8.0 - 0.8.1:
  * Update to `Qualtrics` class for web browser handling #24
- * Embedded data for Qualtrics #37, #40
 
 v0.7.0:
  * Re-packaging for easier installation #9

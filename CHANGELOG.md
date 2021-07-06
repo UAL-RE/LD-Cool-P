@@ -504,6 +504,20 @@
  - release/v0.9.0 [#43](https://github.com/UAL-RE/LD-Cool-P/pull/43)
 
 
+## [v0.8.1](https://github.com/UAL-RE/LD-Cool-P/tree/v0.8.1) (2020-06-05)
+
+**Fixed bugs:**
+ - Bug: Incorrect self variable in depositor_name.DepositorName
+   [#40](https://github.com/UAL-RE/LD-Cool-P/issues/40)
+
+**Closed issues:**
+ - Use Qualtrics Q_PopulateResponse to provide customized URL for Deposit Agreement form
+   [#37](https://github.com/UAL-RE/LD-Cool-P/issues/37)
+
+**Merged pull requests:**
+ - hotfix/v0.8.1 [#41](https://github.com/UAL-RE/LD-Cool-P/pull/41)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
