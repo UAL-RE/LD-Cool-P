@@ -581,6 +581,16 @@
  - hotfix/v0.3.1 [#18](https://github.com/UAL-RE/LD-Cool-P/pull/18)
 
 
+## [v0.3.0](https://github.com/UAL-RE/LD-Cool-P/tree/v0.3.0) (2020-04-20)
+
+**Implemented enhancements:**
+ - release/v0.3.0 [#14](https://github.com/UAL-RE/LD-Cool-P/pull/14)
+
+**Closed issues:**
+ - Retrieve reports for data curation record
+   [#12](https://github.com/UAL-RE/LD-Cool-P/issues/12)
+
+
 <!-- TEMPLATE
 ## [vXX.YY.ZZ](https://github.com/UAL-RE/LD-Cool-P/tree/vXX.YY.ZZ) (YYYY-MM-DD)
 
