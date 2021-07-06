@@ -8,8 +8,14 @@
 **Fixed bugs:**
  - `______` [#XX](https://github.com/UAL-RE/LD-Cool-P/issues/XX)
 
+**Closed issues:**
+ - Chore: Move to CHANGELOG.md instead of updates to README.md
+   [#217](https://github.com/UAL-RE/LD-Cool-P/issues/217)
+
 **Merged pull requests:**
  - Org rename [#228](http://github.com/UAL-RE/LD-Cool-P/pull/228)
+ - Chore: Move to CHANGELOG.md instead of updates to README.md 
+   [#231](https://github.com/UAL-RE/LD-Cool-P/issues/231)
 
 
 ## [v1.1.3](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.3) (2021-06-29)
