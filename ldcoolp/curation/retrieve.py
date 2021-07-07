@@ -45,7 +45,7 @@ def private_file_retrieve(url, filename=None, token=None, log=None):
         with requests.get(url, stream=True, headers=headers) as r:
             with open(filename, 'wb') as f:
                 shutil.copyfileobj(r.raw, f)
-    except HTTPError as error:
+    except (HTTPError, IOError) as error:
         log.warning(error)
         raise HTTPError(error)
 
@@ -117,7 +117,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                                               log=log)
                         log.info("Download successful!")
                         retrieve_cnt += 1
-                    except HTTPError:
+                    except (HTTPError, IOError):
                         retrieve_cnt += 1
 
                     # Perform checksum
