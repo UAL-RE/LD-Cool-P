@@ -1,21 +1,21 @@
 # Changelog
 
-## [UNRELEASED](https://github.com/UAL-RE/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
-
-**Implemented enhancements:**
- - `______` [#XX](https://github.com/UAL-RE/LD-Cool-P/pull/XX)
+## [v1.1.4](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.4) (2021-07-07)
 
 **Fixed bugs:**
- - `______` [#XX](https://github.com/UAL-RE/LD-Cool-P/issues/XX)
+ - Bug: urlretrieve is returning HTTPS 400 error
+   [#229](https://github.com/UAL-RE/LD-Cool-P/issues/229)
 
 **Closed issues:**
  - Chore: Move to CHANGELOG.md instead of updates to README.md
    [#217](https://github.com/UAL-RE/LD-Cool-P/issues/217)
 
 **Merged pull requests:**
- - Org rename [#228](http://github.com/UAL-RE/LD-Cool-P/pull/228)
+ - Org rename [#228](https://github.com/UAL-RE/LD-Cool-P/pull/228)
  - Chore: Move to CHANGELOG.md instead of updates to README.md 
    [#231](https://github.com/UAL-RE/LD-Cool-P/issues/231)
+ - Use requests for chunk read and write over urlretrieve (HTTPS 400 error)
+   [#230](https://github.com/UAL-RE/LD-Cool-P/pull/230)
 
 
 ## [v1.1.3](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.3) (2021-06-29)
