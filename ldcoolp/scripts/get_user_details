@@ -87,14 +87,14 @@ if __name__ == '__main__':
     if not args.write_file:
         print(accounts_df)
     else:
-        csv_outfile = join(csv_dir, f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.csv")
+        mod_time_str = now.isoformat(timespec='minutes').replace(':', '')
+        csv_outfile = join(csv_dir, f"redata_user_details.{mod_time_str}.csv")
 
         log.info(f"Writing file : {csv_outfile}")
-
         accounts_df.to_csv(csv_outfile, index=False)
         permissions.curation(csv_outfile, mode=0o666)
 
-    # Change permission to mode=666 (rw for fall)
+    # Change permission to mode=666 (rw for all)
     lc.log_permission()
 
     lc.script_end()
