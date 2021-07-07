@@ -87,7 +87,8 @@ if __name__ == '__main__':
     if not args.write_file:
         print(accounts_df)
     else:
-        mod_time_str = now.isoformat(timespec='minutes').replace(':', '')
+        now_local = now.replace(tzinfo=None)
+        mod_time_str = now_local.isoformat(timespec='minutes').replace(':', '')
         csv_outfile = join(csv_dir, f"redata_user_details.{mod_time_str}.csv")
 
         log.info(f"Writing file : {csv_outfile}")
