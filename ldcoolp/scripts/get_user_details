@@ -80,22 +80,19 @@ if __name__ == '__main__':
 
     if not args.simple:
         accounts_df = fs_admin.get_account_details(flag=False)
-
-        log.info(f"Number of users: {len(accounts_df)}")
-        if not args.write_file:
-            print(accounts_df)
-        else:
-            csv_outfile = join(csv_dir, f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.csv")
-
-            log.info(f"Writing file : {csv_outfile}")
-
-            accounts_df.to_csv(csv_outfile, index=False)
-            permissions.curation(csv_outfile, mode=0o666)
     else:
         accounts_df = fs_admin.get_account_list()
 
-        log.info(f"Number of users: {len(accounts_df)}")
+    log.info(f"Number of users: {len(accounts_df)}")
+    if not args.write_file:
         print(accounts_df)
+    else:
+        csv_outfile = join(csv_dir, f"redata_user_details.{now.strftime('%Y-%m-%d_%H:%M')}.csv")
+
+        log.info(f"Writing file : {csv_outfile}")
+
+        accounts_df.to_csv(csv_outfile, index=False)
+        permissions.curation(csv_outfile, mode=0o666)
 
     # Change permission to mode=666 (rw for fall)
     lc.log_permission()
