@@ -1,5 +1,16 @@
 # Changelog
 
+## [UNRELEASED](https://github.com/UAL-RE/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+
+**Fixed bugs:**
+ - get_user_details script does not write CSV for --simple case
+   [#233](https://github.com/UAL-RE/LD-Cool-P/issues/233)
+
+**Merged pull requests:**
+ - get_user_details script does not write CSV for --simple case
+   [#234](https://github.com/UAL-RE/LD-Cool-P/pull/234)
+
+
 ## [v1.1.4](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.4) (2021-07-07)
 
 **Fixed bugs:**
