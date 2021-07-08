@@ -93,7 +93,7 @@ if __name__ == '__main__':
     p.save_metadata()
 
     # Step 2: Perform checksum verification on files
-    checksum_df = p.check_files()
+    checksum_df = p.check_files(save_files=True)
 
     for handler in log.handlers:
         log_file = logger.get_log_file(handler)

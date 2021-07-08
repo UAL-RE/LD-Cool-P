@@ -90,7 +90,7 @@ class Preserve:
                                metadata_directory='METADATA',
                                log=self.log)
 
-    def check_files(self) -> pd.DataFrame:
+    def check_files(self, save_files: bool = False) -> pd.DataFrame:
         """Performs checksum verification on each file"""
 
         if self.article_metadata['is_embargoed']:
@@ -99,7 +99,7 @@ class Preserve:
             self.log.warning(
                 f"Embargo date: {self.article_metadata['embargo_date']}")
         else:
-            summary_dict = {}  # Initialize
+            summary_list = []  # Initialize
             files_list: List[Dict] = self.article_metadata['files']
             d_dir = self.version_dir / self.data_path
             o_dir = self.version_dir / self.original_data_path
@@ -129,12 +129,20 @@ class Preserve:
                     checksum.check_md5(t_path, file_dict['supplied_md5'],
                                        log=log_stdout())
 
-                summary_dict[n] = {
+                summary_list.append({
                     'name': filename,
                     'data_location': data_location,
                     'checksum_status': checksum_flag,
-                }
-                summary_dict[n].update(file_dict)
+                })
+                summary_list[n].update(file_dict)
 
-            df = pd.DataFrame.from_dict(summary_dict, orient='index')
+            if save_files:
+                out_file_prefix = f'checksum_summary_{self.article_id}'
+                metadata.save_metadata(summary_list, out_file_prefix,
+                                       metadata_source='CHECKSUM',
+                                       root_directory=self.version_dir,
+                                       metadata_directory='METADATA',
+                                       save_csv=True, log=self.log)
+
+            df = pd.DataFrame.from_dict(summary_list, orient='columns')
             return df
