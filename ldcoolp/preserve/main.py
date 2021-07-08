@@ -1,6 +1,10 @@
 from pathlib import Path
 
 from logging import Logger
+from typing import List, Dict
+
+import pandas as pd
+
 from redata.commons.logger import log_stdout
 
 # LD-Cool-P specific
@@ -41,6 +45,8 @@ class Preserve:
         self.root_directory = \
             self.curation_dict[self.curation_dict['parent_dir']]
         self.published_folder = self.curation_dict['folder_published']
+        self.data_path = self.curation_dict['folder_copy_data']  # DATA
+        self.original_data_path = self.curation_dict['folder_data']  # ORIGINAL_DATA
 
         # Search for path
         p_dir = Path(self.root_directory) / self.published_folder
@@ -83,3 +89,51 @@ class Preserve:
                                root_directory=self.version_dir,
                                metadata_directory='METADATA',
                                log=self.log)
+
+    def check_files(self) -> pd.DataFrame:
+        """Performs checksum verification on each file"""
+
+        if self.article_metadata['is_embargoed']:
+            self.log.warning(
+                f"Embargoed files! File checking is not possible at this time")
+            self.log.warning(
+                f"Embargo date: {self.article_metadata['embargo_date']}")
+        else:
+            summary_dict = {}  # Initialize
+            files_list: List[Dict] = self.article_metadata['files']
+            d_dir = self.version_dir / self.data_path
+            o_dir = self.version_dir / self.original_data_path
+            for n, file_dict in enumerate(files_list):
+                filename = file_dict['name']
+                glob_list = list(d_dir.glob(filename))
+
+                data_location = ''
+                if len(glob_list) == 0:
+                    try:
+                        t_path = list(o_dir.glob(filename))[0]
+                        if not t_path.exists():
+                            raise FileNotFoundError
+                        else:
+                            self.log.info(
+                                f"{filename} found in {self.original_data_path}")
+                            data_location = self.original_data_path
+                    except (IndexError, FileNotFoundError):
+                        self.log.warning(f"File not found: {filename}")
+                else:
+                    t_path = glob_list[0]
+                    self.log.info(
+                        f"{filename} found in {self.data_path}")
+                    data_location = self.data_path
+
+                checksum_flag = \
+                    checksum.check_md5(t_path, file_dict['supplied_md5'],
+                                       log=log_stdout())
+
+                summary_dict[n] = {
+                    'data_location': data_location,
+                    'checksum_status': checksum_flag,
+                }
+                summary_dict[n].update(file_dict)
+
+            df = pd.DataFrame.from_dict(summary_dict, orient='index')
+            return df

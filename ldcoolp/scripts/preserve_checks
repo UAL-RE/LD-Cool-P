@@ -92,6 +92,13 @@ if __name__ == '__main__':
     # Step 1: Save Figshare metadata
     p.save_metadata()
 
+    # Step 2: Perform checksum verification on files
+    checksum_df = p.check_files()
+
+    for handler in log.handlers:
+        log_file = logger.get_log_file(handler)
+    logger.pandas_write_buffer(checksum_df, log_file)
+
     log.info(f"Completed: {args.article_id} ...")
 
     # Change permission to mode=666 (rw for all)
