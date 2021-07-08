@@ -57,9 +57,8 @@ class Preserve:
             raise ValueError
 
         self.folder_name = Path(list_paths[0])
-        print(self.folder_name)
-        v_dir = self.folder_name / f"v{self.version_no:02}"
-        if v_dir.exists():
+        self.version_dir = self.folder_name / f"v{self.version_no:02}"
+        if self.version_dir.exists():
             self.log.info("Article and version found!")
         else:
             self.log.warning("Version not found.")
@@ -74,3 +73,13 @@ class Preserve:
         article_metadata = self.fs.get_article_details(self.article_id,
                                                        self.version_no)
         return article_metadata
+
+    def save_metadata(self):
+        """Write JSON file containing Figshare metadata"""
+        out_file_prefix = f"published_{self.article_id}"
+        metadata.save_metadata(self.article_metadata,
+                               out_file_prefix,
+                               metadata_source='FIGSHARE',
+                               root_directory=self.version_dir,
+                               metadata_directory='METADATA',
+                               log=self.log)
