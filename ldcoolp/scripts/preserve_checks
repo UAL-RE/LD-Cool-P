@@ -7,10 +7,13 @@ import argparse
 import configparser
 
 from datetime import date
-from pprint import pprint
 
+# LD-Cool-P specific
 from ldcoolp.preserve import Preserve
 from redata.commons import logger
+
+# Config loader
+from ldcoolp.config import dict_load
 
 # Version and branch info
 from ldcoolp import __version__, CODE_NAME
@@ -18,9 +21,6 @@ from redata.commons.git_info import GitInfo
 from ldcoolp import __file__ as library_path
 
 today = date.today()
-
-# Config loader
-from ldcoolp.config import dict_load
 
 library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
 
@@ -45,7 +45,9 @@ if __name__ == '__main__':
     gi = GitInfo(library_root_path)
 
     banner_message = f"""
-    This is the command-line tool that perform preservation checks
+    This is the command-line tool that perform preservation checks for curated
+    datasets. It only performs this after the dataset has been moved to the
+    published folder
 
     {CODE_NAME} branch: {gi.branch}
     {CODE_NAME} version: {__version__}
