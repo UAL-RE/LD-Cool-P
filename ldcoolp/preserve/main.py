@@ -130,6 +130,7 @@ class Preserve:
                                        log=log_stdout())
 
                 summary_dict[n] = {
+                    'name': filename,
                     'data_location': data_location,
                     'checksum_status': checksum_flag,
                 }
