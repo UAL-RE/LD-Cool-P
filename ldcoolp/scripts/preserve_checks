@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+
+from os.path import dirname, exists, join
+from os import mkdir
+
+import argparse
+import configparser
+
+from datetime import date
+from pprint import pprint
+
+from ldcoolp.preserve import Preserve
+from redata.commons import logger
+
+# Version and branch info
+from ldcoolp import __version__, CODE_NAME
+from redata.commons.git_info import GitInfo
+from ldcoolp import __file__ as library_path
+
+today = date.today()
+
+# Config loader
+from ldcoolp.config import dict_load
+
+library_root_path = dirname(dirname(library_path))  # Retrieve parent directory to ldcoolp
+
+
+if __name__ == '__main__':
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description='Command-line driver for LD-Cool-P preservation checks.')
+    parser.add_argument('--config', required=True,
+                        help='path to configuration file')
+    parser.add_argument('--article-id', required=True, type=int,
+                        help='Figshare article ID')
+    parser.add_argument('--version-no', required=True, default=1, type=int,
+                        help='Figshare article ID version no. Default: 1')
+    parser.add_argument('--metadata-only', action='store_true',
+                        help='Do not retrieve data, only metadata')
+    args = parser.parse_args()
+
+    if not exists(args.config):
+        raise FileNotFoundError(f"WARNING!!! Config file not found: {args.config}")
+
+    gi = GitInfo(library_root_path)
+
+    banner_message = f"""
+    This is the command-line tool that perform preservation checks
+
+    {CODE_NAME} branch: {gi.branch}
+    {CODE_NAME} version: {__version__}
+    {CODE_NAME} commit hash: {gi.short_commit}
+    Created by Chun Ly
+    Issues? Submit a GitHub ticket: https://github.com/UAL-RE/LD-Cool-P/issues/new
+    """
+    print(banner_message)
+
+    # Load configuration
+    try:
+        config_dict = dict_load(args.config)
+    except configparser.ParsingError:
+        exit()
+
+    curation_dict = config_dict['curation']
+
+    # Define logfile
+    root_directory_main = curation_dict[curation_dict['log_parent_dir']]
+
+    log_dir = join(root_directory_main, curation_dict['log_dir'])
+    if not exists(log_dir):
+        mkdir(log_dir)
+    logfile_prefix = 'preserve_checks'
+    log = logger.log_setup(log_dir, logfile_prefix)
+
+    lc = logger.LogCommons(log, logfile_prefix, gi,
+                           code_name=CODE_NAME, version=__version__)
+
+    lc.script_start()
+
+    # Retrieve username, hostname, IP
+    lc.script_sys_info()
+
+    # Configuration information
+    log.info(f"Config file: {args.config}")
+
+    log.info(f"Checking: {args.article_id} v{args.version_no}")
+
+    p = Preserve(args.article_id, args.version_no, config_dict=config_dict,
+                 log=log)
+    pprint(p.article_metadata)
+
+    log.info(f"Completed: {args.article_id} ...")
+
+    # Change permission to mode=666 (rw for all)
+    lc.log_permission()
+
+    lc.script_end()
