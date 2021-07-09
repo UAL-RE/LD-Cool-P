@@ -75,6 +75,13 @@ class Preserve:
             self.log.warning("Exiting !!!")
             raise OSError
 
+        # Ensure that METADATA folder exists (support for very old deposits)
+        m_path = self.version_dir / self.metadata_path
+        if not m_path.exists():
+            self.log.info(f"{self.metadata_path} NOT found!")
+            self.log.info(f"Creating: {self.metadata_path}")
+            m_path.mkdir()
+
         # Retrieve Figshare metadata and save metadata
         self.article_metadata = self.get_metadata()
 
