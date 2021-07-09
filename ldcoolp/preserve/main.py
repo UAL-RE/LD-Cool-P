@@ -98,6 +98,7 @@ class Preserve:
                 f"Embargoed files! File checking is not possible at this time")
             self.log.warning(
                 f"Embargo date: {self.article_metadata['embargo_date']}")
+            raise SystemExit("NOTE: Embargoed datasets NOT supported at this point")
         else:
             summary_list = []  # Initialize
             files_list: List[Dict] = self.article_metadata['files']

@@ -88,8 +88,11 @@ if __name__ == '__main__':
     log.info(f"Checking: {args.article_id} v{args.version_no}")
 
     # Define preservation object
-    p = Preserve(args.article_id, args.version_no,
-                 config_dict=config_dict, log=log)
+    try:
+        p = Preserve(args.article_id, args.version_no,
+                     config_dict=config_dict, log=log)
+    except SystemExit:
+        pass
 
     # Step 1: Save Figshare metadata
     p.save_metadata()
