@@ -13,6 +13,9 @@ from ..config import config_default_dict
 from ..curation import metadata
 from ..curation.inspection import checksum
 
+# Wildcards for globbing hidden files
+HIDDEN_FILES = ['*DS_Store', '.*.docx', '.*.pdf']
+
 
 class Preserve:
     """
@@ -165,3 +168,27 @@ class Preserve:
                 self.log.info(f"{index}. Creating symbolic link for {row['name']}")
                 data_path = self.version_dir / self.data_path / row['name']
                 data_path.symlink_to(f"../{self.original_data_path}/{row['name']}")
+
+    def delete_hidden_files(self):
+        """Find and remove all hidden files. See ``HIDDEN_FILES`` wildcards"""
+        hidden_files_list = []
+        for hidden in HIDDEN_FILES:
+            file_find = list(self.version_dir.rglob(hidden))
+            if len(file_find) > 0:
+                hidden_files_list.extend(file_find)
+
+        if len(hidden_files_list) == 0:
+            self.log.info("No hidden files found!")
+        else:
+            self.log.info(f"Hidden files found, N={len(hidden_files_list)}!")
+            for h_path in hidden_files_list:
+                self.log.info(h_path.relative_to(self.version_dir))
+            self.log.info("PROMPT: Do you you wish to delete all of these files")
+            src_input = input("PROMPT: Type 'yes'. Anything else will skip : ")
+            self.log.info(f"RESPONSE: {src_input}")
+            if src_input.lower() == 'yes':
+                for h_path in hidden_files_list:
+                    self.log.info(f"Removing: {h_path.relative_to(self.version_dir)}")
+                    h_path.unlink()
+
+        return hidden_files_list

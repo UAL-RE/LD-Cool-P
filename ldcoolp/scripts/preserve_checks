@@ -108,6 +108,9 @@ if __name__ == '__main__':
         # Step 4: Create symbolic links
         p.make_symbolic_links(checksum_df)
 
+    # Step 6: Delete hidden files
+    p.delete_hidden_files()
+
     log.info(f"Completed: {args.article_id} ...")
 
     # Change permission to mode=666 (rw for all)
