@@ -50,6 +50,7 @@ class Preserve:
         self.published_folder = self.curation_dict['folder_published']
         self.data_path = self.curation_dict['folder_copy_data']  # DATA
         self.original_data_path = self.curation_dict['folder_data']  # ORIGINAL_DATA
+        self.metadata_path = self.curation_dict['folder_metadata']  # METADATA
 
         # Search for path
         p_dir = Path(self.root_directory) / self.published_folder
@@ -90,7 +91,7 @@ class Preserve:
                                out_file_prefix,
                                metadata_source='FIGSHARE',
                                root_directory=self.version_dir,
-                               metadata_directory='METADATA',
+                               metadata_directory=self.metadata_path,
                                log=self.log)
 
     def check_files(self, save_files: bool = False) -> pd.DataFrame:
@@ -145,7 +146,7 @@ class Preserve:
                 metadata.save_metadata(summary_list, out_file_prefix,
                                        metadata_source='CHECKSUM',
                                        root_directory=self.version_dir,
-                                       metadata_directory='METADATA',
+                                       metadata_directory=self.metadata_path,
                                        save_csv=True, log=self.log)
 
             df = pd.DataFrame.from_dict(summary_list, orient='columns')
