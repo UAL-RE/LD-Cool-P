@@ -147,3 +147,21 @@ class Preserve:
 
             df = pd.DataFrame.from_dict(summary_list, orient='columns')
             return df
+
+    def make_symbolic_links(self, df):
+        """Construct symbolic links in DATA from ORIGINAL_DATA as needed
+
+        :param df: pandas DataFrame from ``check_files()``
+        """
+
+        # Get list of those in ORIGINAL_DATA
+        df_symlink = df.loc[df['data_location'] == self.original_data_path]
+
+        if df_symlink.empty:
+            self.log.info(f"All files are in {self.data_path}")
+            self.log.info("No symbolic links are needed! :-)")
+        else:
+            for index, row in df_symlink.iterrows():
+                self.log.info(f"{index}. Creating symbolic link for {row['name']}")
+                data_path = self.version_dir / self.data_path / row['name']
+                data_path.symlink_to(f"../{self.original_data_path}/{row['name']}")
