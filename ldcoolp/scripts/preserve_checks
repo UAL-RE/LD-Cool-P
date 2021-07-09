@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('--version-no', required=True, default=1, type=int,
                         help='Figshare article ID version no. Default: 1')
     parser.add_argument('--metadata-only', action='store_true',
-                        help='Do not retrieve data, only metadata')
+                        help='Perform checks without checking files (this is for large datasets)')
     args = parser.parse_args()
 
     if not exists(args.config):
@@ -95,11 +95,12 @@ if __name__ == '__main__':
     p.save_metadata()
 
     # Step 2: Perform checksum verification on files
-    checksum_df = p.check_files(save_files=True)
+    if not args.metadata_only:
+        checksum_df = p.check_files(save_files=True)
 
-    for handler in log.handlers:
-        log_file = logger.get_log_file(handler)
-    logger.pandas_write_buffer(checksum_df, log_file)
+        for handler in log.handlers:
+            log_file = logger.get_log_file(handler)
+        logger.pandas_write_buffer(checksum_df, log_file)
 
     log.info(f"Completed: {args.article_id} ...")
 
