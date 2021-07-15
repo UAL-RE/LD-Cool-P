@@ -108,7 +108,10 @@ if __name__ == '__main__':
         # Step 4: Create symbolic links
         p.make_symbolic_links(checksum_df)
 
-    # Step 6: Delete hidden files
+    # Step 6: Delete old README.txt files
+    p.delete_old_readme_files()
+
+    # Step 7: Delete hidden files
     p.delete_hidden_files()
 
     log.info(f"Completed: {args.article_id} ...")
