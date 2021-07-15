@@ -33,7 +33,7 @@ if __name__ == '__main__':
                         help='path to configuration file')
     parser.add_argument('--article-id', required=True, type=int,
                         help='Figshare article ID')
-    parser.add_argument('--version-no', required=True, default=1, type=int,
+    parser.add_argument('--version-no', default=1, type=int,
                         help='Figshare article ID version no. Default: 1')
     parser.add_argument('--metadata-only', action='store_true',
                         help='Perform checks without checking files (this is for large datasets)')
