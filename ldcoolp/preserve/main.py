@@ -205,6 +205,7 @@ class Preserve:
         return hidden_files_list
 
     def delete_files(self, files_list: List[Path]):
+        """Delete list of files if response to prompt is yes"""
         for f_path in files_list:
             self.log.info(f_path.relative_to(self.version_dir))
         self.log.info("PROMPT: Do you you wish to delete all of these files")
