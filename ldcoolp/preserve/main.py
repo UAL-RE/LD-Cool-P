@@ -186,15 +186,7 @@ class Preserve:
             self.log.info("No old README.txt files found!")
         else:
             self.log.info(f"Old README.txt files found, N={len(files_find_list)}!")
-            for o_path in files_find_list:
-                self.log.info(o_path.relative_to(self.version_dir))
-            self.log.info("PROMPT: Do you you wish to delete all of these files")
-            src_input = input("PROMPT: Type 'yes'. Anything else will skip : ")
-            self.log.info(f"RESPONSE: {src_input}")
-            if src_input.lower() == 'yes':
-                for o_path in files_find_list:
-                    self.log.info(f"Removing: {o_path.relative_to(self.version_dir)}")
-                    o_path.unlink()
+            self.delete_files(files_find_list)
 
     def delete_hidden_files(self):
         """Find and remove all hidden files. See ``HIDDEN_FILES`` wildcards"""
@@ -208,14 +200,17 @@ class Preserve:
             self.log.info("No hidden files found!")
         else:
             self.log.info(f"Hidden files found, N={len(hidden_files_list)}!")
-            for h_path in hidden_files_list:
-                self.log.info(h_path.relative_to(self.version_dir))
-            self.log.info("PROMPT: Do you you wish to delete all of these files")
-            src_input = input("PROMPT: Type 'yes'. Anything else will skip : ")
-            self.log.info(f"RESPONSE: {src_input}")
-            if src_input.lower() == 'yes':
-                for h_path in hidden_files_list:
-                    self.log.info(f"Removing: {h_path.relative_to(self.version_dir)}")
-                    h_path.unlink()
+            self.delete_files(hidden_files_list)
 
         return hidden_files_list
+
+    def delete_files(self, files_list: List[Path]):
+        for f_path in files_list:
+            self.log.info(f_path.relative_to(self.version_dir))
+        self.log.info("PROMPT: Do you you wish to delete all of these files")
+        src_input = input("PROMPT: Type 'yes'. Anything else will skip : ")
+        self.log.info(f"RESPONSE: {src_input}")
+        if src_input.lower() == 'yes':
+            for f_path in files_list:
+                self.log.info(f"Removing: {f_path.relative_to(self.version_dir)}")
+                f_path.unlink()
