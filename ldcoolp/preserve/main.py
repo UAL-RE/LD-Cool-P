@@ -71,7 +71,7 @@ class Preserve:
         if self.version_dir.exists():
             self.log.info("Article and version found!")
         else:
-            self.log.warning("Version not found.")
+            self.log.warning("Version not found!")
             self.log.warning("Exiting !!!")
             raise OSError
 
@@ -183,7 +183,7 @@ class Preserve:
         d_dir = self.version_dir / self.data_path
         files_find_list = list(d_dir.glob('README_????-??-??T*.txt'))
         if len(files_find_list) == 0:
-            self.log.info("No old README.txt files found!")
+            self.log.info("No old README.txt files found! :-)")
         else:
             self.log.info(f"Old README.txt files found, N={len(files_find_list)}!")
             self.delete_files(files_find_list)
@@ -197,7 +197,7 @@ class Preserve:
                 hidden_files_list.extend(file_find)
 
         if len(hidden_files_list) == 0:
-            self.log.info("No hidden files found!")
+            self.log.info("No hidden files found! :-)")
         else:
             self.log.info(f"Hidden files found, N={len(hidden_files_list)}!")
             self.delete_files(hidden_files_list)
@@ -214,3 +214,5 @@ class Preserve:
             for f_path in files_list:
                 self.log.info(f"Removing: {f_path.relative_to(self.version_dir)}")
                 f_path.unlink()
+        else:
+            self.log.info("Not deleting files.")
