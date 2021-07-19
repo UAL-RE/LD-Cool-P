@@ -1,10 +1,18 @@
 # Changelog
 
-## [UNRELEASED](https://github.com/UAL-RE/LD-Cool-P/tree/HEAD) (YYYY-MM-DD)
+## [v1.1.5](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.5) (2021-07-19)
+
+**Implemented enhancements:**
+ - Feature: Ensure graceful exit when deposit to be curated gets deleted
+   [#239](https://github.com/UAL-RE/LD-Cool-P/pull/239)
 
 **Fixed bugs:**
  - get_user_details script does not write CSV for --simple case
    [#233](https://github.com/UAL-RE/LD-Cool-P/issues/233)
+
+**Closed issues:**
+ - Feature: Ensure graceful exit when deposit to be curated gets deleted
+   [#238](https://github.com/UAL-RE/LD-Cool-P/issues/238)
 
 **Merged pull requests:**
  - get_user_details script does not write CSV for --simple case
