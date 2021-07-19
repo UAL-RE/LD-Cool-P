@@ -72,6 +72,15 @@ class PrerequisiteWorkflow:
 
         self.metadata_only = metadata_only
 
+        # Check if deposit is not deleted by user
+        if self.dn.curation_dict['status'] == 'closed':
+            self.log.warning(
+                "This deposit was archived for one of many reasons!")
+            self.log.info(f"resolution_comment metadata info: "
+                          f"'{self.dn.curation_dict['resolution_comment']}'")
+            self.log.warning("Stopping data curation for this deposit")
+            raise SystemError
+
         # Check if dataset has been retrieved
         try:
             source_stage = self.mc.get_source_stage(self.dn.folderName, verbose=False)
@@ -152,9 +161,12 @@ def workflow(article_id, browser=True, log=None,
     if isinstance(log, type(None)):
         log = log_stdout()
 
-    pw = PrerequisiteWorkflow(article_id, log=log,
-                              config_dict=config_dict,
-                              metadata_only=metadata_only)
+    try:
+        pw = PrerequisiteWorkflow(article_id, log=log,
+                                  config_dict=config_dict,
+                                  metadata_only=metadata_only)
+    except SystemError:
+        return
 
     # Perform prerequisite workflow if dataset is entirely new
     if pw.new_set:
