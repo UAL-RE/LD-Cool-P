@@ -72,7 +72,7 @@ class PrerequisiteWorkflow:
 
         self.metadata_only = metadata_only
 
-        # Check if deposit is not deleted by user
+        # Check if deposit is not archived (e.g., deleted by user, us, etc)
         if self.dn.curation_dict['status'] == 'closed':
             self.log.warning(
                 "This deposit was archived for one of many reasons!")
