@@ -466,7 +466,7 @@ class ReadmeClass:
 
         root_directory = join(
             self.curation_dict[self.curation_dict['parent_dir']],
-            self.curation_dict['folder_todo'],
+            self.current_stage,
             self.dn.folderName
         )
         metadata_directory = self.curation_dict['folder_metadata']
