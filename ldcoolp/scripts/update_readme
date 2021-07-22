@@ -97,7 +97,8 @@ if __name__ == '__main__':
         dn = DepositorName(articles[ii], fs_admin, log=log)
 
         # Run pre-req steps
-        rc = readme.ReadmeClass(dn, config_dict=config_dict, update=True, log=log)
+        rc = readme.ReadmeClass(dn, config_dict=config_dict, update=True,
+                                log=log)
         rc.update()
 
         count += 1
