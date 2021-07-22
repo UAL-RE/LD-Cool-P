@@ -123,24 +123,15 @@ class ReadmeClass:
         if self.user_response != 'yes':
             return
 
-        if q:
-            self.q = q
-        else:
-            self.q = Qualtrics(config_dict=self.config_dict,
-                               interactive=interactive, log=self.log)
-
         self.curation_dict = self.config_dict['curation']
         self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
 
-        if not update:
-            # Use 1.ToDo
-            self.root_directory = join(self.root_directory_main,
-                                       self.curation_dict['folder_todo'])
-        else:
-            # Use 2.UnderReview. Need to use admin.move module to find current path
-            mc = move.MoveClass(curation_dict=self.curation_dict)
-            current_stage = mc.get_source_stage(self.folderName)
-            self.root_directory = join(self.root_directory_main, current_stage)
+        # Always obtain current data curation stage
+        self.mc = move.MoveClass(curation_dict=self.curation_dict)
+        self.current_stage = self.mc.get_source_stage(self.folderName)
+        self.log.info(f"Current stage: {self.current_stage}")
+        self.root_directory = join(self.root_directory_main,
+                                   self.current_stage)
 
         # Paths
         self.folder_path = join(self.root_directory, self.folderName)
@@ -156,6 +147,12 @@ class ReadmeClass:
 
         # Symlink template name in METADATA
         self.default_readme_file = self.curation_dict['readme_template']
+
+        if q:
+            self.q = q
+        else:
+            self.q = Qualtrics(config_dict=self.config_dict,
+                               mc=self.mc, interactive=interactive, log=self.log)
 
         # Retrieve Figshare metadata for jinja template engine
         self.figshare_readme_dict = self.retrieve_article_metadata()
@@ -469,7 +466,7 @@ class ReadmeClass:
 
         root_directory = join(
             self.curation_dict[self.curation_dict['parent_dir']],
-            self.curation_dict['folder_todo'],
+            self.current_stage,
             self.dn.folderName
         )
         metadata_directory = self.curation_dict['folder_metadata']

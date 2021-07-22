@@ -25,6 +25,7 @@ import webbrowser
 # Convert single-entry DataFrame to dictionary
 from ldcoolp.curation import df_to_dict_single
 from ldcoolp.curation import metadata
+from ldcoolp.admin import move
 
 # Logging
 from redata.commons.logger import log_stdout
@@ -106,8 +107,9 @@ class Qualtrics:
       Generate URL with customized query strings based on Figshare metadata
     """
 
-    def __init__(self, config_dict=config_default_dict, log=None,
-                 interactive=True):
+    def __init__(self, config_dict=config_default_dict,
+                 mc: move.MoveClass = None,
+                 log=None, interactive=True):
 
         self.interactive = interactive
 
@@ -138,6 +140,11 @@ class Qualtrics:
                 if isinstance(handler, logging.FileHandler):
                     self.log_filename = handler.baseFilename
                     self.file_logging = True
+
+        if mc:
+            self.mc = mc
+        else:
+            self.mc = move.MoveClass(curation_dict=self.curation_dict)
 
     def endpoint(self, link):
         """Concatenate the endpoint to the baseurl"""
@@ -620,9 +627,11 @@ class Qualtrics:
                       out_file_prefix: str = 'qualtrics'):
         """Save Qualtrics metadata to JSON file"""
 
+        current_stage = self.mc.get_source_stage(dn.folderName)
+
         root_directory = join(
             self.curation_dict[self.curation_dict['parent_dir']],
-            self.curation_dict['folder_todo'],
+            current_stage,
             dn.folderName
         )
         metadata_directory = self.curation_dict['folder_metadata']

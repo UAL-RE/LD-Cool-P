@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.1.6](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.6) (2021-07-22)
+
+**Fixed bugs:**
+ - Bug: update_readme fails due to issue with saving README metadata as JSON file
+   [#240](https://github.com/UAL-RE/LD-Cool-P/issues/240)
+
+**Merged pull requests:**
+ - Fix hardcoded paths for writing JSON
+   [#241](https://github.com/UAL-RE/LD-Cool-P/pull/241)
+
+
 ## [v1.1.5](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.5) (2021-07-19)
 
 **Implemented enhancements:**
