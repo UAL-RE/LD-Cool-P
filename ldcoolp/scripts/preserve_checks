@@ -105,6 +105,9 @@ if __name__ == '__main__':
             log_file = logger.get_log_file(handler)
         logger.pandas_write_buffer(checksum_df, log_file)
 
+        # Step 3: Resolve any checksum differences
+        checksum_df = p.update_files(checksum_df)
+
         # Step 4: Create symbolic links
         p.make_symbolic_links(checksum_df)
 

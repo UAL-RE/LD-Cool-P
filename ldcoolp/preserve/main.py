@@ -12,6 +12,7 @@ from figshare.figshare import Figshare
 from ..config import config_default_dict
 from ..curation import metadata
 from ..curation.inspection import checksum
+from ..curation import retrieve
 
 # Wildcards for globbing hidden files
 HIDDEN_FILES = ['*DS_Store', '.*.docx', '.*.pdf']
@@ -158,6 +159,29 @@ class Preserve:
 
             df = pd.DataFrame.from_dict(summary_list, orient='columns')
             return df
+
+    def update_files(self, df: pd.DataFrame):
+        """Identify incorrect files on server and retrieve the correct one"
+
+        Note: will need to update data frame to avoid symbolic linking
+        :param df: pandas DataFrame from ``check_files()``
+        """
+
+        bad_idx = df['checksum_status'].false() == False
+        df_bad_checksum = df.loc[bad_idx]
+        if df_bad_checksum.empty:
+            self.log.info(f"All files are correct")
+            self.log.info("No file retrieval needed! :-)")
+        else:
+            for index, row in df_bad_checksum.iterrows():
+                self.log.info(f"{index}. Downloading: {row['name']}")
+                filename = self.version_dir / self.data_path / row['name']
+                retrieve.private_file_retrieve(row['download_url'], filename,
+                                               log=self.log)
+                df_bad_checksum['data_location'] = self.data_path  # Need to update
+
+            df.loc[bad_idx] = df_bad_checksum
+        return df
 
     def make_symbolic_links(self, df):
         """Construct symbolic links in DATA from ORIGINAL_DATA as needed
