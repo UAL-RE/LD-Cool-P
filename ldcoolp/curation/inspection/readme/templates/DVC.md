@@ -58,7 +58,7 @@ DOI:
 {% endif %}
 {% if qualtrics_dict.materials != 'nan' %}
 ---------------------------------------------
-## Materials & Methods
+## Materials and Methods
 
 {{ qualtrics_dict.materials }}
 {% if ( (qualtrics_dict.contrib != 'nan') or
