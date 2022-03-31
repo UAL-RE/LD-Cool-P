@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.1.7](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.7) (2021-07-22)
+## [v1.1.7](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.7) (2022-03-31)
 
 **Closed issues:**
  - Chore: Update README template headers
