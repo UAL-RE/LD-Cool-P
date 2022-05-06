@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.1.8](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.8) (2022-05-06)
+
+**Closed issues:**
+ - Chore: add .idea/ PyCharm to let git ignore PyCharm setting
+   [#242](https://github.com/UAL-RE/LD-Cool-P/issues/242)
+
+**Merged pull requests:**
+ - Chore: add .idea/ PyCharm to let git ignore PyCharm setting
+   [#242](https://github.com/UAL-RE/LD-Cool-P/issues/242)
+
+
 ## [v1.1.7](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.7) (2022-03-31)
 
 **Closed issues:**
