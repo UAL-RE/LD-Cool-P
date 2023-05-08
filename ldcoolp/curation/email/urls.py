@@ -57,7 +57,6 @@ def tiny_url(url: str, alias=None, log=None) -> str:
             response_data = response.text
         except HTTPError as error:
             log.warning(f"Caught an HTTPError: {error}")
-            log.warning('Body:\n', response.text)
-            raise HTTPError
+            return "error"
 
     return response_data
