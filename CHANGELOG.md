@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.1.9](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.9) (2023-05-09)
+
+**Closed issues:**
+ - Improve handling of TinyURL errors #260
+   [#260](https://github.com/UAL-RE/LD-Cool-P/issues/260)
+
+**Merged pull requests:**
+ - Improve handling of TinyURL errors #260
+   [#260](https://github.com/UAL-RE/LD-Cool-P/issues/260)
+
+
 ## [v1.1.8](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.8) (2022-05-06)
 
 **Closed issues:**

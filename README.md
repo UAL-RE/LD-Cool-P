@@ -241,8 +241,9 @@ See the [CHANGELOG](CHANGELOG.md) for all changes since project inception
 
 
 ## Authors
+* Fernando Rios, Yan Han  [University of Arizona Libraries](https://github.com/ualibraries), [Research Engagement](https://github.com/UAL-RE)
+* Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) 
 
-* Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) - [University of Arizona Libraries](https://github.com/ualibraries), [Research Engagement](https://github.com/UAL-RE)
 
 See also the list of
 [contributors](https://github.com/UAL-RE/LD-Cool-P/contributors) who participated in this project.
