@@ -1,6 +1,6 @@
 numpy==1.21.0
 jinja2==2.11.3
 html2text==2020.1.16
-# Not the latest version. Need to fix when ldcoolp-figshare has been updated
+# Not the latest version. Need to fix when ldcoolp-figshare has been updated to these dependencies
 redata==0.4.1
 ldcoolp-figshare>=0.2.2

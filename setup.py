@@ -8,12 +8,12 @@ with open("requirements.txt", "r") as fr:
 
 setup(
     name='ldcoolp',
-    version='1.1.8',
+    version='1.1.9',
     packages=['ldcoolp'],
     url='https://github.com/UAL-RE/LD-Cool-P',
     license='MIT License',
-    author='Chun Ly',
-    author_email='astro.chun@gmail.com',
+    author='Fernando Rios',
+    author_email='frios@arizona.edu',
     description='Python tool to enable data curation',
     long_description=long_description,
     long_description_content_type='text/markdown',
