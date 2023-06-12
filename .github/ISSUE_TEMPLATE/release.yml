@@ -12,7 +12,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Submit the issue first, then follow the steps below to create a new release.        
+        Submit the issue, then follow the steps below to create a new release.        
   - type: checkboxes
     id: branch
     attributes:
@@ -21,7 +21,7 @@ body:
       options:
       - label: Check that the title of this issue reflects the new version number.
       - label: Create a new branch by clicking on `create branch` on the right-hand sidebar (as shown in the [GitHub docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-a-branch-for-an-issue)). Leave all options as default.
- - type: checkboxes
+  - type: checkboxes
     id: file-updates
     attributes:
       label: Bump Version in the New Branch
@@ -30,7 +30,7 @@ body:
       - label: Update `ldcoolp/__init__.py`
       - label: Update `requirements.txt` (if needed)
       - label: Update `README.md` (if needed)
- - type: checkboxes
+  - type: checkboxes
     id: pr
     attributes:
       label: Pull request
