@@ -19,12 +19,9 @@ This pull request updates ReQUIAM v0.xx.x -> v0.xx.0. Closes #<insert associated
 - [ ] Click the `Generate release notes` button. Review the notes for accuracy
 - [ ] Save the release as Draft.
 
-**Bump version in the Branch**
+**Update Changelog and Check**
 - [ ] Copy the generated release notes from the previous step to the top of `CHANGELOG.md`
-- [ ] Update `setup.py`
-- [ ] Update `ldcoolp/__init__.py`
-- [ ] Update `requirements.txt` (if needed)
-- [ ] Update `README.md` (if needed)
+- [ ] Check that the files were updated: `setup.py`, `ldcoolp/__init__.py`, `requirements.txt` (if needed), `README.md` (if needed).
 
 **Release**
 - [ ] Merge this PR
