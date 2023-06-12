@@ -50,7 +50,7 @@ def tiny_url(url: str, alias=None, log=None) -> str:
     else:
         log.info(f"TinyURL link does not exist. Creating!")
         # GET still works if the TinyURL alias exists, but points to the same URL
-        if len(alias) > 30:
+        if alias is not None and len(alias) > 30:
             response = requests.get(get_url)   # TinyURL alias must be 30 chars or less.
         else:
             response = requests.get(get_url, params=params)
