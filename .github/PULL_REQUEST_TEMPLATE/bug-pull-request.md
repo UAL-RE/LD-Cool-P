@@ -1,32 +1,15 @@
-name: Bug Report
-description: File a bug report here
-title: "Bug: <provide a descriptive name>"
-labels: ["bug"]
-body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
-  - type: checkboxes
-    id: new-bug
-    attributes:
-      label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for the bug you encountered.
-      options:
-      - label: I have searched the existing issues
-        required: true
-  - type: textarea
-    id: bug-description
-    attributes:
-      label: Description of the bug
-      description: Tell us what bug you encountered and what should have happened
-    validations:
-      required: true
-  - type: textarea
-    id: steps-to-reproduce
-    attributes:
-      label: Steps To Reproduce
-      description: Steps to reproduce the behavior.
-      placeholder: Please write the steps in a list form
-    validations:
-      required: true
+<!-- IMPORTANT: Please do not create a PR without creating an issue first. -->
+<!-- Fields in **bold** are REQUIRED, fields in *italics* are OPTIONAL. -->
+
+**Description**
+<!-- A description of how this PR resolved the specified bug-->
+
+<!-- Add any linked issue(s) -->
+Fixes #
+
+*Screenshots or additional context*
+<!-- Add any other context about the problem here and/or screenshots to help explain the problem. -->
+
+*Testing (if applicable)*
+<!-- Explain how you tested this bug fix so that others can replicate it. -->
+<!-- Example: The exact commands you ran and their output. -->
