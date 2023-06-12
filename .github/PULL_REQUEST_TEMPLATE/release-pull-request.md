@@ -1,36 +1,31 @@
----
-name: Release
-about: Provide specifics about a PR for a release
-title: 'PR/Release: ____(provide a descriptive name)'
-assignees: ''
-
----
-<!-- IMPORTANT: Please do not create a PR without creating an issue first. -->
-
-<!-- Fields in **bold** are REQUIRED, fields in *italics* are OPTIONAL. -->
+<!-- Create a new Release issue before using this template -->
 
 **Description**
-<!-- A description of the updates contained in this release. Example:  -->
-<!-- Incorporates Travis CI feature #91, summary for script_run #99, and root portal handling #88 -->
+<!-- Do not push the release tag until this PR is merged -->
+This pull request updates ReQUIAM v0.xx.x -> v0.xx.0. Closes #<insert associated issue number>
 
-Closes #
+<!-- You may create the pull request after editing the Title and Description above. -->
+<!-- The remaining steps can be completed after PR creation -->
+  
+**Check**
+- [ ] Title and description have been updated.
+- [ ] Verified the correct branch is being merged by checking the text immediately below the PR title.
 
+**Begin a new release**
+:warning: Do not publish the release until this PR is merged :warning:
+- [ ] Go to the [New Release](../releases/new) page
+- [ ] In the `Choose a tag` dropdown, enter a new tag name corresponding to the new version. E.g., `v1.0.1`. Then click "Create new tag on publish"
+- [ ] The `Target` should be the main or master branch.
+- [ ] Click the `Generate release notes` button. Review the notes for accuracy
+- [ ] Save the release as Draft.
 
-**Update Changelog**
-<!-- List changes: be brief, use imperative mood or simple noun phrases and add linked issues -->
-<!-- Examples: Improve verbosity of log messages #103 | GitHub actions for CI #105 -->
+**Bump version in the Branch**
+- [ ] Copy the generated release notes from the previous step to the top of `CHANGELOG.md`
+- [ ] Update `setup.py`
+- [ ] Update `ldcoolp/__init__.py`
+- [ ] Update `requirements.txt` (if needed)
+- [ ] Update `README.md` (if needed)
 
-- [ ] README.md, [changelog](../../README.md#changelog) <!-- update changelog here -->
-
-
-**Bump version**
-
-v0.xx.x -> v0.xx.0
-
-- [ ] README.md, [installation instructions](../../README.md#installation-instructions)
-- [ ] [`setup.py`](../../setup.py)
-- [ ] [`ldcoolp/__init__.py`](../../ldcoolp/__init__.py)
-
-
-*Screenshots or additional context*
-<!-- Add any other context about this release. -->
+**Release**
+- [ ] Merge this PR
+- [ ] Return to [Releases](../releases) and publish the draft release.
