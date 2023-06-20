@@ -477,8 +477,8 @@ class Qualtrics:
         single_str_citation = df_curation['item']['citation']
 
         # handle period in author list.  Assume no period in dataset title
-        str_list = list([single_str_citation.split('):')[0] + '). '])
-        str_list += [str_row + '.' for str_row in single_str_citation.split('):')[1].split('. ')]
+        str_list = list([single_str_citation.split(').')[0] + '). '])
+        str_list += [str_row + '.' for str_row in single_str_citation.split(').')[1].split('. ')]
 
         citation_list = [content for content in str_list[0:-2]]
         citation_list.append(f"{str_list[-2]} {str_list[-1]}")
