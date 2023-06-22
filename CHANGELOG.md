@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.2.0](https://github.com/UAL-RE/LD-Cool-P/tree/v1.2.0) (2023-06-22)
+
+* Fix: TinyURL alias handling (Issue #261) by @zoidy in https://github.com/UAL-RE/LD-Cool-P/pull/265
+* Fix: Update handling of : in citation generation (Issue #264) by @zoidy in https://github.com/UAL-RE/LD-Cool-P/pull/266
+  
+**Full Changelog**: https://github.com/UAL-RE/LD-Cool-P/compare/v1.1.9...v1.2.0
+
 ## [v1.1.9](https://github.com/UAL-RE/LD-Cool-P/tree/v1.1.9) (2023-05-09)
 
 **Closed issues:**

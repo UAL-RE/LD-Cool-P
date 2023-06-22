@@ -60,7 +60,7 @@ These instructions will have the code running on your local or virtual machine.
 ### Requirements
 
 You will need the following to have a working copy of this software. See
-[installation](#installation-instructions) steps:
+[installation](#installation-instructions) steps: Note: some of the dependencies will be updated.
 1. Python (>=v3.7.9)
 2. [`figshare`](https://github.com/UAL-RE/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
 3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `1.1.8`.
+You should see that the version is `1.2.0`.
 
 ### Configuration Settings
 
@@ -222,27 +222,15 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
 following a `git tag` version.
 
-## Continuous Integration
-
-Initially we started using [Travis CI](https://travis-ci.com); however, due
-to the change in
-[pricing for open-source repositories](https://travis-ci.community/t/org-com-migration-unexpectedly-comes-with-a-plan-change-for-oss-what-exactly-is-the-new-deal/10567),
-we decided to use
-[GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions).
-Currently, there are two GitHub Action workflows:
-1. A "Create release" workflow, [`create-release.yml`](.github/workflows/create-release.yml)
-   for new releases when a tag is pushed
-2. A "Python package" workflow, [`python-package.yml`](.github/workflows/python-package.yml)
-   for builds and tests
-
 ## Changelog
 
 See the [CHANGELOG](CHANGELOG.md) for all changes since project inception
 
 
 ## Authors
-* Fernando Rios, Yan Han  [University of Arizona Libraries](https://github.com/ualibraries), [Research Engagement](https://github.com/UAL-RE)
-* Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) 
+* UAL-RE [University of Arizona Libraries](https://github.com/ualibraries), [Research Engagement](https://github.com/UAL-RE)
+* Current authors: Fernando Rios, Yan Han 
+* Past author: Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) 
 
 
 See also the list of
