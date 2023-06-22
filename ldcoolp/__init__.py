@@ -1,6 +1,6 @@
 from os import path
 
-__version__ = "1.1.9"
+__version__ = "1.2.0"
 
 CODE_NAME = "LD-Cool-P"
 
