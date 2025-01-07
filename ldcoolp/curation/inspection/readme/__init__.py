@@ -365,8 +365,14 @@ class ReadmeClass:
             self.log.info("No footer to strip")
             readme_dict['description'] = description
 
+        # Retrieve funder details as a list of dicts
+        readme_dict['funders'] = self.article_dict['item']['funding_list']
+
         # Retrieve references as list
         readme_dict['references'] = self.article_dict['item']['references']
+
+        # Retrieve related materials as a list of dicts
+        readme_dict['related_materials'] = self.article_dict['item']['related_materials']
 
         return readme_dict
 
