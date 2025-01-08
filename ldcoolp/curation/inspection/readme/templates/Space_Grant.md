@@ -44,6 +44,22 @@ DOI:
 
 
 {% endif %}
+{% if figshare_dict.funders != [] %}
+---------------------------------------------
+## Funders
+
+{% for funder in figshare_dict.funders %}
+{% if funder.is_user_defined == 0  %}
+- {{ funder.funder_name }} (Grant no: {{ funder.grant_code }})
+  {{ funder.url }}
+{% else %}
+- {{ funder.title }}
+{% endif %}
+{% endfor %}
+
+
+
+{% endif %}
 {% if qualtrics_dict.files != 'nan' %}
 ---------------------------------------------
 ## Files and Folders
@@ -96,10 +112,10 @@ The roles are defined by the CRediT taxonomy http://credit.niso.org/
 {{ qualtrics_dict.notes }}
 
 {% endif %}
-{% if figshare_dict.references != [] %}
-Links:
-{% for reference in figshare_dict.references %}
-  - {{ reference }}
+{% if figshare_dict.related_materials != [] %}
+Related Materials:
+{% for material in figshare_dict.related_materials %}
+  - {{ material.relation }}: {{ material.title }} ({{ material.link }}) 
 {% endfor -%}
 {% endif %}
 
