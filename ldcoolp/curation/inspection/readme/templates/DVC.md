@@ -47,10 +47,11 @@ DOI:
 ---------------------------------------------
 ## Funders
 
+{% import 'funders_dict.jinja' as funds %}
+{% set ns = namespace(funder_found = false) %}
 {% for funder in figshare_dict.funders %}
-{% if funder.is_user_defined == 0  %}
-- {{ funder.funder_name }} (Grant no: {{ funder.grant_code }})
-  {{ funder.url }}
+{% if funder.is_user_defined == 0 %}
+{{ funds.funders_(funder) }}
 {% else %}
 - {{ funder.title }}
 {% endif %}

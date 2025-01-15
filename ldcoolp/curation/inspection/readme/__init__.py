@@ -7,6 +7,7 @@ import re
 
 # Template engine
 from jinja2 import Environment, FileSystemLoader
+from jinja2.ext import loopcontrols
 from html2text import html2text
 
 # Logging
@@ -97,6 +98,7 @@ class ReadmeClass:
         self.folderName = self.dn.folderName
         self.article_id = self.dn.article_id
         self.article_dict = self.dn.curation_dict
+        self.funders_dict = 'funders_dict.jinja'
 
         if isinstance(log, type(None)):
             self.log = log_stdout()
@@ -260,6 +262,10 @@ class ReadmeClass:
 
         dest_file = join(self.metadata_path, self.readme_template)
 
+        funders_dict_file_src = join(dirname(__file__), 'templates',
+                                self.funders_dict)
+        funders_dict_file_dest = join(self.metadata_path, self.funders_dict)
+
         if not exists(dest_file):
             self.log.info(f"Saving {self.readme_template} template in METADATA ...")
 
@@ -271,6 +277,7 @@ class ReadmeClass:
 
             self.log.info(f"Source file name: {src_file}")
             shutil.copy(src_file, dest_file)
+            shutil.copy(funders_dict_file_src, funders_dict_file_dest)
         else:
             self.log.info(f"{dest_file} exists. Not overwriting template!")
 
@@ -283,7 +290,7 @@ class ReadmeClass:
         """Returns a jinja2 template by importing README markdown template (README_template.md)"""
 
         file_loader = FileSystemLoader(self.metadata_path)
-        env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
+        env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True, extensions=[loopcontrols])
 
         jinja_template = env.get_template(self.default_readme_file)
         return jinja_template
