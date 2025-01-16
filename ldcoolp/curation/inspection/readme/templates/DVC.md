@@ -45,17 +45,16 @@ DOI:
 {% endif %}
 {% if figshare_dict.funders != [] %}
 ---------------------------------------------
-## Funders
+## Funding Information
 
-{% import 'funders_dict.jinja' as funds %}
-{% set ns = namespace(funder_found = false) %}
-{% for funder in figshare_dict.funders %}
-{% if funder.is_user_defined == 0 %}
+{% import 'funders_macro.jinja' as funds %}
+{% for funder in figshare_dict.funders -%}
+{% if funder.is_user_defined == 0 -%}
 {{ funds.funders_(funder) }}
 {% else %}
 - {{ funder.title }}
 {% endif %}
-{% endfor %}
+{%- endfor %}
 
 
 

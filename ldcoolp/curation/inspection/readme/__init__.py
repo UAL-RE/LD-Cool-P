@@ -98,7 +98,6 @@ class ReadmeClass:
         self.folderName = self.dn.folderName
         self.article_id = self.dn.article_id
         self.article_dict = self.dn.curation_dict
-        self.funders_dict = 'funders_dict.jinja'
 
         if isinstance(log, type(None)):
             self.log = log_stdout()
@@ -127,6 +126,7 @@ class ReadmeClass:
 
         self.curation_dict = self.config_dict['curation']
         self.root_directory_main = self.curation_dict[self.curation_dict['parent_dir']]
+        self.funders_macro = join(self.curation_dict['macros_folder'], self.curation_dict['funders_macro'])
 
         # Always obtain current data curation stage
         self.mc = move.MoveClass(curation_dict=self.curation_dict)
@@ -262,9 +262,9 @@ class ReadmeClass:
 
         dest_file = join(self.metadata_path, self.readme_template)
 
-        funders_dict_file_src = join(dirname(__file__), 'templates',
-                                self.funders_dict)
-        funders_dict_file_dest = join(self.metadata_path, self.funders_dict)
+        funders_macro_file_src = join(dirname(__file__), 'templates',
+                                self.funders_macro)
+        funders_macro_file_dest = join(self.metadata_path, self.curation_dict['funders_macro'])
 
         if not exists(dest_file):
             self.log.info(f"Saving {self.readme_template} template in METADATA ...")
@@ -277,7 +277,7 @@ class ReadmeClass:
 
             self.log.info(f"Source file name: {src_file}")
             shutil.copy(src_file, dest_file)
-            shutil.copy(funders_dict_file_src, funders_dict_file_dest)
+            shutil.copy(funders_macro_file_src, funders_macro_file_dest)
         else:
             self.log.info(f"{dest_file} exists. Not overwriting template!")
 
