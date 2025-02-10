@@ -116,7 +116,7 @@ You can confirm installation via `conda list`
 (curation) $ conda list ldcoolp
 ```
 
-You should see that the version is `1.2.0`.
+You should see that the version is `1.3.0`.
 
 ### Configuration Settings
 
@@ -224,13 +224,7 @@ following a `git tag` version.
 
 ## Changelog
 
-See the [CHANGELOG](CHANGELOG.md) for all changes since project inception
-
-
-## Authors
-* UAL-RE [University of Arizona Libraries](https://github.com/ualibraries), [Research Engagement](https://github.com/UAL-RE)
-* Current authors: Fernando Rios, Yan Han 
-* Past author: Chun Ly, Ph.D. ([@astrochun](http://www.github.com/astrochun)) 
+See the [CHANGELOG](CHANGELOG.md) for all changes since project inception.
 
 
 See also the list of
