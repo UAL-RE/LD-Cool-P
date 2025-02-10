@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.3.0](https://github.com/UAL-RE/LD-Cool-P/tree/v1.3.0) (2025-02-10)
+
+* Bug/268 redundant config by @yhan818 in https://github.com/UAL-RE/LD-Cool-P/pull/270
+* Add more metadata from redata to readme by @HafeezOJ in https://github.com/UAL-RE/LD-Cool-P/pull/277
+
+**Full Changelog**: https://github.com/UAL-RE/LD-Cool-P/compare/v1.2.0...v1.3.0
+
 ## [v1.2.0](https://github.com/UAL-RE/LD-Cool-P/tree/v1.2.0) (2023-06-22)
 
 * Fix: TinyURL alias handling (Issue #261) by @zoidy in https://github.com/UAL-RE/LD-Cool-P/pull/265
