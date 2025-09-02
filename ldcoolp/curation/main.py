@@ -111,7 +111,7 @@ class PrerequisiteWorkflow:
             if not exists(full_data_path):
                 self.log.info(f"Creating folder : {full_data_path}")
                 makedirs(full_data_path)
-                chmod(full_data_path, 0o777)
+                chmod(full_data_path, 0o770)
 
     def write_curation_metadata(self):
         """Write metadata from Figshare curation response"""
