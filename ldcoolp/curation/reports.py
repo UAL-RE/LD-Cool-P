@@ -32,7 +32,7 @@ def review_report(depositor_name='', curation_dict=config_default_dict['curation
     out_path = join(staging_directory, depositor_name, folder_ual_rdm)
     if not exists(out_path):
         log.info(f"Creating folder : {out_path}")
-        makedirs(out_path, mode=0o770, exist_ok=True)
+        makedirs(out_path, mode=0o2770, exist_ok=True)
     else:
         log.warn(f"!!!! Folder exists, not creating : {out_path}")
 

@@ -1,7 +1,7 @@
 import os
 import shutil
 from os.path import exists
-
+from os import chmod
 import requests
 from requests import HTTPError
 
@@ -126,6 +126,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                             checksum_flag = check_md5(filename,
                                                       file_dict['supplied_md5'])
                             if checksum_flag:
+                                chmod(filename, 0o2440)
                                 break
                         else:
                             log.info("Not performing checksum on linked-only record")
@@ -138,5 +139,4 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
                 log.info("File exists! Not overwriting!")
 
     # Change permissions on folders and files
-    # permissions.curation(dir_path)
-    permissions.curation(dir_path, mode=0o555)  # read and execute only
+    permissions.curation(dir_path, folder_mode=0o2550, file_mode=0o2440)  # read and execute only
