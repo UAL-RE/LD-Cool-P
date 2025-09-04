@@ -111,10 +111,9 @@ class PrerequisiteWorkflow:
             full_data_path = join(self.root_directory, sub_dir)
             if not exists(full_data_path):
                 self.log.info(f"Creating folder : {full_data_path}")
-                makedirs(full_data_path)
+                makedirs(full_data_path, mode=0o2770, exist_ok=True)
                 Path(full_data_path).parent.chmod(0o2770)
                 Path(full_data_path).parent.parent.chmod(0o2770)
-                chmod(full_data_path, 0o2770)
 
 
     def write_curation_metadata(self):
