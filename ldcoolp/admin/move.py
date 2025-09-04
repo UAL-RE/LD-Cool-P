@@ -99,7 +99,7 @@ class MoveClass:
                 self.log.info(f"Path does not exist! {dest_path}")
                 self.log.info("Creating...")
                 makedirs(dest_path)
-                chmod(dest_path, 0o777)
+                chmod(dest_path, 0o770)
             shutil.move(source_path, dest_path)
 
             # Remove source_path parent folder if empty

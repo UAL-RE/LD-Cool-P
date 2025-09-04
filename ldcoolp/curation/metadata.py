@@ -1,3 +1,4 @@
+from os import chmod
 from typing import Union
 
 import os
@@ -53,6 +54,7 @@ def save_metadata(json_response: Union[list, dict],
         if overwrite:
             log.info("Overwriting!")
             write_json(json_out_file, json_response, log)
+    chmod(json_out_file, 0o2660)
 
     # Write CSV file
     if save_csv:
@@ -66,6 +68,7 @@ def save_metadata(json_response: Union[list, dict],
             if overwrite:
                 log.info("Overwriting!")
                 df.to_csv(csv_out_file, index=False)
+        chmod(csv_out_file, 0o2660)
 
     log.debug("finished.")
 

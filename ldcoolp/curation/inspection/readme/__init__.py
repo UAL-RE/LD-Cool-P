@@ -1,5 +1,5 @@
 from os.path import exists, join, dirname, basename, getctime
-from os import walk, stat, symlink
+from os import walk, stat, symlink, chmod
 from datetime import datetime
 import shutil
 from glob import glob
@@ -277,7 +277,9 @@ class ReadmeClass:
 
             self.log.info(f"Source file name: {src_file}")
             shutil.copy(src_file, dest_file)
+            chmod(dest_file, 0o2660)
             shutil.copy(funders_macro_file_src, funders_macro_file_dest)
+            chmod(funders_macro_file_dest, 0o2660)
         else:
             self.log.info(f"{dest_file} exists. Not overwriting template!")
 
