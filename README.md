@@ -25,8 +25,8 @@
 This software tool is designed to enable the curatorial review of datasets
 that are deposited into the [University of Arizona Research Data Repository (ReDATA)](https://arizona.figshare.com).
 It follows a workflow that was developed by members of the
-[Research Data Services Team](https://data.library.arizona.edu/) at the
-[University of Arizona Libraries](https://new.library.arizona.edu/).
+[Research Data Services Team](https://lib.arizona.edu/research/data) at the
+[University of Arizona Libraries](https://lib.library.arizona.edu/).
 The software has a number of backend features, such as:
  1. Retrieving private datasets from the [Figshare API](https://docs.figshare.com)
     that are undergoing curatorial review
@@ -61,32 +61,46 @@ These instructions will have the code running on your local or virtual machine.
 
 You will need the following to have a working copy of this software. See
 [installation](#installation-instructions) steps: Note: some of the dependencies will be updated.
-1. Python (>=v3.7.9)
+1. Python (>=v3.13)
 2. [`figshare`](https://github.com/UAL-RE/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
-3. [`pandas`](https://pandas.pydata.org/) ([1.2.3](https://pandas.pydata.org/pandas-docs/version/1.2.3/))
-4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.22.0](https://requests.readthedocs.io/en/master/2.22.0))
-5. [`numpy`](https://numpy.org/) ([1.20.0](https://numpy.org/devdocs/release/1.20.0-notes.html))
-6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([2.11.2](https://jinja.palletsprojects.com/en/2.11.x/))
-7. [`tabulate`](https://github.com/astanin/python-tabulate) (0.8.3)
-8. [`html2text`](https://pypi.org/project/html2text/) ([2020.1.16](https://pypi.org/project/html2text/2020.1.16/))
+3. [`pandas`](https://pandas.pydata.org/) ([2.2.3](https://pandas.pydata.org/pandas-docs/version/2.2.3/))
+4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.32.0](https://requests.readthedocs.io/en/v2.3.0/))
+5. [`numpy`](https://numpy.org/) ([2.3.5](https://numpy.org/devdocs/release/2.3.5-notes.html))
+6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([3.1.6](https://jinja.palletsprojects.com/en/3.1.x/))
+7. [`tabulate`](https://github.com/astanin/python-tabulate) (0.9.0)
+8. [`html2text`](https://pypi.org/project/html2text/) ([2025.4.15](https://pypi.org/project/html2text/2025.4.15/))
 
 ### Installation Instructions
 
-#### Python and setting up a `conda` environment
+#### Python and setting up a `mamba` environment
 
-First, install a working version of Python (>=3.7.9).  We recommend using the
-[Anaconda](https://www.anaconda.com/distribution/) package installer.
+First, install a working version of Python (>=3.13).  We recommend using the
+[Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) package installer.
+Mamba is a drop-in replacement for Anaconda and you will be able to use `conda` commands in an environment created with `mamba`.
+After installing Mamba, set `conda-forge` as the default channel to fetch packages. Run the following commands to set `conda-forge` and remove Ananconda channels.
 
-After you have Anaconda installed, you will want to create a separate `conda` environment
+Add conda-forge to your channels: 
+
+`conda config --add channels conda-forge`
+
+Set strict channel priority: 
+
+`conda config --set channel_priority strict`
+
+Remove Anaconda channels: 
+
+`conda config --remove channels defaults`
+
+After you have installed and configured Mamba, you will want to create a separate `mamba` environment
 and activate it:
 
 ```
-$ (sudo) conda create -n curation python=3.7
-$ conda activate curation
+$ mamba create -n curation python=3.13
+$ mamba activate curation
 ```
 
-With the activated `conda` environment, next clone the
-[UA Libraries' forked copy of figshare](https://github.com/UAL-RE/figshare)
+With the activated `mamba` environment, next clone the
+[UA Libraries' forked copy of figshare](https://github.com/UAL-RE/figshare). Ensure the user has read and write permissions to the cloned folder
 and install with the `setup.py` script:
 
 ```
@@ -94,7 +108,7 @@ and install with the `setup.py` script:
 (curation) $ git clone https://github.com/UAL-RE/figshare.git
 
 (curation) $ cd /path/to/parent/folder/figshare
-(curation) $ (sudo) python setup.py develop
+(curation) $ python setup.py develop
 ```
 
 Then, clone this repository (`LD-Cool-P`) into the parent folder and install with the `setup.py` script:
@@ -104,16 +118,16 @@ Then, clone this repository (`LD-Cool-P`) into the parent folder and install wit
 (curation) $ git clone https://github.com/UAL-RE/LD-Cool-P.git
 
 (curation) $ cd /path/to/parent/folder/LD-Cool-P
-(curation) $ (sudo) python setup.py develop
+(curation) $ python setup.py develop
 ```
 
-This will automatically installed the required `pandas`, `requests`, `numpy`,
+This will automatically install the required `pandas`, `requests`, `numpy`,
 `jinja2`, `tabulate`, and `html2text` packages.
 
-You can confirm installation via `conda list`
+You can confirm installation via `mamba list`
 
 ```
-(curation) $ conda list ldcoolp
+(curation) $ mamba list ldcoolp
 ```
 
 You should see that the version is `1.3.1`.
@@ -126,7 +140,7 @@ described below. For example:
     --config ldcoolp/config/myconfig.ini
 ```
 
-Note that in the [__init__.py](ldcoolp/__init__.py), there's a default setting:
+Note that in the [init.py](ldcoolp/__init__.py), there's a default setting:
 ```
 config_dir       = path.join(co_path, 'config/')
 main_config_file = 'default.ini'
@@ -144,11 +158,6 @@ Since the configuration settings will continue to evolve, we refer users to the
 documented information provided.
 
 These configurations are read in through the `config` sub-package.
-
-
-### Testing Installation
-
-This section is under construction
 
 ## Execution
 
@@ -218,9 +227,6 @@ Additional python scripts are available to
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the
 [tags on this repository](https://github.com/UAL-RE/LD-Cool-P/tags).
-
-Releases are auto-generated using this [GitHub Actions script](.github/workflows/create_release.yml)
-following a `git tag` version.
 
 ## Changelog
 
