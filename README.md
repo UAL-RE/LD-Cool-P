@@ -77,7 +77,7 @@ You will need the following to have a working copy of this software. See
 First, install a working version of Python (>=3.13).  We recommend using the
 [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) package installer.
 Mamba is a drop-in replacement for Anaconda and you will be able to use `conda` commands in an environment created with `mamba`.
-After installing Mamba, set `conda-forge` as the default channel to fetch packages. Run the following commands to set `conda-forge` and remove Ananconda channels.
+After installing Mamba, set `conda-forge` as the default channel to fetch packages. Run the following commands to set `conda-forge` as the default channel and remove Ananconda channels.
 
 Add conda-forge to your channels: 
 
