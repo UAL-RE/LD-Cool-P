@@ -60,15 +60,14 @@ These instructions will have the code running on your local or virtual machine.
 ### Requirements
 
 You will need the following to have a working copy of this software. See
-[installation](#installation-instructions) steps: Note: some of the dependencies will be updated.
-1. Python (>=v3.13)
+[installation](#installation-instructions) steps.
+1. `Python` (>=v3.13)
 2. [`figshare`](https://github.com/UAL-RE/figshare) - ReDATA's forked copy of [cognoma's figshare](https://github.com/cognoma/figshare)
-3. [`pandas`](https://pandas.pydata.org/) ([2.2.3](https://pandas.pydata.org/pandas-docs/version/2.2.3/))
-4. [`requests`](https://requests.readthedocs.io/en/master/) ([2.32.0](https://requests.readthedocs.io/en/v2.3.0/))
-5. [`numpy`](https://numpy.org/) ([2.3.5](https://numpy.org/devdocs/release/2.3.5-notes.html))
-6. [`jinja2`](https://palletsprojects.com/p/jinja/) ([3.1.6](https://jinja.palletsprojects.com/en/3.1.x/))
-7. [`tabulate`](https://github.com/astanin/python-tabulate) (0.9.0)
-8. [`html2text`](https://pypi.org/project/html2text/) ([2025.4.15](https://pypi.org/project/html2text/2025.4.15/))
+
+The following packages in [`requirements.txt`](requirements.txt) and their dependencies are automatically installed by this software, no need to install them separately.
+1. [`jinja2`](https://palletsprojects.com/p/jinja/) ([3.1.6](https://jinja.palletsprojects.com/en/3.1.x/)) 
+2. [`html2text`](https://pypi.org/project/html2text/) ([2025.4.15](https://pypi.org/project/html2text/2025.4.15/))
+3. [`ldcoolp-figshare`](https://pypi.org/project/ldcoolp-figshare/) ([0.4.0](https://pypi.org/project/ldcoolp-figshare/0.4.0/))
 
 ### Installation Instructions
 
@@ -140,7 +139,7 @@ described below. For example:
     --config ldcoolp/config/myconfig.ini
 ```
 
-Note that in the [init.py](ldcoolp/__init__.py), there's a default setting:
+Note that in the [`__init.py__`](ldcoolp/__init__.py), there's a default setting:
 ```
 config_dir       = path.join(co_path, 'config/')
 main_config_file = 'default.ini'
