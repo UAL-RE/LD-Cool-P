@@ -184,7 +184,7 @@ class Qualtrics:
             progress_status = check_response["result"]["status"]
 
         # Check for error
-        if progress_status is "failed":
+        if progress_status == "failed":
             err = "export failed"
             self.log.warn(err)
             raise Exception(err)
@@ -221,7 +221,7 @@ class Qualtrics:
         merged_df = pd.DataFrame()
         for df in df_list:
             temp_df = df.reindex(columns=df_col, fill_value=0)
-            merged_df = merged_df.append([temp_df], ignore_index=True)
+            merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
         return merged_df
 
     def get_survey_response(self, survey_id: str, ResponseId: str) -> pd.DataFrame:
