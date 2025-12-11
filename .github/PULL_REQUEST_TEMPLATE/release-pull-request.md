@@ -2,7 +2,7 @@
 
 **Description**
 <!-- Do not push the release tag until this PR is merged -->
-This pull request updates ReQUIAM v0.xx.x -> v0.xx.0. Closes #<insert associated issue number>
+This pull request updates LD-Cool-P v0.xx.x -> v0.xx.0. Closes #<insert associated issue number>
 
 <!-- You may create the pull request after editing the Title and Description above. -->
 <!-- The remaining steps can be completed after PR creation -->
