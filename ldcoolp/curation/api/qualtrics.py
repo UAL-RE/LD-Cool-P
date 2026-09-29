@@ -859,27 +859,22 @@ class Qualtrics:
 
         return use_survey_id, populate_response_dict
 
-    def generate_url(self, dn_dict):
-        """
-        Purpose:
-          Generate URL with Q_PopulateResponse, and article and curation ID
-          query strings based on Figshare metadata
-        """
+    def generate_da_url(self, dn_dict) -> str:
+        """Generate URL for Deposit Agreement"""
 
-        use_survey_id, populate_response_dict = self.survey_specific(dn_dict)
+        survey_id_idx = 0
+        if dn_dict['depositor_email'] in self.dict['survey_email']:
+            survey_id_idx = self.dict['survey_email'].index(dn_dict['depositor_email'])
 
-        use_survey_shortname = self.lookup_survey_shortname(use_survey_id)
-        self.log.info(f"Using {use_survey_shortname} deposit agreement")
+        use_survey_id = self.survey_id[survey_id_idx]
 
-        populate_response_dict['QID7'] = dn_dict['title']
-
-        json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
-
-        query_str_dict = {'article_id': dn_dict['article_id'],
-                          'curation_id': dn_dict['curation_id'],
-                          'Q_PopulateResponse': json_txt}
-
-        # q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+        query_str_dict = {
+            "article_id": dn_dict["article_id"],
+            "curation_id": dn_dict["curation_id"],
+            "dataset_title": dn_dict["title"],
+            "depositor_name": dn_dict["simplify_fullName"],
+            "depositor_email": dn_dict["depositor_email"],
+        }
 
         full_url = f"{self.dict['generate_url']}{use_survey_id}?" + \
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
