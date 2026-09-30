@@ -5,8 +5,8 @@ from fpdf import FPDF, TextStyle
 
 # Default Directory & File Constants
 DEFAULT_ASSETS_DIR = Path(__file__).parent.resolve() / "assets"
-UA_LOGO_FILENAME = "logo-uofa.png"
-REDATA_LOGO_FILENAME = "logo-redata.png"
+UA_LOGO_PATH = DEFAULT_ASSETS_DIR / "logo-uofa.png"
+REDATA_LOGO_PATH = DEFAULT_ASSETS_DIR / "logo-redata.png"
 
 # Color Palette Constants (RGB)
 COLOR_RGB_UA_RED = (171, 5, 32)
@@ -16,29 +16,33 @@ COLOR_RGB_WHITE = (255, 255, 255)
 
 # Font Family Constants
 FONT_FAMILY_LiberationSerif = "LiberationSerif"
-FONT_FAMILY_PRIMARY = FONT_FAMILY_LiberationSerif
-FONT_FILES = (
+FONT_FILES = (  # font family, style, filename
     (FONT_FAMILY_LiberationSerif, "", "LiberationSerif-Regular.ttf"),
     (FONT_FAMILY_LiberationSerif, "B", "LiberationSerif-Bold.ttf"),
     (FONT_FAMILY_LiberationSerif, "I", "LiberationSerif-Italic.ttf"),
     (FONT_FAMILY_LiberationSerif, "BI", "LiberationSerif-BoldItalic.ttf"),
+    # NOTE: Additional font families can be added here as needed
 )
+FONT_FAMILY_PRIMARY = FONT_FAMILY_LiberationSerif
 
 # Page Dimension & Layout Constants (Points)
-DEFAULT_UNIT = "pt"
-DEFAULT_FORMAT = "letter"
-PAGE_WIDTH_PT = 612.0
-PAGE_HEIGHT_PT = 792.0
-MARGIN_TOP_PT = 72.0  # 1.0 inch
-MARGIN_BOTTOM_PT = 72.0  # 1.0 inch
-MARGIN_LEFT_PT = 54.0  # 0.75 inch
-MARGIN_RIGHT_PT = 54.0  # 0.75 inch
-BANNER_HEIGHT_PT = 54.0  # 0.75 inch
-HEADER_LOGO_HEIGHT_PT = 36.0  # ~0.5 inch
-REDATA_LOGO_WIDTH_PT = 187.92  # ~2.61 inches
-DEFAULT_FOOTER_TEXT = "UA ReDATA - Deposit Agreement"
+INCH = 72.0  # 1 inch = 72 points
 
 # fmt: off  # for black formatter
+# Using inch conversion to keep MS Word consistent
+DEFAULT_UNIT          = "pt"
+DEFAULT_FORMAT        = "letter"
+PAGE_WIDTH_PT         = 8.5 * INCH  # 612 points
+PAGE_HEIGHT_PT        = 11.0 * INCH  # 792 points
+MARGIN_TOP_PT         = 1.0 * INCH  # 72 points
+MARGIN_BOTTOM_PT      = 1.0 * INCH  # 72 points
+MARGIN_LEFT_PT        = 0.75 * INCH  # 54 points
+MARGIN_RIGHT_PT       = 0.75 * INCH  # 54 points
+BANNER_HEIGHT_PT      = 0.75 * INCH  # 54 points
+UA_LOGO_HEIGHT_PT     = 0.5 * INCH  # 36 points
+REDATA_LOGO_WIDTH_PT  = 2.61 * INCH  # 187.92 points
+DEFAULT_FOOTER_TEXT   = "UA ReDATA - Deposit Agreement"
+
 DEFAULT_HTML_TAG_STYLES = {
     "b": TextStyle(font_style="B", color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
     "i": TextStyle(font_style="I", color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
@@ -67,21 +71,25 @@ class LayoutConfig:
 
     def __init__(
         self,
+        unit: str = DEFAULT_UNIT,
+        format: str = DEFAULT_FORMAT,
+        page_width: float = PAGE_WIDTH_PT,
+        page_height: float = PAGE_HEIGHT_PT,
         margin_top: float = MARGIN_TOP_PT,
         margin_bottom: float = MARGIN_BOTTOM_PT,
         margin_left: float = MARGIN_LEFT_PT,
         margin_right: float = MARGIN_RIGHT_PT,
         banner_height: float = BANNER_HEIGHT_PT,
-        page_width: float = PAGE_WIDTH_PT,
-        page_height: float = PAGE_HEIGHT_PT,
-    ):
+    ) -> None:
+        self.unit = unit
+        self.format = format
+        self.page_width = page_width
+        self.page_height = page_height
         self.margin_top = margin_top
         self.margin_bottom = margin_bottom
         self.margin_left = margin_left
         self.margin_right = margin_right
         self.banner_height = banner_height
-        self.page_width = page_width
-        self.page_height = page_height
 
     @property
     def printable_width(self) -> float:
@@ -96,13 +104,10 @@ class AccessiblePDF(FPDF):
     and visual background banners.
     """
 
-    def __init__(
-        self, config: LayoutConfig, assets_path: Path, ua_logo_path: Path | None = None
-    ):
-        super().__init__(unit=DEFAULT_UNIT, format=DEFAULT_FORMAT)
+    def __init__(self, config: LayoutConfig, assets_path: Path) -> None:
+        super().__init__(unit=config.unit, format=config.format)
         self.config = config
         self.assets_path = assets_path
-        self.ua_logo_path = ua_logo_path
 
         # Load local fonts from assets directory
         self._load_custom_fonts()
@@ -141,13 +146,13 @@ class AccessiblePDF(FPDF):
         with self.local_context():
             self._draw_banner(COLOR_RGB_UA_RED, y=0)
 
-            if self.ua_logo_path and self.ua_logo_path.exists():
-                logo_y = (self.config.banner_height - HEADER_LOGO_HEIGHT_PT) / 2.0
+            if UA_LOGO_PATH and UA_LOGO_PATH.exists():
+                logo_y = (self.config.banner_height - UA_LOGO_HEIGHT_PT) / 2.0
                 self.image(
-                    str(self.ua_logo_path),
+                    str(UA_LOGO_PATH),
                     x=self.config.margin_left,
                     y=logo_y,
-                    h=HEADER_LOGO_HEIGHT_PT,
+                    h=UA_LOGO_HEIGHT_PT,
                     alt_text="University of Arizona Logo",
                 )
 
@@ -184,11 +189,9 @@ class DepositAgreementBuilder:
 
     def __init__(
         self, config: LayoutConfig | None = None, assets_path: Path | None = None
-    ):
+    ) -> None:
         self.config = config or LayoutConfig()
         self.assets_path = assets_path or DEFAULT_ASSETS_DIR
-        self.ua_logo_path = self.assets_path / UA_LOGO_FILENAME
-        self.redata_logo_path = self.assets_path / REDATA_LOGO_FILENAME
 
     def create_bulleted_list(self, qa_pairs: Any) -> str:
         """Transforms iterable question/answer pairs into an HTML unordered list."""
@@ -201,10 +204,10 @@ class DepositAgreementBuilder:
     def _render_header_logo_and_title(self, pdf: AccessiblePDF) -> None:
         """Draws top ReDATA logo, main document headings, and top divider line."""
 
-        if self.redata_logo_path.exists():
+        if REDATA_LOGO_PATH.exists():
             center_x = (self.config.page_width - REDATA_LOGO_WIDTH_PT) / 2.0
             pdf.image(
-                str(self.redata_logo_path),
+                str(REDATA_LOGO_PATH),
                 x=center_x,
                 w=REDATA_LOGO_WIDTH_PT,
                 alt_text="UA ReDATA Logo",
@@ -324,16 +327,19 @@ class DepositAgreementBuilder:
         """Main pipeline entry point: constructs document and exports to disk."""
 
         if not data or not isinstance(data, dict):
-            raise ValueError("Invalid data provided for PDF generation.")
+            raise ValueError(
+                "Provided data is either empty or invalid."
+            )  # Raises exception
+
+        if not output_path or not isinstance(output_path, (str, Path)):
+            raise ValueError(
+                "Provided output_path is either empty or invalid."
+            )  # Raises exception
 
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        pdf = AccessiblePDF(
-            config=self.config,
-            assets_path=self.assets_path,
-            ua_logo_path=self.ua_logo_path,
-        )
+        pdf = AccessiblePDF(config=self.config, assets_path=self.assets_path)
         pdf.add_page()
 
         # Render centered logo, titles, and top divider line
