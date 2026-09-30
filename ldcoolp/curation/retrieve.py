@@ -50,7 +50,7 @@ def private_file_retrieve(url, filename=None, token=None, log=None):
         raise HTTPError(error)
 
 
-def download_files(article_id, fs, root_directory=None, data_directory=None,
+def download_files(article_id, fs, folder_structure, root_directory=None, data_directory=None,
                    metadata_directory=None, log=None,
                    metadata_only=False):
     """
@@ -59,6 +59,7 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
 
     :param article_id: Figshare article ID (int)
     :param fs: Figshare object
+    :param folder_structure: Folder structure for files in the item (dict)
     :param root_directory: Root path for curation workflow (str)
     :param data_directory: Relative folder path for primary location of data (str)
     :param metadata_directory: Relative folder path for primary location of metadata (str)
@@ -105,7 +106,11 @@ def download_files(article_id, fs, root_directory=None, data_directory=None,
             log.info(f"Retrieving {n+1} of {n_files} : "
                      f"{file_dict['name']} ({file_dict['size']})")
             log.info(f"URL: {file_dict['download_url']}")
-            filename = os.path.join(dir_path, file_dict['name'])
+            file_folder = ''
+            if len(folder_structure) > 0 and str(file_dict['id']) in folder_structure.keys():
+                file_folder = folder_structure[str(file_dict['id'])]
+                os.makedirs(os.path.join(dir_path, file_folder), exist_ok=True)
+            filename = os.path.join(dir_path, file_folder, file_dict['name'])
             retrieve_cnt = 0
             checksum_flag = False
             if not exists(filename):

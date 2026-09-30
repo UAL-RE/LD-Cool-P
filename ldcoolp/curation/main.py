@@ -126,7 +126,9 @@ class PrerequisiteWorkflow:
 
     def download_data(self):
         if self.new_set:
+            item_folder_structure = self.dn.curation_dict.get('item').get('folder_structure', {})
             download_files(self.article_id, self.fs,
+                           item_folder_structure,
                            root_directory=self.root_directory,
                            data_directory=self.data_directory,
                            metadata_directory=self.metadata_directory,
