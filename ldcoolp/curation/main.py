@@ -33,7 +33,7 @@ class PrerequisiteWorkflow:
        1. Retrieve the data for a given deposit
        2. Set permissions and ownership (the latter needs to be tested and performed)
        3. Download curatorial review report
-       4. Download Qualtrics Deposit Agreement form
+       4. Generate Qualtrics Deposit Agreement form
        5. Check the README file
 
     """
@@ -149,7 +149,7 @@ def workflow(article_id, browser=True, log=None,
        1. Retrieve the data for a given deposit
        2. Set permissions and ownership (the latter needs to be tested and performed)
        3. Download curatorial review report
-       4. Download Qualtrics Deposit Agreement form
+       4. Generate Qualtrics Deposit Agreement form
        5. Check the README file
 
     :param article_id: str or int, Figshare article id
@@ -182,7 +182,7 @@ def workflow(article_id, browser=True, log=None,
         # Download curation report
         pw.download_report()
 
-        # Download Qualtrics deposit agreement form
+        # Generate Qualtrics deposit agreement form
         curation_dict = config_dict['curation']
         out_path = join(
             curation_dict[curation_dict['parent_dir']],
@@ -192,8 +192,7 @@ def workflow(article_id, browser=True, log=None,
         )
         log.debug(f"out_path: {out_path}")
         q = Qualtrics(config_dict=config_dict, log=log)
-        q.retrieve_deposit_agreement(pw.dn, out_path=out_path,
-                                     browser=browser)
+        q.generate_deposit_agreement_v2(pw.dn, out_path=out_path)
 
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict, q=q)
