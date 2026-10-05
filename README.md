@@ -20,8 +20,6 @@
 <!-- - [Authors](#authors) -->
 - [License](#license)
 
---------------
-
 ## Overview
 
 This software tool is designed to enable the curatorial review of datasets
@@ -36,8 +34,9 @@ that are undergoing curatorial review
 2. Constructing a README.txt file based on information from the deposit's metadata
 and information provided by the researchers using a Qualtrics form that walks the
 users through additional information
-3. Retrieving a [Deposit Agreement Form](https://bit.ly/ReDATA_DepositAgreement)
-from Qualtrics, which is a requirement for all ReDATA deposits
+    <!-- TODO: Change the deposit agreement form link to the latest usable link -->
+3. Generating a [Deposit Agreement Form](https://bit.ly/ReDATA_DepositAgreement)
+using the Qualtrics API data, which is a requirement for all ReDATA deposits
 4. Retrieving a copy of [Curatorial Review Report template (MS-Word)](https://bit.ly/ReDATA_CurationTemplate)
 for ReDATA curators to complete.
 5. Creating a hierarchical folder structure the supports library preservation and
@@ -74,6 +73,7 @@ separately.
 1. [`jinja2`](https://palletsprojects.com/p/jinja/) ([3.1.6](https://jinja.palletsprojects.com/en/3.1.x/))
 2. [`html2text`](https://pypi.org/project/html2text/) ([2025.4.15](https://pypi.org/project/html2text/2025.4.15/))
 3. [`ldcoolp-figshare`](https://pypi.org/project/ldcoolp-figshare/) ([0.4.0](https://pypi.org/project/ldcoolp-figshare/0.4.0/))
+4. [`fpdf2`](https://pypi.org/project/fpdf2/) ([>=2.8.9,<3.0.0](https://pypi.org/project/fpdf2/2.8.9/))
 
 ### Installation Instructions
 
@@ -131,7 +131,7 @@ the `setup.py` script:
 ```
 
 This will automatically install the required `pandas`, `requests`, `numpy`,
-`jinja2`, `tabulate`, and `html2text` packages.
+`jinja2`, `tabulate`, `html2text` and `fpdf2` packages.
 
 You can confirm installation via `mamba list`
 
@@ -190,8 +190,9 @@ above script will perform the prerequisite steps of:
 
 1. Retrieving the data using the Figshare API
 2. Retrieve a copy of the curatorial review report
-3. Attempt to retrieve the deposit agreement form through the Qualtrics API or
-provide a custom link to provide to the depositor
+3. Generate the deposit agreement form using the Qualtrics API data. Read more
+about PDF generation process in its
+[README](ldcoolp/curation/pdf_generator/README.md)
 4. Generate a README.txt file
 5. Follow our curation workflow by relocating the content from `1.ToDo` to the
 `2.UnderReview`
