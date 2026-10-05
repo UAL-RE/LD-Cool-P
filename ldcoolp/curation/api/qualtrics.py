@@ -1,4 +1,7 @@
-from typing import Tuple
+import time
+from typing import Any, Tuple
+
+# NOTE: Refactor to use pathlib.Path instead of os.path for modern path handling
 from os.path import join
 import io
 from os import remove
@@ -37,6 +40,7 @@ from figshare.figshare import issue_request
 # Read in default configuration settings
 from ..depositor_name import DepositorName
 from ...config import config_default_dict
+from ..pdf_generator import DepositAgreementBuilder
 
 # for quote and urlencode
 url_safe = '/ {},:"?=@%&'
@@ -119,8 +123,12 @@ class Qualtrics:
         self.data_center = self.dict['datacenter']
 
         self.baseurl = f"https://{self.data_center}.qualtrics.com/API/v3/"
-        self.headers = {"X-API-TOKEN": self.token,
-                        "Content-Type": "application/json"}
+        self.headers = {
+            "X-API-TOKEN": self.token,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
         self.survey_id = self.dict['survey_id']
         self.file_format = 'csv'
 
@@ -403,6 +411,416 @@ class Qualtrics:
                 self.log.info("Here's the URL : ")
                 self.log.info(full_url)
 
+    def _handle_api_response(self, response: requests.Response) -> dict[str, Any]:
+        """
+        Handle and validate a Qualtrics API response.
+
+        Checks for HTTP errors, parses the JSON response payload, validates 
+        the internal Qualtrics status (ensuring '200 - OK'), logs and raises any errors, 
+        and returns the resulting data dictionary.
+
+        :param response: The requests.Response object returned from an API call.
+        :return: A dictionary containing the response result data.
+        """
+
+        response.raise_for_status()  # WARN: Raises exception
+        res: dict[str, Any] = response.json()  # WARN: Raises exception
+
+        if res["meta"]["httpStatus"] != "200 - OK":
+            status = res["meta"]["httpStatus"]
+            notice = res["meta"]["notice"]
+            err_msg = f"Qualtrics Error: {status}: {notice}"
+            raise Exception(err_msg)  # WARN: Raises exception
+
+        return res.get("result", {})
+
+    def get_raw_survey(self, survey_id: str) -> dict[str, Any]:
+        """
+        Retrieve the raw survey definition from the Qualtrics API.
+
+        Sends a GET request to fetch the raw configuration and metadata
+        for a specific survey, validates the HTTP status, and returns the result dictionary.
+
+        :param survey_id: The Qualtrics survey ID (e.g., beginning with SV_*).
+        :return: A dictionary containing the raw survey result data.
+        """
+
+        url = self.endpoint(f"surveys/{survey_id}")
+
+        response = requests.get(url, headers=self.headers)
+
+        return self._handle_api_response(response)
+
+    def start_response_export(self, survey_id: str) -> tuple[str, str]:
+        """
+        Initiate an asynchronous response export for a Qualtrics survey.
+
+        Sends a POST request to start exporting survey responses using
+        preconfigured settings (such as CSV format and embedded data), and returns
+        the progress tracking ID and initial export status.
+
+        :param survey_id: The Qualtrics survey ID (e.g., beginning with SV_*).
+        :return: A tuple containing (progress ID, initial status).
+        """
+
+        url = self.endpoint(f"surveys/{survey_id}/export-responses")
+        payload = {
+            "format": "csv",  # Allowed values: csv, json, ndjson, spss, tsv, xml
+            "compress": True,  # Compress the final export file as a ZIP file unless the export is small.
+            "limit": 25,  # Maximum number of responses to export.
+            "useLabels": True,  # Not for json, ndjson format - Export the answer choice text instead of its numeric value.
+            # NOTE: See https://api.qualtrics.com/6b00592b9c013-start-response-export#request-body
+            # for additional options. Customize this payload as much as needed.
+            "embeddedDataIds": [
+                "article_id",
+                "curation_id",
+                "depositor_email",
+            ],  
+            "questionIds": [],
+            "surveyMetadataIds": [
+                "endDate",
+                "status",
+                "ipAddress",
+                "finished",
+                "recordedDate",
+                "_recordId",
+            ],
+        }
+
+        response = requests.post(url, headers=self.headers, json=payload)
+        result: dict[str, Any] = self._handle_api_response(response)
+
+        return result.get("progressId", ""), result.get("status", "")
+
+    def check_export_progress_and_get_file_id(self, survey_id: str, progress_id: str) -> str:
+        """
+        Poll and monitor the progress of a Qualtrics response export.
+
+        Repeatedly checks the export progress endpoint using the provided
+        survey ID and progress ID until the export is complete or fails, then returns
+        the resulting file ID for downloading.
+
+        :param survey_id: The Qualtrics survey ID (e.g., beginning with SV_*).
+        :param progress_id: The progress ID tracking the ongoing export task.
+        :return: The unique file ID of the completed export.
+        """
+
+        url = self.endpoint(f"surveys/{survey_id}/export-responses/{progress_id}")
+
+        self.log.info("Checking export progress")
+        while True:
+            response = requests.get(url, headers=self.headers)
+            result: dict[str, Any] = self._handle_api_response(response)
+            status = result.get("status", "")
+
+            if status == "complete":
+                if "fileId" not in result:
+                    self.log.error("Qualtrics Export Completed but no `fileId` found.")
+                    raise Exception("Qualtrics Export Completed but no `fileId` found.")
+
+                file_id: str = result.get("fileId", "")
+                self.log.info("Response exported")
+                break
+            elif status == "failed":
+                error = result.get("error", {})
+                err_msg = f"Qualtrics Export Failed: {error}"
+                self.log.error(err_msg)
+                raise Exception(err_msg)  # WARN: Raises exception
+
+            time.sleep(3)
+            self.log.info("...")
+
+        return file_id
+
+    def get_responses_from_file(self, survey_id: str, file_id: str) -> pd.DataFrame:
+        """
+        Download, extract, and load exported survey responses from a zip file.
+
+        Requests the exported response archive using the survey ID and file ID,
+        extracts the CSV file from the zip container, drops the Qualtrics metadata header rows,
+        and returns the data as a pandas DataFrame.
+
+        :param survey_id: The Qualtrics survey ID (e.g., beginning with SV_*).
+        :param file_id: The unique file ID of the completed export.
+        :return: A pandas DataFrame containing the survey responses.
+        """
+
+        url = self.endpoint(f"surveys/{survey_id}/export-responses/{file_id}/file")
+        headers = {
+            "X-API-TOKEN": self.token,
+            "Accept": "application/octet-stream, application/json",
+        }
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # WARN: Raises exception
+
+        with zipfile.ZipFile(io.BytesIO(response.content)) as zf:
+            if len(zf.namelist()) == 1:
+                with zf.open(zf.namelist()[0]) as f:
+                    response_df = pd.read_csv(f)
+                    response_df.drop(index=[0, 1], inplace=True)
+                    return response_df
+
+            # NOTE: If multiple files are found, take note of the files and
+            # process only the first file for now
+            # WARN: Multiple files not tested, may require additional handling
+            self.log.warning(f"Multiple files found in zip: {zf.namelist()}")
+            for filename in zf.namelist():
+                self.log.warning(f"    File: {filename}")
+
+            self.log.warning("    Processing only the first file...")
+            with zf.open(zf.namelist()[0]) as f:
+                response_df = pd.read_csv(f)
+                response_df.drop(index=[0, 1], inplace=True)
+                return response_df
+
+    def process_survey_questions(self, raw_survey: dict[str, Any]) -> dict[str, dict[str, str]]:
+        """
+        Process and structure raw survey questions from API data.
+
+        Parses the raw survey definition to extract and standardize
+        question attributes—such as sequence number, name, type, label, and text—while
+        also extracting form sub-questions if the question type is a form selector.
+
+        :param raw_survey: Dictionary containing raw survey metadata from Qualtrics.
+        :return: A filtered dictionary of structured question details indexed by question ID.
+        """
+
+        if not raw_survey:
+            return {}
+
+        questions: dict[str, dict[str, Any]] = raw_survey.get("questions", {})
+        filtered_questions: dict[str, dict[str, str]] = {}
+
+        for qid, q_data in questions.items():
+            q_type = q_data["questionType"]
+            q_type_str = f"{q_type['type']}-{q_type['selector']}"
+
+            base_dict = {
+                "seq_no": int(q_data["questionName"].replace("Q", "")),
+                "questionName": q_data["questionName"],
+                "questionType": q_type_str,
+                "questionLabel": q_data.get("questionLabel", ""),
+                "questionText": q_data["questionText"],
+            }
+
+            if q_type["selector"] == "FORM" and "choices" in q_data:
+                base_dict["formQuestions"] = [
+                    choice["choiceText"] for choice in q_data["choices"].values()
+                ]
+
+            filtered_questions[qid] = base_dict
+
+        return filtered_questions
+
+    def get_matching_response_id(self, response_data: pd.DataFrame, filter_by: dict[str, Any]) -> str:
+        """
+        Filter survey response data and identify a matching response ID.
+
+        This method filters the response DataFrame using specified key-value criteria,
+        sorts the results by end date (most recent first), and returns the ResponseID
+        for the matching entry. If multiple matches are found, it selects the top result.
+
+        :param response_data: Pandas DataFrame containing survey responses.
+        :param filter_by: Dictionary of column-value pairs used to filter responses.
+        :return: The matching survey ResponseId as a string.
+        """
+
+        # Filter the response data
+        for key, value in filter_by.items():
+            if key not in response_data.columns:
+                self.log.info(f"Column '{key}' not found in the response data.")
+                continue
+            response_data = response_data[response_data[key] == value].copy()
+
+        response_data.sort_values(by=["EndDate"], ascending=[False], inplace=True)
+
+        filtered_response_length = len(response_data)
+        self.log.info(f"{filtered_response_length} response(s) found.")
+
+        if filtered_response_length == 1:
+            return str(response_data["ResponseId"].iloc[0])
+
+        # if more that 1 response is found, ask for user input to select the response index
+        # if user does not select a response, then return the latest response
+        # if user selects a response, then return the selected response
+        if filtered_response_length > 1:
+            self.log.info("Multiple responses found:")
+            for sl, records in enumerate(response_data.to_dict(orient="records")):
+                self.log.info(f"    {sl: >2}:\n    {records}")
+
+            # User input to select the response index
+            selection = input(
+                "\nEnter the index of the response to select "
+                "(or press Enter to select the latest response):\n"
+            )
+            if not selection:
+                self.log.info("No input provided. Selecting the latest response.")
+                selection = "0"
+            elif not selection.isdigit() or int(selection) < 0 or int(selection) >= filtered_response_length:
+                self.log.warning("Invalid input. Selecting the latest response.")
+                selection = "0"
+            else:
+                self.log.info(f"Selected response index: {selection}")
+
+            return str(response_data["ResponseId"].iloc[int(selection)])
+
+        # If no matching responses are found, log a warning and return an empty string
+        self.log.warning("No matching responses found.")
+        return ""
+
+    def get_raw_survey_response(self, survey_id: str, response_id: str) -> dict[str, Any]:
+        """
+        Retrieve raw response details for a specific survey response from the Qualtrics API.
+
+        Sends a GET request to fetch the raw response payload for a given
+        response ID, validates the HTTP status, and returns the result dictionary.
+
+        :param survey_id: The Qualtrics survey ID (e.g., beginning with SV_*).
+        :param response_id: The specific survey response ID to retrieve.
+        :return: A dictionary containing the raw response data result.
+        """
+
+        url = self.endpoint(f"surveys/{survey_id}/responses/{response_id}")
+
+        response = requests.get(url, headers=self.headers)
+
+        return self._handle_api_response(response)
+
+    def process_survey_response(self, raw_response: dict[str, Any]) -> dict[str, Any]:
+        """
+        Process and clean raw survey response data.
+
+        Extracts values and labels from the raw response, replaces
+        values with human-readable label text where available, filters out
+        internal display order keys (ending with '_DO'), and returns the
+        cleaned response dictionary.
+
+        :param raw_response: Raw survey response dictionary containing 'values' and 'labels'.
+        :return: Cleaned response dictionary with human-readable text.
+        """
+
+        values: dict[str, Any] = raw_response.get("values", {})
+        labels: dict[str, Any] = raw_response.get("labels", {})
+
+        for k, v in labels.items():
+            if k.endswith("_DO") and isinstance(v, list):
+                del values[k]
+            elif isinstance(v, str):
+                values[k] = v
+        return values
+
+    def merge_question_response_data(
+        self, questions: dict[str, Any], answers: dict[str, Any]
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        """
+        Merge survey questions with their corresponding response answers.
+
+        Maps raw answer values to their respective question definitions 
+        (handling standard questions and multi-part form inputs), appends any 
+        unanswered or descriptive questions, sorts them by sequence number, and 
+        separates non-question embedded metadata.
+
+        :param questions: Dictionary of survey questions indexed by question ID.
+        :param answers: Dictionary of raw survey response values and embedded data.
+        :return: A tuple of (sorted merged Q&A dictionary, embedded data dictionary).
+        """
+
+        merged_qa: dict[str, Any] = {}
+        embedded_data: dict[str, Any] = {}
+
+        for key, value in answers.items():
+            if not key.startswith("QID"):
+                embedded_data[key] = value
+                continue
+
+            q_no, *ch_no = key.split("_")
+            if q_no not in questions.keys():
+                continue
+
+            if ch_no and questions[q_no]["questionType"].endswith("FORM"):
+                questions[q_no].setdefault("answer", []).append(value)
+            else:
+                questions[q_no]["answer"] = value
+
+            merged_qa[q_no] = questions[q_no]
+
+        # Add leftover descriptive questions or unanswered questions
+        for qid, q_data in questions.items():
+            if qid not in merged_qa:
+                q_data["answer"] = ""
+                merged_qa[qid] = q_data
+
+        # sort qa_map by seq_no to maintain the order of questions as they appear in the survey
+        merged_qa = dict(sorted(merged_qa.items(), key=lambda item: item[1]["seq_no"]))
+
+        return merged_qa, embedded_data
+
+    def generate_deposit_agreement_v2(self, dn, out_path: str) -> None:
+        """
+        Generate Deposit Agreement (Version 2.0) PDF and save its metadata.
+
+        Fetches the survey questions and latest responses, matches
+        the response to the depositor using their article ID, merges the
+        question-answer pairs, builds the PDF deposit agreement, and saves
+        the original metadata locally.
+
+        :param dn: DepositorName object containing metadata (e.g., article_id).
+        :param out_path: Directory path where the output PDF will be saved.
+        :return: None
+        """
+
+        self.log.info("")
+        self.log.info("** GENERATING DEPOSIT AGREEMENT (Version 2.0) **")
+        self.log.info("This is a new Qualtrics survey for Deposit Agreement form")
+
+        survey_id = self.dict["survey_id"][0]
+        raw_survey = self.get_raw_survey(survey_id)
+
+        survey_questions = self.process_survey_questions(raw_survey)
+
+        progress_id, status = self.start_response_export(survey_id)
+        self.log.info(f"Export Progress ID: {progress_id}, Status: {status}")
+
+        file_id = self.check_export_progress_and_get_file_id(survey_id, progress_id)
+        self.log.info(f"Export File ID: {file_id}")
+
+        all_response = self.get_responses_from_file(survey_id, file_id)
+        if all_response is None:
+            self.log.error("No survey responses found.")
+            return
+
+        filter_by = {"article_id": dn.article_id}
+        response_id = self.get_matching_response_id(all_response, filter_by)
+        if not response_id:
+            self.log.error("No matching survey response found.")
+            return
+        self.log.info(f"Matched Response ID: {response_id}")
+
+        raw_response = self.get_raw_survey_response(survey_id, response_id)
+
+        survey_response = self.process_survey_response(raw_response)
+
+        merged_qa, embedded_data = self.merge_question_response_data(
+            survey_questions, survey_response
+        )
+
+        if not (merged_qa or embedded_data):
+            err_msg = "Either question-answer pairs or embedded data is missing for the given survey response."
+            self.log.error(err_msg)
+            raise ValueError(err_msg)  # WARN: Raises exception
+
+        out_pdf = join(out_path, 'Deposit_Agreement.pdf')
+        data = {"merged_qa": merged_qa, "embedded_data": embedded_data}
+
+        builder = DepositAgreementBuilder()
+        builder.generate(data, out_pdf)
+        self.log.info(f"PDF generated successfully at: {out_pdf}")
+
+        self.save_metadata(
+            data, dn, out_file_prefix=f"deposit_agreement_original_{dn.article_id}"
+        )
+
     def survey_specific(self, dn_dict: dict) -> Tuple[str, dict]:
         """
         Handles survey specifics for Qualtrics Deposit Agreement form
@@ -441,27 +859,22 @@ class Qualtrics:
 
         return use_survey_id, populate_response_dict
 
-    def generate_url(self, dn_dict):
-        """
-        Purpose:
-          Generate URL with Q_PopulateResponse, and article and curation ID
-          query strings based on Figshare metadata
-        """
+    def generate_da_url(self, dn_dict) -> str:
+        """Generate URL for Deposit Agreement"""
 
-        use_survey_id, populate_response_dict = self.survey_specific(dn_dict)
+        survey_id_idx = 0
+        if dn_dict['depositor_email'] in self.dict['survey_email']:
+            survey_id_idx = self.dict['survey_email'].index(dn_dict['depositor_email'])
 
-        use_survey_shortname = self.lookup_survey_shortname(use_survey_id)
-        self.log.info(f"Using {use_survey_shortname} deposit agreement")
+        use_survey_id = self.survey_id[survey_id_idx]
 
-        populate_response_dict['QID7'] = dn_dict['title']
-
-        json_txt = quote(json.dumps(populate_response_dict), safe=url_safe)
-
-        query_str_dict = {'article_id': dn_dict['article_id'],
-                          'curation_id': dn_dict['curation_id'],
-                          'Q_PopulateResponse': json_txt}
-
-        # q_eed = base64.urlsafe_b64encode(json.dumps(query_str_dict).encode()).decode()
+        query_str_dict = {
+            "article_id": dn_dict["article_id"],
+            "curation_id": dn_dict["curation_id"],
+            "dataset_title": dn_dict["title"],
+            "depositor_name": dn_dict["simplify_fullName"],
+            "depositor_email": dn_dict["depositor_email"],
+        }
 
         full_url = f"{self.dict['generate_url']}{use_survey_id}?" + \
                    urlencode(query_str_dict, safe=url_safe, quote_via=quote)
