@@ -192,7 +192,7 @@ def workflow(article_id, browser=True, log=None,
         )
         log.debug(f"out_path: {out_path}")
         q = Qualtrics(config_dict=config_dict, log=log)
-        q.generate_deposit_agreement_v2(pw.dn, out_path=out_path)
+        q.generate_deposit_agreement_v2(pw.dn, out_path)
 
         # Check for README file and create one if it does not exist
         rc = ReadmeClass(pw.dn, log=log, config_dict=config_dict, q=q)

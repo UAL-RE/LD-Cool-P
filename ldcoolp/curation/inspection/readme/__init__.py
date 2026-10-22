@@ -318,7 +318,7 @@ class ReadmeClass:
         single_str_citation = self.article_dict['item']['citation']
         pre_processed_str = single_str_citation.replace('):', ').')
         # Match spaces following group 1, only if followed by group 2
-        END_SENT = re.compile('((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
+        END_SENT = re.compile(r'((?<=[.!?])|(?<=\.\":)) +(?=[A-Z,0-9])')
         # Filter for empty list entry
         citation_list = list(filter(None, END_SENT.split(pre_processed_str)))
         readme_dict['preferred_citation'] = citation_list
