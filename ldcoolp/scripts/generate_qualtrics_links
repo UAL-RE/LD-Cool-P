@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     dn = depositor_name.DepositorName(args.article_id, fs_admin, verbose=False)
 
-    full_url = q.generate_url(dn.name_dict)
+    full_url = q.generate_da_url(dn.name_dict)
     log.info("URL for Deposit Agreement form: ")
     log.info(full_url)
 
