@@ -129,7 +129,7 @@ class Qualtrics:
             "Accept": "application/json",
         }
 
-        self.survey_id = self.dict['survey_id']
+        self.survey_ids = self.dict['survey_id']
         self.file_format = 'csv'
 
         self.readme_survey_id = self.dict['readme_survey_id']
@@ -137,6 +137,7 @@ class Qualtrics:
         # Initialize Deposit Agreement info
         self.da_response_id: str = ''
         self.da_survey_id: str = ''
+        self.da_metadata = None
 
         # Logging
         self.file_logging = False
@@ -756,7 +757,67 @@ class Qualtrics:
 
         return merged_qa, embedded_data
 
-    def generate_deposit_agreement_v2(self, dn, out_path: str) -> None:
+    def _fetch_deposit_agreement_metadata(self, dn: DepositorName) -> dict[str, Any]:
+        """
+        Helper to fetch deposit agreement metadata if not already loaded in memory.
+        Searches through configured surveys, finds the matching response, and merges QA.
+        """
+        if self.da_metadata:
+            return self.da_metadata
+
+        survey_id = None
+        response_id = None
+
+        filter_by = {"article_id": dn.article_id}
+
+        for s_id in self.survey_ids:
+            self.log.info(f"Fetching DA metadata for survey_id: {s_id} ...")
+            try:
+                progress_id, status = self.start_response_export(s_id)
+                file_id = self.check_export_progress_and_get_file_id(s_id, progress_id)
+                response_df = self.get_responses_from_file(s_id, file_id)
+
+                if response_df is None or response_df.empty:
+                    self.log.info(f"    No responses found for survey_id {s_id}.")
+                    continue
+
+                response_id = self.get_matching_response_id(response_df, filter_by)
+                if response_id:
+                    survey_id = s_id
+                    response_id = response_id
+                    self.log.info(f"    Matched Response ID: {response_id}")
+                    break
+                else:
+                    self.log.info(f"    No matching response found for survey_id {s_id}.")
+            except Exception as e:
+                self.log.error(f"Error processing survey_id {s_id} for DA metadata: {e}")
+                continue
+
+        if not survey_id or not response_id:
+            raise ValueError("No matching deposit agreement response found across all surveys.")  # WARN: Raises exception
+
+        self.da_survey_id = survey_id
+        self.da_response_id = response_id
+
+        raw_survey = self.get_raw_survey(survey_id)
+        survey_questions = self.process_survey_questions(raw_survey)
+
+        raw_response = self.get_raw_survey_response(survey_id, response_id)
+        survey_response = self.process_survey_response(raw_response)
+
+        merged_qa, embedded_data = self.merge_question_response_data(
+            survey_questions, survey_response
+        )
+
+        if not (merged_qa or embedded_data):
+            err_msg = "Either question-answer pairs or embedded data is missing for the given survey response."
+            self.log.error(err_msg)
+            raise ValueError(err_msg)  # WARN: Raises exception
+
+        self.da_metadata = {"merged_qa": merged_qa, "embedded_data": embedded_data}
+        return self.da_metadata
+
+    def generate_deposit_agreement_v2(self, dn: DepositorName, output_path: str) -> None:
         """
         Generate Deposit Agreement (Version 2.0) PDF and save its metadata.
 
@@ -772,53 +833,21 @@ class Qualtrics:
 
         self.log.info("")
         self.log.info("** GENERATING DEPOSIT AGREEMENT (Version 2.0) **")
-        self.log.info("This is a new Qualtrics survey for Deposit Agreement form")
 
-        survey_id = self.dict["survey_id"][0]
-        raw_survey = self.get_raw_survey(survey_id)
+        try:
+            self.da_metadata = self._fetch_deposit_agreement_metadata(dn)
+        except ValueError as e:
+            self.log.error(f"Error fetching deposit agreement metadata: {e}")
+            raise
 
-        survey_questions = self.process_survey_questions(raw_survey)
-
-        progress_id, status = self.start_response_export(survey_id)
-        self.log.info(f"Export Progress ID: {progress_id}, Status: {status}")
-
-        file_id = self.check_export_progress_and_get_file_id(survey_id, progress_id)
-        self.log.info(f"Export File ID: {file_id}")
-
-        all_response = self.get_responses_from_file(survey_id, file_id)
-        if all_response is None:
-            self.log.error("No survey responses found.")
-            return
-
-        filter_by = {"article_id": dn.article_id}
-        response_id = self.get_matching_response_id(all_response, filter_by)
-        if not response_id:
-            self.log.error("No matching survey response found.")
-            return
-        self.log.info(f"Matched Response ID: {response_id}")
-
-        raw_response = self.get_raw_survey_response(survey_id, response_id)
-
-        survey_response = self.process_survey_response(raw_response)
-
-        merged_qa, embedded_data = self.merge_question_response_data(
-            survey_questions, survey_response
-        )
-
-        if not (merged_qa or embedded_data):
-            err_msg = "Either question-answer pairs or embedded data is missing for the given survey response."
-            self.log.error(err_msg)
-            raise ValueError(err_msg)  # WARN: Raises exception
-
-        out_pdf = join(out_path, 'Deposit_Agreement.pdf')
-        data = {"merged_qa": merged_qa, "embedded_data": embedded_data}
+        pdf_output_path = join(output_path, 'Deposit_Agreement.pdf')
 
         builder = DepositAgreementBuilder()
-        builder.generate(data, out_pdf)
-        self.log.info(f"PDF generated successfully at: {out_pdf}")
+        builder.generate(self.da_metadata, pdf_output_path)
+        self.log.info(f"PDF generated successfully at: {pdf_output_path}")
 
         self.save_metadata(
-            data, dn, out_file_prefix=f"deposit_agreement_original_{dn.article_id}"
+            self.da_metadata, dn, out_file_prefix=f"deposit_agreement_original_{dn.article_id}"
         )
 
     def survey_specific(self, dn_dict: dict) -> Tuple[str, dict]:
@@ -855,7 +884,7 @@ class Qualtrics:
             else:
                 _std_populate_response_dict()
 
-        use_survey_id = self.survey_id[survey_id_idx]
+        use_survey_id = self.survey_ids[survey_id_idx]
 
         return use_survey_id, populate_response_dict
 
@@ -866,7 +895,7 @@ class Qualtrics:
         if dn_dict['depositor_email'] in self.dict['survey_email']:
             survey_id_idx = self.dict['survey_email'].index(dn_dict['depositor_email'])
 
-        use_survey_id = self.survey_id[survey_id_idx]
+        use_survey_id = self.survey_ids[survey_id_idx]
 
         query_str_dict = {
             "article_id": dn_dict["article_id"],
@@ -1014,18 +1043,20 @@ class Qualtrics:
 
         # Retrieve corresponding author info and append
         self.log.info("Appending Deposit Agreement's Corresponding Author metadata")
-        if not self.da_response_id:
-            self.log.info("NO METADATA - Retrieving Deposit Agreement metadata")
-            self.find_deposit_agreement(dn)
-        else:
-            self.log.info(f"Parsed ResponseId : {self.da_response_id}")
-            self.log.info(f"Parsed SurveyID : {self.da_survey_id}")
+        try:
+            self.da_metadata = self._fetch_deposit_agreement_metadata(dn)
+        except ValueError as e:
+            self.log.error(f"Error fetching corresponding author metadata: {e}")
+            raise
 
-        DA_response_df = self.get_survey_response(self.da_survey_id, self.da_response_id)
-        DA_dict = df_to_dict_single(DA_response_df)
-        qualtrics_dict['corr_author_fullname'] = DA_dict['Q6_1']
-        qualtrics_dict['corr_author_email'] = DA_dict['Q6_2']
-        qualtrics_dict['corr_author_affil'] = DA_dict['Q6_3']
+        # NOTE: Assuming the corresponding author info is stored under QID7. It
+        # needs to be verified that this is consistent across all surveys.
+        # Possible improvement: method to find the correct QID for corresponding
+        # author question.
+        DA_dict: list[str] = self.da_metadata["merged_qa"]["QID7"]["answer"]
+        qualtrics_dict["corr_author_fullname"] = DA_dict[0]
+        qualtrics_dict["corr_author_email"] = DA_dict[1]
+        qualtrics_dict["corr_author_affil"] = DA_dict[2]
 
         # Save Qualtrics README metadata
         if save_metadata:
