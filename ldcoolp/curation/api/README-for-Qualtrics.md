@@ -7,7 +7,7 @@ embedded data, question types, question labels, question names, question texts, 
 
 ## Question Formatting
 
-Qualtircs offers enriched HTML code structure supporting inline styles as well as
+Qualtrics offers enriched HTML code structure supporting inline styles as well as
 seperate css scripts. However, the currently used Python's `fpdf2` module supports
 basic rendering from HTML. The whole HTML 5 specification is not supported, and
 neither is CSS (see [Supported HTML features](https://py-pdf.github.io/fpdf2/HTML.html)

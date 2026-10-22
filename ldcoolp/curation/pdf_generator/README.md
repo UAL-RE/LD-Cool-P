@@ -79,5 +79,5 @@ builder.generate(data, output_path)
 
 ## Font License
 
-The **"Liberation Fonts"** is licensed under the **SIL Open Font License**,
-Version 1.1. See [License](https://github.com/liberationfonts/liberation-fonts?tab=License-1-ov-file) file for details.
+The **"Liberation Serif Font Family"** is licensed under the **GNU General Public License (GPL)**,
+Version 2. See [License](https://www.1001fonts.com/liberation-serif-font.html#license) for details.
