@@ -149,7 +149,7 @@ def workflow(article_id, browser=True, log=None,
        1. Retrieve the data for a given deposit
        2. Set permissions and ownership (the latter needs to be tested and performed)
        3. Download curatorial review report
-       4. Generate Qualtrics Deposit Agreement form
+       4. Generate Qualtrics Deposit Agreement PDF
        5. Check the README file
 
     :param article_id: str or int, Figshare article id

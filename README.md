@@ -190,7 +190,7 @@ above script will perform the prerequisite steps of:
 
 1. Retrieving the data using the Figshare API
 2. Retrieve a copy of the curatorial review report
-3. Generate the deposit agreement form using the Qualtrics API data. Read more
+3. Generate the Deposit_Agreement.pdf using the Qualtrics API data. Read more
 about PDF generation process in its
 [README](ldcoolp/curation/pdf_generator/README.md)
 4. Generate a README.txt file

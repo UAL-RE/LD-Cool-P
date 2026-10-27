@@ -87,7 +87,7 @@ class Qualtrics:
         See: https://api.qualtrics.com/docs/getting-survey-responses-via-the-new-export-apis
 
     `generate_deposit_agreement_v2(dn, output_path)`
-        Generate a deposit agreement based on the survey response
+        Generate a Deposit_Agreement.pdf based on the survey response
 
     `generate_da_url(dn_dict)`
         Generate URL with customized query strings based on Figshare metadata
