@@ -195,7 +195,7 @@ class DepositAgreementBuilder:
         self.config = config or LayoutConfig()
         self.assets_path = assets_path or DEFAULT_ASSETS_DIR
 
-    def create_bulleted_list(self, qa_pairs: Any) -> str:
+    def _create_bulleted_list(self, qa_pairs: Any) -> str:
         """Transforms iterable question/answer pairs into an HTML unordered list."""
 
         bullet_list = "".join(
@@ -277,7 +277,7 @@ class DepositAgreementBuilder:
                     qa_pairs = zip(
                         qa_data.get("formQuestions", []), qa_data.get("answer", [])
                     )
-                    answer_text = self.create_bulleted_list(qa_pairs)
+                    answer_text = self._create_bulleted_list(qa_pairs)
                 else:
                     answer_text = f"<ul><li>{qa_data.get('answer', '')}</li></ul>"
 
@@ -325,7 +325,7 @@ class DepositAgreementBuilder:
                     tag_styles=DEFAULT_HTML_TAG_STYLES,
                 )
 
-    def generate(self, data: dict[str, Any], output_path: str | Path) -> Path:
+    def generate_pdf(self, data: dict[str, Any], output_path: str | Path) -> Path:
         """Main pipeline entry point: constructs document and exports to disk."""
 
         if not data or not isinstance(data, dict):

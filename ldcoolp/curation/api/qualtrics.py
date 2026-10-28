@@ -104,6 +104,8 @@ class Qualtrics:
 
         self.interactive = interactive
 
+        # NOTE: Suggested variable name change for clarity: `self.curation_dict`
+        # to `self.curation_config`, `self.dict` to `self.qualtrics_config`
         self.curation_dict = config_dict['curation']
         self.dict = config_dict['qualtrics']
         self.token = self.dict['token']
@@ -220,7 +222,7 @@ class Qualtrics:
                 print(buffer.getvalue(), file=f)
         buffer.close()
 
-    def _handle_api_response(self, response: requests.Response) -> dict[str, Any]:
+    def _handle_api_json_response(self, response: requests.Response) -> dict[str, Any]:
         """
         Handle and validate a Qualtrics API response.
 
@@ -258,7 +260,7 @@ class Qualtrics:
 
         response = requests.get(url, headers=self.headers)
 
-        return self._handle_api_response(response)
+        return self._handle_api_json_response(response)
 
     def start_response_export(self, survey_id: str) -> tuple[str, str]:
         """
@@ -285,7 +287,11 @@ class Qualtrics:
                 "curation_id",
                 "depositor_email",
             ],
-            "questionIds": [],
+            "questionIds": [
+                # NOTE: This list could be utilized to get specific questions'
+                # response. E.g. for the README.txt generation, get only the
+                # corresponding author without requesting the entire survey response.
+            ],
             "surveyMetadataIds": [
                 "endDate",
                 "status",
@@ -297,7 +303,7 @@ class Qualtrics:
         }
 
         response = requests.post(url, headers=self.headers, json=payload)
-        result: dict[str, Any] = self._handle_api_response(response)
+        result: dict[str, Any] = self._handle_api_json_response(response)
 
         return result.get("progressId", ""), result.get("status", "")
 
@@ -319,8 +325,8 @@ class Qualtrics:
         self.log.info("Checking export progress")
         while True:
             response = requests.get(url, headers=self.headers)
-            result: dict[str, Any] = self._handle_api_response(response)
-            status = result.get("status", "")
+            result: dict[str, Any] = self._handle_api_json_response(response)
+            status: str = result.get("status", "")
 
             if status == "complete":
                 if "fileId" not in result:
@@ -491,7 +497,7 @@ class Qualtrics:
 
         response = requests.get(url, headers=self.headers)
 
-        return self._handle_api_response(response)
+        return self._handle_api_json_response(response)
 
     def process_survey_response(self, raw_response: dict[str, Any]) -> dict[str, Any]:
         """
@@ -648,7 +654,7 @@ class Qualtrics:
         pdf_output_path = join(output_path, 'Deposit_Agreement.pdf')
 
         builder = DepositAgreementBuilder()
-        builder.generate(self.da_metadata, pdf_output_path)
+        builder.generate_pdf(self.da_metadata, pdf_output_path)
         self.log.info(f"PDF generated successfully at: {pdf_output_path}")
 
         self.save_metadata(
