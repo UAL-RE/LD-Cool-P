@@ -4,28 +4,29 @@ from typing import Any
 from fpdf import FPDF, TextStyle
 
 from ...admin import permissions
+from ...config import config_default_dict
+
+_configs = config_default_dict["pdf_generator"]
 
 # Default Directory & File Constants
-DEFAULT_ASSETS_DIR = Path(__file__).parent.resolve() / "assets"
-UA_LOGO_PATH = DEFAULT_ASSETS_DIR / "logo-uofa.png"
-REDATA_LOGO_PATH = DEFAULT_ASSETS_DIR / "logo-redata.png"
+DEFAULT_ASSETS_DIR = Path(__file__).parent / _configs.get("pdf_assets_dir", "assets")
+UA_LOGO_PATH = DEFAULT_ASSETS_DIR / _configs.get("ua_logo", "logo-uofa.png")
+REDATA_LOGO_PATH = DEFAULT_ASSETS_DIR / _configs.get("redata_logo", "logo-redata.png")
 
 # Color Palette Constants (RGB)
-COLOR_RGB_UA_RED = (171, 5, 32)
-COLOR_RGB_UA_BLUE = (12, 35, 75)
-COLOR_RGB_BLACK = (0, 0, 0)
-COLOR_RGB_WHITE = (255, 255, 255)
+COLOR_RGB_UA_RED = _configs.get("ua_red_rgb", [171, 5, 32])
+COLOR_RGB_UA_BLUE = _configs.get("ua_blue_rgb", [12, 35, 75])
+COLOR_RGB_BLACK = _configs.get("black_rgb", [0, 0, 0])
+COLOR_RGB_WHITE = _configs.get("white_rgb", [255, 255, 255])
 
 # Font Family Constants
-FONT_FAMILY_LiberationSerif = "LiberationSerif"
+FONT_FAMILY_NAME = _configs.get("font_family_name", "LiberationSerif")
 FONT_FILES = (  # font family, style, filename
-    (FONT_FAMILY_LiberationSerif, "", "LiberationSerif-Regular.ttf"),
-    (FONT_FAMILY_LiberationSerif, "B", "LiberationSerif-Bold.ttf"),
-    (FONT_FAMILY_LiberationSerif, "I", "LiberationSerif-Italic.ttf"),
-    (FONT_FAMILY_LiberationSerif, "BI", "LiberationSerif-BoldItalic.ttf"),
-    # NOTE: Additional font families can be added here as needed
+    (FONT_FAMILY_NAME, "", f"{FONT_FAMILY_NAME}-Regular.ttf"),
+    (FONT_FAMILY_NAME, "B", f"{FONT_FAMILY_NAME}-Bold.ttf"),
+    (FONT_FAMILY_NAME, "I", f"{FONT_FAMILY_NAME}-Italic.ttf"),
+    (FONT_FAMILY_NAME, "BI", f"{FONT_FAMILY_NAME}-BoldItalic.ttf"),
 )
-FONT_FAMILY_PRIMARY = FONT_FAMILY_LiberationSerif
 
 # Page Dimension & Layout Constants (Points)
 INCH = 72.0  # 1 inch = 72 points
@@ -33,17 +34,16 @@ INCH = 72.0  # 1 inch = 72 points
 # fmt: off  # for black formatter
 # Using inch conversion to keep MS Word consistent
 DEFAULT_UNIT          = "pt"
-DEFAULT_FORMAT        = "letter"
-PAGE_WIDTH_PT         = 8.5 * INCH  # 612 points
-PAGE_HEIGHT_PT        = 11.0 * INCH  # 792 points
-MARGIN_TOP_PT         = 1.0 * INCH  # 72 points
-MARGIN_BOTTOM_PT      = 1.0 * INCH  # 72 points
-MARGIN_LEFT_PT        = 0.75 * INCH  # 54 points
-MARGIN_RIGHT_PT       = 0.75 * INCH  # 54 points
-BANNER_HEIGHT_PT      = 0.75 * INCH  # 54 points
-UA_LOGO_HEIGHT_PT     = 0.5 * INCH  # 36 points
-REDATA_LOGO_WIDTH_PT  = 2.61 * INCH  # 187.92 points
-DEFAULT_FOOTER_TEXT   = "UA ReDATA - Deposit Agreement"
+PAGE_FORMAT           = _configs.get("page_format", "letter")
+PAGE_WIDTH_PT         = _configs.get("page_width_inch", 8.5) * INCH
+PAGE_HEIGHT_PT        = _configs.get("page_height_inch", 11.0) * INCH
+MARGIN_TOP_PT         = _configs.get("margin_top_inch", 1.0) * INCH
+MARGIN_BOTTOM_PT      = _configs.get("margin_bottom_inch", 1.0) * INCH
+MARGIN_LEFT_PT        = _configs.get("margin_left_inch", 0.75) * INCH
+MARGIN_RIGHT_PT       = _configs.get("margin_right_inch", 0.75) * INCH
+BANNER_HEIGHT_PT      = _configs.get("banner_height_inch", 0.75) * INCH
+UA_LOGO_HEIGHT_PT     = _configs.get("ua_logo_height_inch", 0.5) * INCH
+REDATA_LOGO_WIDTH_PT  = _configs.get("redata_logo_width_inch", 2.61) * INCH
 
 DEFAULT_HTML_TAG_STYLES = {
     "b": TextStyle(font_style="B", color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
@@ -59,13 +59,7 @@ DEFAULT_HTML_TAG_STYLES = {
 # fmt: on  # for black formatter
 
 # Embedded Data Filter Keys
-INCLUDED_EMBEDDED_KEYS = (
-    "article_id",
-    "curation_id",
-    "recordedDate",
-    "ResponseID",
-    "SurveyID",
-)
+INCLUDE_EMBEDDED_KEYS = _configs.get("include_embedded_keys", [])
 
 
 class LayoutConfig:
@@ -74,7 +68,7 @@ class LayoutConfig:
     def __init__(
         self,
         unit: str = DEFAULT_UNIT,
-        format: str = DEFAULT_FORMAT,
+        format: str = PAGE_FORMAT,
         page_width: float = PAGE_WIDTH_PT,
         page_height: float = PAGE_HEIGHT_PT,
         margin_top: float = MARGIN_TOP_PT,
@@ -122,7 +116,7 @@ class AccessiblePDF(FPDF):
         )
         self.set_auto_page_break(auto=True, margin=self.config.margin_bottom)
         self.set_line_width(1.0)
-        self.set_font(FONT_FAMILY_PRIMARY, "", 12)
+        self.set_font(FONT_FAMILY_NAME, "", 12)
         self.set_text_color(*COLOR_RGB_BLACK)
         self.alias_nb_pages()
 
@@ -169,15 +163,15 @@ class AccessiblePDF(FPDF):
             # Center text vertically within footer banner
             text_y = banner_y + (self.config.banner_height / 2.0) - 6.0
             self.set_y(text_y)
-            self.set_font(FONT_FAMILY_PRIMARY, "I", 12)
+            self.set_font(FONT_FAMILY_NAME, "I", 12)
             self.set_text_color(*COLOR_RGB_WHITE)
 
             # Left Footer Text
             self.set_x(self.config.margin_left)
-            self.cell(w=250, h=12, text=DEFAULT_FOOTER_TEXT, align="L")
+            self.cell(w=250, h=12, text=_configs.get("footer_text", ""), align="L")
 
             # Right "Page {page_no} of {nb}"
-            self.set_font(FONT_FAMILY_PRIMARY, "", 12)
+            self.set_font(FONT_FAMILY_NAME, "", 12)
             page_str = f"Page {self.page_no()} of {{nb}}"
             self.set_x(self.config.page_width - self.config.margin_right - 100)
             self.cell(w=100, h=12, text=page_str, align="R")
@@ -318,7 +312,7 @@ class DepositAgreementBuilder:
         pdf.ln()
 
         for key, value in sorted(embedded_data.items()):
-            if key in INCLUDED_EMBEDDED_KEYS:
+            if key in INCLUDE_EMBEDDED_KEYS:
                 pdf.write_html(
                     f"<b>{key}:</b> {value}",
                     li_prefix_color=COLOR_RGB_BLACK,

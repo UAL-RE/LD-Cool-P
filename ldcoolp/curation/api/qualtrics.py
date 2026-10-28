@@ -282,24 +282,9 @@ class Qualtrics:
             "useLabels": True,  # Not for json, ndjson format - Export the answer choice text instead of its numeric value.
             # NOTE: See https://api.qualtrics.com/6b00592b9c013-start-response-export#request-body
             # for additional options. Customize this payload as much as needed.
-            "embeddedDataIds": [
-                "article_id",
-                "curation_id",
-                "depositor_email",
-            ],
-            "questionIds": [
-                # NOTE: This list could be utilized to get specific questions'
-                # response. E.g. for the README.txt generation, get only the
-                # corresponding author without requesting the entire survey response.
-            ],
-            "surveyMetadataIds": [
-                "endDate",
-                "status",
-                "ipAddress",
-                "finished",
-                "recordedDate",
-                "_recordId",
-            ],
+            "embeddedDataIds": self.dict.get("embedded_data_ids", []),
+            "questionIds": self.dict.get("question_ids", []),
+            "surveyMetadataIds": self.dict.get("survey_metadata_ids", []),
         }
 
         response = requests.post(url, headers=self.headers, json=payload)
