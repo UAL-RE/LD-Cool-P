@@ -3,6 +3,8 @@ from typing import Any
 
 from fpdf import FPDF, TextStyle
 
+from ...admin import permissions
+
 # Default Directory & File Constants
 DEFAULT_ASSETS_DIR = Path(__file__).parent.resolve() / "assets"
 UA_LOGO_PATH = DEFAULT_ASSETS_DIR / "logo-uofa.png"
@@ -336,7 +338,8 @@ class DepositAgreementBuilder:
                 "Provided output_path is either empty or invalid."
             )  # Raises exception
 
-        output_path = Path(output_path)
+        if isinstance(output_path, str):
+            output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         pdf = AccessiblePDF(config=self.config, assets_path=self.assets_path)
@@ -352,4 +355,5 @@ class DepositAgreementBuilder:
             self._render_embedded_data(pdf, data["embedded_data"])
 
         pdf.output(str(output_path))
+        permissions.curation(output_path)
         return output_path
