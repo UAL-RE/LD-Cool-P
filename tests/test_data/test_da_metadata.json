@@ -1,0 +1,235 @@
+{
+    "merged_qa": {
+        "QID1": {
+            "seq_no": 1,
+            "questionName": "Q1",
+            "questionType": "DB-TB",
+            "questionLabel": "SectionHeader",
+            "questionText": "<h2><b>Section 1: General Information</b></h2>",
+            "answer": ""
+        },
+        "QID2": {
+            "seq_no": 2,
+            "questionName": "Q2",
+            "questionType": "TE-SL",
+            "questionLabel": "Question",
+            "questionText": "<b>This agreement applies to the following dataset:</b>",
+            "answer": "Test Title of the Deposit"
+        },
+        "QID3": {
+            "seq_no": 3,
+            "questionName": "Q3",
+            "questionType": "TE-FORM",
+            "questionLabel": "Question",
+            "questionText": "<b>About Depositor</b>",
+            "formQuestions": [
+                "Full Name",
+                "Email Address",
+                "Department/Affiliation"
+            ],
+            "answer": [
+                "Test Name",
+                "test@email.com",
+                "Test Department"
+            ]
+        },
+        "QID6": {
+            "seq_no": 4,
+            "questionName": "Q4",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>Are you the Corresponding Author?</b>",
+            "answer": "No"
+        },
+        "QID7": {
+            "seq_no": 5,
+            "questionName": "Q5",
+            "questionType": "TE-FORM",
+            "questionLabel": "Question",
+            "questionText": "<b>Please enter the information about the Corresponding Author who has designated you as the Authorized Depositor.</b>",
+            "formQuestions": [
+                "Full Name",
+                "Email Address",
+                "Department/Affiliation"
+            ],
+            "answer": [
+                "Test Name Two",
+                "test_two@email.com",
+                "Test Department Two"
+            ]
+        },
+        "QID8": {
+            "seq_no": 6,
+            "questionName": "Q6",
+            "questionType": "DB-TB",
+            "questionLabel": "Info",
+            "questionText": "<b>By depositing material into the University of Arizona <a href=\"https://arizona.figshare.com/\" color=\"#AB0520\"><u>Research Data Repository</u></a>, you acknowledge that you and any material you deposit are subject to the <a href=\"https://lib.arizona.edu/research/data/redata/policies\" color=\"#AB0520\"><u>Repository Policies</u></a>.</b>",
+            "answer": ""
+        },
+        "QID4": {
+            "seq_no": 7,
+            "questionName": "Q7",
+            "questionType": "DB-TB",
+            "questionLabel": "SectionHeader",
+            "questionText": "<h2><b>Section 2: Research Compliance Questions</b></h2>",
+            "answer": ""
+        },
+        "QID9": {
+            "seq_no": 8,
+            "questionName": "Q8",
+            "questionType": "DB-TB",
+            "questionLabel": "Info",
+            "questionText": "<h3><b>Please read each question carefully</b></h3>",
+            "answer": ""
+        },
+        "QID10": {
+            "seq_no": 9,
+            "questionName": "Q9",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>1. Does the data being deposited relate to research that may involve information of a potentially sensitive or regulated nature?</b><br/><i>Examples include but are not limited to: HIPAA, FERPA, PII, ITAR, CUI, American Indian, Alaska Native, or Indigenous information, protected species information etc. Depositing regulated data constitutes a reportable breach. For American Indian, Alaska Native, or Indigenous information (please also see Question 4).</i>",
+            "answer": "Yes"
+        },
+        "QID11": {
+            "seq_no": 10,
+            "questionName": "Q10",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>1.1. I confirm the data has been appropriately redacted. Sensitive data cannot be deposited into ReDATA without first being cleaned, de-identified, or otherwise stripped of any sensitive information.</b><br/><font color=\"#AB0520\"><i>If you have already uploaded this kind of data without redaction, please remove it and notify us immediately.</i></font>",
+            "answer": "Yes"
+        },
+        "QID12": {
+            "seq_no": 11,
+            "questionName": "Q11",
+            "questionType": "TE-ML",
+            "questionLabel": "Question",
+            "questionText": "<b>1.2. Please describe the nature of the data and the research. We will require authorization from the appropriate office before we publish any data. Please complete the rest of this agreement and wait for instructions from us.</b>",
+            "answer": "Input Text"
+        },
+        "QID13": {
+            "seq_no": 12,
+            "questionName": "Q12",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>2. Does the data being deposited relate to any Human Subjects Research?</b>",
+            "answer": "Yes"
+        },
+        "QID14": {
+            "seq_no": 13,
+            "questionName": "Q13",
+            "questionType": "TE-SL",
+            "questionLabel": "Question",
+            "questionText": "<b>2.1. Please enter your IRB approval number. If your study is exempt, please enter \"exempt\" in the box. We will liaise with the Human Subjects Protection Program before publishing your data. Both identifiable and de-identified human subjects data cannot be deposited into ReDATA without a consent form that permits sharing the data for future study.</b>",
+            "answer": "Input Text 2"
+        },
+        "QID15": {
+            "seq_no": 14,
+            "questionName": "Q14",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>3. Does the data being deposited relate to any research involving vertebrate animals?</b>",
+            "answer": "Yes"
+        },
+        "QID16": {
+            "seq_no": 15,
+            "questionName": "Q15",
+            "questionType": "TE-SL",
+            "questionLabel": "Question",
+            "questionText": "<b>3.1. If you are depositing photographs or videos depicting animals, animal carcasses, or animal body parts please enter your IACUC approval number. If not, enter \"N/A.\" We will seek authorization from University Animal Care before publishing your data.</b>",
+            "answer": "Input Text 3"
+        },
+        "QID17": {
+            "seq_no": 16,
+            "questionName": "Q16",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>4. Does the data being deposited relate to American Indian, Alaska Native, or Indigenous traditional intellectual property, information, images, or knowledge?</b><br/><i>Examples include data about Native or Indigenous lands, people, languages, or resources. Refer to the <a href=\"https://osf.io/4tgky/files/7qmxw\" color=\"#AB0520\"><u>Repository Policies p. 6</u></a> for more information.</i>",
+            "answer": "Yes"
+        },
+        "QID18": {
+            "seq_no": 17,
+            "questionName": "Q17",
+            "questionType": "TE-FORM",
+            "questionLabel": "Question",
+            "questionText": "<b>4.1. Please enter the name and contact information of the tribal designee you have obtained approval from, as well as the type of approval.</b><br/><i>Examples include a tribal council letter, a data sharing agreement from a tribal legal office, or a tribal IRB approval. We will seek approval from the Native Peoples Technical Assistance Office before publishing your dataset.</i>",
+            "formQuestions": [
+                "Tribal Designee Name",
+                "Contact Info (Email/Phone)",
+                "Approval Type"
+            ],
+            "answer": [
+                "Input Text 4",
+                "Input Text 5",
+                "Input Text 6"
+            ]
+        },
+        "QID19": {
+            "seq_no": 18,
+            "questionName": "Q18",
+            "questionType": "MC-SAVR",
+            "questionLabel": "Question",
+            "questionText": "<b>5. I confirm that I am the creator of the data and any other materials being deposited. If I am not the creator, I confirm that I have been authorized by the creator to deposit said data and materials on their behalf.</b>",
+            "answer": "I am the creator"
+        },
+        "QID5": {
+            "seq_no": 19,
+            "questionName": "Q19",
+            "questionType": "DB-TB",
+            "questionLabel": "SectionHeader",
+            "questionText": "<h2><b>Section 3: Deposit Agreement and Terms</b></h2>",
+            "answer": ""
+        },
+        "QID20": {
+            "seq_no": 20,
+            "questionName": "Q20",
+            "questionType": "DB-TB",
+            "questionLabel": "Info",
+            "questionText": "<h3><b>Your Responsibilities</b><br/><br/></h3>The Depositor and Corresponding Author agree to\u2013<ul><li>Adhere to the <a href=\"https://lib.arizona.edu/research/data/redata/policies\" color=\"#AB0520\"><u>repository policies</u></a> and <a href=\"https://lib.arizona.edu/research/data/redata/deposit\" color=\"#AB0520\"><u>deposit guidelines</u></a>.<li>Provide complete and detailed information as requested by the data curators.<li>Grant the Repository and staff permission to curate materials to increase data <a href=\"https://www.go-fair.org/fair-principles\" color=\"#AB0520\"><u>FAIR</u></a>ness and ensure compliance with any applicable laws.</ul>",
+            "answer": ""
+        },
+        "QID21": {
+            "seq_no": 21,
+            "questionName": "Q21",
+            "questionType": "DB-TB",
+            "questionLabel": "Info",
+            "questionText": "<h3><b>Non-exclusive Distribution License</b><br/><br/></h3>The Corresponding Author acknowledges they are solely responsible for the contents of the materials being deposited and agree that\u2013<ul><li>The Repository may keep more than one copy of this submission for purposes of security, back-up and preservation.</li><li>You allow deposited material to be promoted in any form for the purpose of dissemination.</li><li>You allow the transfer of the material to another repository should this Repository cease operation.</li><li>The submission is your original work, and that you have the right to grant the rights contained in this license. You also represent that your submission does not, to the best of your knowledge, infringe upon anyone's copyright. If the submission contains material for which you do not hold copyright, you represent that you have obtained the unrestricted permission of the copyright owner to grant the Repository the rights required by this license, and that such third-party owned material is clearly identified and acknowledged within the text or content of the submission.</li><li>The Repository will clearly identify your name(s) as the author(s) or owner(s) of the submission, and will not make any alteration, other than as allowed by this agreement, to your submission.<br/><br/></li></ul>IF THE SUBMISSION IS BASED UPON WORK THAT HAS BEEN SPONSORED OR SUPPORTED BY AN AGENCY OR ORGANIZATION OTHER THAN TESTOR, YOU REPRESENT THAT YOU HAVE FULFILLED ANY RIGHT OF REVIEW OR OTHER OBLIGATIONS REQUIRED BY SUCH CONTRACT OR AGREEEMENT.",
+            "answer": ""
+        },
+        "QID22": {
+            "seq_no": 22,
+            "questionName": "Q22",
+            "questionType": "DB-TB",
+            "questionLabel": "Info",
+            "questionText": "<h3><b>Signature of Corresponding Author (or Authorized Depositor)</b></h3><br/><font color=\"#AB0520\">The Corresponding Author acknowledges they are solely responsible for the contents of the materials being deposited and agree to this Deposit Agreement.</font>",
+            "answer": ""
+        },
+        "QID23": {
+            "seq_no": 23,
+            "questionName": "Q23",
+            "questionType": "TE-SL",
+            "questionLabel": "Question",
+            "questionText": "<b>Write your full name in the box to sign:</b>",
+            "answer": "Test Name"
+        }
+    },
+    "embedded_data": {
+        "startDate": "2026-09-28T18:06:19Z",
+        "endDate": "2026-09-28T18:07:26Z",
+        "status": "IP Address",
+        "ipAddress": "127.0.0.1",
+        "progress": 100,
+        "duration": 67,
+        "finished": "True",
+        "recordedDate": "2026-09-28T18:07:26.707Z",
+        "locationLatitude": "-10.0000",
+        "locationLongitude": "-10.0000",
+        "distributionChannel": "anonymous",
+        "userLanguage": "EN",
+        "LastSeenFlowID": "FL_EOS_ID",
+        "article_id": "98765432",
+        "curation_id": "9876543",
+        "dataset_title": "Test Title of the Deposit",
+        "depositor_name": "Test Name",
+        "depositor_email": "test@email.com"
+    }
+}
