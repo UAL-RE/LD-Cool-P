@@ -8,10 +8,10 @@ from ...config import config_default_dict
 
 _configs = config_default_dict["pdf_generator"]
 
-# Default Directory & File Constants
-DEFAULT_ASSETS_DIR = Path(__file__).parent / _configs.get("pdf_assets_dir", "assets")
-UA_LOGO_PATH = DEFAULT_ASSETS_DIR / _configs.get("ua_logo", "logo-uofa.png")
-REDATA_LOGO_PATH = DEFAULT_ASSETS_DIR / _configs.get("redata_logo", "logo-redata.png")
+# Default Directory & File Constants relative to this module
+DEFAULT_ASSETS_DIR: Path = Path(__file__).parent / _configs.get("pdf_assets_dir", "assets")
+UA_LOGO_PATH: Path = DEFAULT_ASSETS_DIR / _configs.get("ua_logo", "logo-uofa.png")
+REDATA_LOGO_PATH: Path = DEFAULT_ASSETS_DIR / _configs.get("redata_logo", "logo-redata.png")
 
 # Color Palette Constants (RGB)
 COLOR_RGB_UA_RED = _configs.get("ua_red_rgb", [171, 5, 32])
@@ -44,6 +44,7 @@ MARGIN_RIGHT_PT       = _configs.get("margin_right_inch", 0.75) * INCH
 BANNER_HEIGHT_PT      = _configs.get("banner_height_inch", 0.75) * INCH
 UA_LOGO_HEIGHT_PT     = _configs.get("ua_logo_height_inch", 0.5) * INCH
 REDATA_LOGO_WIDTH_PT  = _configs.get("redata_logo_width_inch", 2.61) * INCH
+BASE_FONT_SIZE_PT     = _configs.get("base_font_size_pt", 12)
 
 DEFAULT_HTML_TAG_STYLES = {
     "b": TextStyle(font_style="B", color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
@@ -52,9 +53,9 @@ DEFAULT_HTML_TAG_STYLES = {
     "a": TextStyle(font_style="U", color=COLOR_RGB_UA_RED, t_margin=0.1, b_margin=0.1),
     "ul": TextStyle(t_margin=-0.5, b_margin=0),
     "li": TextStyle(t_margin=5, b_margin=5, l_margin=24),
-    "h1": TextStyle(font_size_pt=20, color=COLOR_RGB_BLACK, t_margin=6.0, b_margin=0.1, l_margin="C"),
-    "h2": TextStyle(font_size_pt=16, color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
-    "h3": TextStyle(font_size_pt=14, color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
+    "h1": TextStyle(font_size_pt=BASE_FONT_SIZE_PT*5.0/3, color=COLOR_RGB_BLACK, t_margin=6.0, b_margin=0.1, l_margin="C"),
+    "h2": TextStyle(font_size_pt=BASE_FONT_SIZE_PT*4.0/3, color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
+    "h3": TextStyle(font_size_pt=BASE_FONT_SIZE_PT*3.5/3, color=COLOR_RGB_BLACK, t_margin=0.1, b_margin=0.1),
 }
 # fmt: on  # for black formatter
 
@@ -116,7 +117,7 @@ class AccessiblePDF(FPDF):
         )
         self.set_auto_page_break(auto=True, margin=self.config.margin_bottom)
         self.set_line_width(1.0)
-        self.set_font(FONT_FAMILY_NAME, "", 12)
+        self.set_font(FONT_FAMILY_NAME, "", BASE_FONT_SIZE_PT)
         self.set_text_color(*COLOR_RGB_BLACK)
         self.alias_nb_pages()
 
@@ -163,7 +164,7 @@ class AccessiblePDF(FPDF):
             # Center text vertically within footer banner
             text_y = banner_y + (self.config.banner_height / 2.0) - 6.0
             self.set_y(text_y)
-            self.set_font(FONT_FAMILY_NAME, "I", 12)
+            self.set_font(FONT_FAMILY_NAME, "I", BASE_FONT_SIZE_PT)
             self.set_text_color(*COLOR_RGB_WHITE)
 
             # Left Footer Text
@@ -171,7 +172,7 @@ class AccessiblePDF(FPDF):
             self.cell(w=250, h=12, text=_configs.get("footer_text", ""), align="L")
 
             # Right "Page {page_no} of {nb}"
-            self.set_font(FONT_FAMILY_NAME, "", 12)
+            self.set_font(FONT_FAMILY_NAME, "", BASE_FONT_SIZE_PT)
             page_str = f"Page {self.page_no()} of {{nb}}"
             self.set_x(self.config.page_width - self.config.margin_right - 100)
             self.cell(w=100, h=12, text=page_str, align="R")
