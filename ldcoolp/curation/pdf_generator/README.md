@@ -74,7 +74,7 @@ data = {
 
 # Generate and save the PDF
 output_path = Path("output/deposit_agreement.pdf")
-builder.generate(data, output_path)
+builder.generate_pdf(data, output_path)
 ```
 
 ## Font License

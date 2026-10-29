@@ -28,7 +28,7 @@ question, put the script on the "YES/NO" question for convenience).
 
 ## Question Order
 
-Qualtrics have an unique question ID attached to each question and usually in the
+Qualtrics have a unique question ID attached to each question and usually in the
 format `QID#`. If questions are re-ordered, then the API generated survey response
 has no way to identify the question order.
 
