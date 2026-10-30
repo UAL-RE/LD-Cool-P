@@ -30,6 +30,20 @@ def qualtrics_check(config_dict: dict):
         raise configparser.ParsingError(source=str_join)
 
 
+def try_int(value) -> int | bool:
+    try:
+        return int(value)
+    except:
+        return False
+
+
+def try_float(value) -> float | bool:
+    try:
+        return float(value)
+    except:
+        return False
+
+
 def dict_load(config_file):
     """
     Purpose:
@@ -51,6 +65,11 @@ def dict_load(config_file):
             option_input = config.get(section, option)
             if option_input in ['True', 'False']:
                 config_dict[section][option] = config.getboolean(section, option)
+            # Check if value can be interpreted as an int or float, and convert accordingly
+            elif (int_value := try_int(option_input)) is not False:
+                config_dict[section][option] = int_value
+            elif (float_value := try_float(option_input)) is not False:
+                config_dict[section][option] = float_value
             else:
                 config_dict[section][option] = option_input
                 # Re-process if value can be interpreted as a list
